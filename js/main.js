@@ -115,14 +115,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // background parallax
       heroSection.style.backgroundPositionY = scrollPosition * 0.3 + "px";
-
-      // logo rotation via CSS variable
-      if (heroLogo) {
-        heroLogo.style.setProperty(
-          "--scroll-rotate",
-          scrollPosition * 0.5 + "deg",
-        );
-      }
     });
   }
 
@@ -157,12 +149,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Observe elements for animation
   const animatedElements = document.querySelectorAll(
-    ".news-card, .about-card, .gallery-item, .structure-card",
+    ".news-card, .about-card, .gallery-item, .structure-card, .contact-info-card, .contact-form-card, .map-wrapper, .contact-item",
   );
   animatedElements.forEach((el) => {
     el.style.opacity = "0";
     el.style.transform = "translateY(20px)";
-    el.style.transition = "opacity 0.6s ease, transform 0.6s ease";
+    const delay = el.dataset.delay || "0s";
+    el.style.transition = `opacity 0.6s ease ${delay}, transform 0.6s ease ${delay}`;
     observer.observe(el);
   });
 
@@ -220,5 +213,87 @@ document.addEventListener("DOMContentLoaded", function () {
 
   counters.forEach((counter) => {
     counterObserver.observe(counter);
+  });
+
+  // Timeline Animation (Visi Misi)
+  const timelineObserverOptions = {
+    threshold: 0.2,
+    rootMargin: "0px",
+  };
+
+  const timelineObserver = new IntersectionObserver((entries, observer) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = "1";
+        entry.target.style.transform = "";
+        observer.unobserve(entry.target);
+      }
+    });
+  }, timelineObserverOptions);
+
+  const timelineCards = document.querySelectorAll(".timeline-card");
+  const timelineNumbers = document.querySelectorAll(".timeline-number");
+
+  timelineCards.forEach((card) => {
+    // Check if it's left or right
+    const col = card.closest(".timeline-col");
+    if (!col) return;
+
+    const isLeft = col.classList.contains("left");
+
+    card.style.opacity = "0";
+    card.style.transition = "all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)"; // bouncy
+
+    if (isLeft) {
+      card.style.transform = "translateX(-50px)";
+    } else {
+      card.style.transform = "translateX(50px)";
+    }
+
+    timelineObserver.observe(card);
+  });
+
+  timelineNumbers.forEach((num) => {
+    num.style.opacity = "0";
+    num.style.transform = "scale(0.5)";
+    num.style.transition = "all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)";
+    num.style.transitionDelay = "0.2s";
+    timelineObserver.observe(num);
+  });
+
+  // Animate Timeline Line (Vertical)
+  const timelineLine = document.querySelector(".timeline-line");
+  if (timelineLine) {
+    timelineLine.style.transform = "translateX(-50%) scaleY(0)";
+    timelineLine.style.transformOrigin = "top";
+    timelineLine.style.transition = "transform 1.5s ease-out";
+
+    const lineObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.style.transform = "translateX(-50%) scaleY(1)";
+            lineObserver.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.1 },
+    );
+
+    lineObserver.observe(timelineLine);
+  }
+
+  // Animate List Items in Timeline Cards (staggered)
+  const timelineListItems = document.querySelectorAll(".timeline-card li");
+  timelineListItems.forEach((item) => {
+    item.style.opacity = "0";
+    item.style.transform = "translateX(20px)";
+    item.style.transition = "all 0.5s ease";
+
+    // Calculate delay based on index within its own list
+    const index = Array.from(item.parentNode.children).indexOf(item);
+    item.style.transitionDelay = `${index * 0.1 + 0.3}s`; // Start after card animates
+
+    timelineObserver.observe(item);
   });
 });

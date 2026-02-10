@@ -1,6 +1,11 @@
 <?php include 'header.php'; ?>
 
 <section class="structure-hero">
+    <div class="floating-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
     <h1>Organisasi Siswa Intra Sekolah (OSIS)</h1>
     <p>Kepengurusan OSIS SMP PGRI 3 BOGOR Periode 2025/2026</p>
 </section>

@@ -1,6 +1,11 @@
 <?php include 'header.php'; ?>
 
 <section class="gallery-hero">
+    <div class="floating-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
     <h1>Agenda Sekolah</h1>
     <p>Jadwal kegiatan SMP PGRI 3 BOGOR</p>
 </section>

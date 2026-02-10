@@ -16,7 +16,7 @@
             <div class="footer-section">
                 <h3>Kontak Kami</h3>
                 <ul>
-                    <li><i class="fas fa-map-marker-alt"></i> Jl. Raya Tajur No. 12B, Bogor</li>
+                    <li><i class="fas fa-map-marker-alt"></i> Jalan Raya Ciomas No.308 Ciomas Rahayu, Jl. Raya Ciomas, Pasirmulya, Kec. Ciomas, Kabupaten Bogor, Jawa Barat 16610</li>
                     <li><i class="fas fa-phone"></i> (0251) 1234-5678</li>
                     <li><i class="fas fa-envelope"></i> info@smppgri3bogor.sch.id</li>
                 </ul>
@@ -25,6 +25,11 @@
         <div class="footer-bottom">
             <p>&copy; 2026 SMP PGRI 3 BOGOR. All Rights Reserved.</p>
         </div>
+
+        <!-- Discreet Admin Portal Access -->
+        <a href="../admin/login.php" class="admin-fixed" title="Admin Portal">
+            <i class="fas fa-user-cog"></i>
+        </a>
     </footer>
     </body>
 

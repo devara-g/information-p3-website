@@ -1,43 +1,73 @@
 <?php include 'header.php'; ?>
 
 <section class="about-hero">
+    <div class="floating-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
     <h1>Visi & Misi</h1>
     <p>SMP PGRI 3 BOGOR</p>
 </section>
 
-<section class="about-content">
-    <div style="max-width: 900px; margin: 0 auto;">
-        <div class="about-card" style="margin-bottom: 2rem;">
-            <div class="about-card-icon">👁️</div>
-            <h3>Visi</h3>
-            <p style="font-size: 1.2rem; line-height: 1.8; margin-top: 1rem;">
-                "Menjadi sekolah menengah pertama unggulan yang menghasilkan lulusan kompeten, kreatif, berakhlak mulia, cinta tanah air, dan mampu menghadapi tantangan global abad ke-21."
-            </p>
-        </div>
+<section class="timeline-section-wrapper">
+    <div class="timeline-container">
+        <!-- Vertical Line -->
+        <div class="timeline-line"></div>
 
-        <div class="about-card">
-            <div class="about-card-icon">🎯</div>
-            <h3>Misi</h3>
-            <div style="text-align: left; margin-top: 1rem;">
-                <p style="margin-bottom: 1rem;">1. Menyediakan pendidikan dan pelatihan yang berkualitas tinggi sesuai standar nasional dan internasional.</p>
-                <p style="margin-bottom: 1rem;">2. Mengembangkan potensi siswa secara optimal melalui pembelajaran yang inovatif dan kreatif.</p>
-                <p style="margin-bottom: 1rem;">3. Membekali siswa dengan keterampilan yang relevan dengan tuntutan dunia kerja dan industri.</p>
-                <p style="margin-bottom: 1rem;">4. Menanamkan nilai-nilai karakter, religius, dan nasionalisme yang kuat.</p>
-                <p style="margin-bottom: 1rem;">5. Membangun kerja sama yang intensif dengan dunia industri dan masyarakat.</p>
-                <p style="margin-bottom: 1rem;">6. Mengembangkan sumber daya manusia yang profesional dan berdedikasi.</p>
-                <p>7. Mewujudkan suasana belajar yang kondusif, aman, dan nyaman.</p>
+        <!-- 1. VISI (Right Side) -->
+        <div class="timeline-row">
+            <div class="timeline-col left empty"></div>
+            <div class="timeline-marker-wrapper">
+                <div class="timeline-number">1</div>
+            </div>
+            <div class="timeline-col right">
+                <div class="timeline-card">
+                    <h3>Visi</h3>
+                    <p>"Menjadi sekolah menengah pertama unggulan yang menghasilkan lulusan kompeten, kreatif, berakhlak mulia, cinta tanah air, dan mampu menghadapi tantangan global abad ke-21."</p>
+                </div>
             </div>
         </div>
 
-        <div class="about-card" style="margin-top: 2rem;">
-            <div class="about-card-icon">🎓</div>
-            <h3>Tujuan</h3>
-            <div style="text-align: left; margin-top: 1rem;">
-                <p style="margin-bottom: 1rem;">1. Menghasilkan lulusan yang kompeten di bidangnya dan siap kerja.</p>
-                <p style="margin-bottom: 1rem;">2. Membekali lulusan dengan jiwa kewirausahaan.</p>
-                <p style="margin-bottom: 1rem;">3. Mewujudkan 80% lulusan diterima di dunia kerja atau melanjutkan pendidikan tinggi.</p>
-                <p style="margin-bottom: 1rem;">4. Mengembangkan prestasi akademik dan non-akademik di tingkat regional dan nasional.</p>
-                <p>5. Membentuk karakter siswa yang berkhlakul karimah.</p>
+        <!-- 2. MISI (Left Side) -->
+        <div class="timeline-row">
+            <div class="timeline-col left">
+                <div class="timeline-card">
+                    <h3>Misi</h3>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="margin-bottom: 0.5rem;">✅ Menyediakan pendidikan berkualitas tinggi.</li>
+                        <li style="margin-bottom: 0.5rem;">✅ Mengembangkan potensi siswa secara optimal.</li>
+                        <li style="margin-bottom: 0.5rem;">✅ Membekali siswa dengan keterampilan relevan.</li>
+                        <li style="margin-bottom: 0.5rem;">✅ Menanamkan karakter religius & nasionalis.</li>
+                        <li style="margin-bottom: 0.5rem;">✅ Membangun kerjasama dengan industri.</li>
+                        <li style="margin-bottom: 0.5rem;">✅ Mengembangkan SDM profesional.</li>
+                        <li>✅ Mewujudkan suasana belajar kondusif.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="timeline-marker-wrapper">
+                <div class="timeline-number">2</div>
+            </div>
+            <div class="timeline-col right empty"></div>
+        </div>
+
+        <!-- 3. TUJUAN (Right Side) -->
+        <div class="timeline-row">
+            <div class="timeline-col left empty"></div>
+            <div class="timeline-marker-wrapper">
+                <div class="timeline-number">3</div>
+            </div>
+            <div class="timeline-col right">
+                <div class="timeline-card">
+                    <h3>Tujuan</h3>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="margin-bottom: 0.5rem;">🎯 Lulusan kompeten & siap kerja.</li>
+                        <li style="margin-bottom: 0.5rem;">🎯 Membekali jiwa kewirausahaan.</li>
+                        <li style="margin-bottom: 0.5rem;">🎯 80% lulusan diterima di dunia kerja/pendidikan tinggi.</li>
+                        <li style="margin-bottom: 0.5rem;">🎯 Prestasi akademik & non-akademik regional/nasional.</li>
+                        <li>🎯 Karakter siswa berakhlakul karimah.</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
