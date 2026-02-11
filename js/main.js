@@ -159,17 +159,7 @@ document.addEventListener("DOMContentLoaded", function () {
     observer.observe(el);
   });
 
-  // Contact form handling
-  const contactForm = document.querySelector("form");
-  if (contactForm) {
-    contactForm.addEventListener("submit", function (e) {
-      e.preventDefault();
-      alert(
-        "Terima kasih! Pesan Anda telah terkirim. Kami akan merespons dalam 24 jam.",
-      );
-      contactForm.reset();
-    });
-  }
+
 
   // Admin button
   const adminBtn = document.querySelector(".admin-btn");

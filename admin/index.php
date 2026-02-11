@@ -1,6 +1,25 @@
 <?php
 $title = "Dashboard Admin";
 include 'layout/header.php';
+include '../database/conn.php';
+
+// Pastikan kolom created_at ada di tabel pesan (untuk chart)
+$colCheck = mysqli_query($conn, "SHOW COLUMNS FROM pesan LIKE 'created_at'");
+if (mysqli_num_rows($colCheck) == 0) {
+    mysqli_query($conn, "ALTER TABLE pesan ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP");
+}
+
+// Data chart: jumlah pesan per hari (7 hari terakhir)
+$chartLabels = [];
+$chartData = [];
+$dayAbbrev = ['Mg', 'Sn', 'Sl', 'Rb', 'Km', 'Jm', 'Sb'];
+for ($i = 6; $i >= 0; $i--) {
+    $date = date('Y-m-d', strtotime("-$i days"));
+    $dayNum = (int) date('w', strtotime($date));
+    $chartLabels[] = $dayAbbrev[$dayNum];
+    $q = mysqli_query($conn, "SELECT COUNT(*) FROM pesan WHERE DATE(COALESCE(created_at, NOW())) = '" . mysqli_real_escape_string($conn, $date) . "'");
+    $chartData[] = (int) ($q ? mysqli_fetch_row($q)[0] : 0);
+}
 ?>
 
 <!-- Welcome Banner -->
@@ -58,8 +77,8 @@ include 'layout/header.php';
     <!-- Chart Section -->
     <div class="card-panel animate-fade-in-up" style="animation-delay: 0.5s;">
         <div class="card-header">
-            <h3>Statistik Pengunjung</h3>
-            <a href="#" class="btn-sm">Lihat Detail</a>
+            <h3>Statistik Pesan Masuk</h3>
+            <a href="pesan.php" class="btn-sm">Lihat Detail</a>
         </div>
         <canvas id="visitorChart" height="120"></canvas>
     </div>
@@ -117,16 +136,16 @@ include 'layout/header.php';
     </div>
 </div>
 
-<!-- Simple Chart Script -->
+<!-- Chart: Jumlah Pesan per Hari -->
 <script>
     const ctx = document.getElementById('visitorChart').getContext('2d');
     const visitorChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: ['Sn', 'Sl', 'Rb', 'Km', 'Jm', 'Sb', 'Mg'],
+            labels: <?= json_encode($chartLabels) ?>,
             datasets: [{
-                label: 'Pengunjung Minggu Ini',
-                data: [65, 59, 80, 81, 56, 120, 90],
+                label: 'Pesan Masuk',
+                data: <?= json_encode($chartData) ?>,
                 fill: true,
                 backgroundColor: 'rgba(59, 130, 246, 0.1)',
                 borderColor: '#0b2d72',
@@ -144,6 +163,9 @@ include 'layout/header.php';
             scales: {
                 y: {
                     beginAtZero: true,
+                    ticks: {
+                        stepSize: 2
+                    },
                     grid: {
                         display: false
                     }

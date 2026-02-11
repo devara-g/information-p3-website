@@ -161,24 +161,46 @@ include 'layout/header.php';
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.5);
+        background: rgba(11, 45, 114, 0.4);
+        backdrop-filter: blur(10px);
         display: none;
         justify-content: center;
         align-items: center;
         z-index: 2000;
+        padding: 20px;
     }
 
     .form-card {
         background: white;
-        width: 600px;
-        border-radius: 12px;
-        padding: 30px;
+        width: 100%;
+        max-width: 650px;
+        border-radius: 20px;
+        padding: 40px;
         position: relative;
+        box-shadow: 0 25px 70px rgba(0, 0, 0, 0.15);
+        animation: formSlideUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes formSlideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
     .form-card h2 {
-        margin-bottom: 20px;
+        margin-bottom: 25px;
         color: var(--primary);
+        font-weight: 800;
+        font-size: 1.8rem;
+        border-bottom: 3px solid var(--accent);
+        display: inline-block;
+        padding-bottom: 5px;
     }
 
     .close-form {
@@ -196,19 +218,31 @@ include 'layout/header.php';
 
     .form-group label {
         display: block;
-        margin-bottom: 5px;
-        font-weight: 500;
-        color: var(--gray);
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: var(--dark);
+        font-size: 0.9rem;
     }
 
     .form-group input,
     .form-group select,
     .form-group textarea {
         width: 100%;
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 6px;
+        padding: 12px 16px;
+        border: 2px solid var(--gray-light);
+        border-radius: 12px;
         outline: none;
+        transition: all 0.3s ease;
+        background: #f8fafc;
+        font-size: 0.95rem;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        border-color: var(--primary-light);
+        background: white;
+        box-shadow: 0 0 0 4px rgba(9, 146, 194, 0.1);
     }
 
     .btn-submit {
@@ -384,8 +418,15 @@ include 'layout/header.php';
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Upload Gambar</label>
-                    <input type="file" name="gambar" required>
+                    <label>Upload Gambar Berita</label>
+                    <div class="file-upload-wrapper">
+                        <input type="file" name="gambar" class="file-upload-input" id="gambarInput" required>
+                        <div class="file-upload-label">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <span>Klik atau seret gambar ke sini</span>
+                            <span class="file-name" id="fileName"></span>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="form-group">

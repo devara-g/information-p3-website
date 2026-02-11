@@ -34,10 +34,13 @@ $current_page = basename($_SERVER['PHP_SELF']);
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="sidebar-header">
-                <div class="admin-logo">
-                    <i class="fas fa-school"></i>
+                <div class="admin-logo-container">
+                    <img src="../img/pgri3-photoroom.png" alt="Logo" class="sidebar-logo">
                 </div>
-                <h2>Admin Panel</h2>
+                <div class="sidebar-brand">
+                    <h2>SMP PGRI 3</h2>
+                    <span>BOGOR • ADMIN</span>
+                </div>
             </div>
 
             <div class="sidebar-menu">
@@ -52,13 +55,13 @@ $current_page = basename($_SERVER['PHP_SELF']);
 
                 <div class="menu-label">Settings</div>
                 <ul>
-                    <li><a href="pesan.php" class="<?= $current_page == 'pesan.php' ? 'active' : ''; ?>"><i class="fas fa-user-cog"></i> Pesan</a></li>
+                    <li><a href="pesan.php" class="<?= $current_page == 'pesan.php' ? 'active' : ''; ?>"><i class="fas fa-envelope"></i> Pesan</a></li>
                     <li><a href="../index.php" target="_blank"><i class="fas fa-external-link-alt"></i> Lihat Website</a></li>
                 </ul>
             </div>
 
             <div class="logout-btn">
-                <a href="logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                <a href="javascript:void(0)" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
             </div>
         </aside>
 
@@ -108,5 +111,70 @@ $current_page = basename($_SERVER['PHP_SELF']);
                             document.body.style.overflow = '';
                         });
                     }
+
+                    // Logout Modal Logic
+                    const logoutBtn = document.getElementById('logoutBtn');
+                    const logoutModal = document.getElementById('logoutModal');
+                    const btnCancelLogout = document.getElementById('btnCancelLogout');
+
+                    if (logoutBtn && logoutModal && btnCancelLogout) {
+                        logoutBtn.addEventListener('click', function() {
+                            logoutModal.classList.add('active');
+                            document.body.style.overflow = 'hidden';
+                        });
+
+                        btnCancelLogout.addEventListener('click', function() {
+                            logoutModal.classList.remove('active');
+                            document.body.style.overflow = '';
+                        });
+
+                        // Close on overlay click
+                        logoutModal.addEventListener('click', function(e) {
+                            if (e.target === logoutModal) {
+                                logoutModal.classList.remove('active');
+                                document.body.style.overflow = '';
+                            }
+                        });
+                    }
+
+                    // File Upload Logic
+                    const fileInputs = document.querySelectorAll('.file-upload-input');
+                    fileInputs.forEach(input => {
+                        input.addEventListener('change', function() {
+                            const fileName = this.files[0] ? this.files[0].name : '';
+                            const wrapper = this.closest('.file-upload-wrapper');
+                            const nameDisplay = wrapper.querySelector('.file-name');
+                            const labelSpan = wrapper.querySelector('span:not(.file-name)');
+                            const labelIcon = wrapper.querySelector('i');
+
+                            if (fileName) {
+                                nameDisplay.textContent = fileName;
+                                nameDisplay.style.display = 'block';
+                                labelSpan.textContent = 'File terpilih:';
+                                labelIcon.style.color = '#15803d'; // Success color
+                                wrapper.querySelector('.file-upload-label').style.borderColor = '#15803d';
+                            } else {
+                                nameDisplay.style.display = 'none';
+                                labelSpan.textContent = 'Klik atau seret file ke sini';
+                                labelIcon.style.color = '';
+                                wrapper.querySelector('.file-upload-label').style.borderColor = '';
+                            }
+                        });
+                    });
                 });
             </script>
+
+            <!-- Logout Confirmation Modal -->
+            <div class="logout-overlay" id="logoutModal">
+                <div class="logout-modal">
+                    <div class="logout-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <h2>Konfirmasi Logout</h2>
+                    <p>Apakah Anda yakin ingin keluar dari halaman panel admin? Sesi Anda akan berakhir.</p>
+                    <div class="logout-btns">
+                        <button class="btn-cancel" id="btnCancelLogout">Batal</button>
+                        <a href="logout.php" class="btn-confirm-logout">Ya, Keluar</a>
+                    </div>
+                </div>
+            </div>
