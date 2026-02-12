@@ -38,25 +38,25 @@ $current_page = basename($_SERVER['PHP_SELF']);
                     <img src="../img/pgri3-photoroom.png" alt="Logo" class="sidebar-logo">
                 </div>
                 <div class="sidebar-brand">
-                    <h2>SMP PGRI 3</h2>
-                    <span>BOGOR • ADMIN</span>
+                    <h2>SMP PGRI 3 BGR</h2>
+                    <span>ADMINISTRATOR PANEL</span>
                 </div>
             </div>
 
             <div class="sidebar-menu">
                 <div class="menu-label">Main Menu</div>
                 <ul>
-                    <li><a href="index.php" class="<?= $current_page == 'index.php' ? 'active' : ''; ?>"><i class="fas fa-home"></i> Dashboard</a></li>
-                    <li><a href="berita.php" class="<?= $current_page == 'berita.php' ? 'active' : ''; ?>"><i class="fas fa-newspaper"></i> Berita & Artikel</a></li>
-                    <li><a href="agenda.php" class="<?= $current_page == 'agenda.php' ? 'active' : ''; ?>"><i class="fas fa-calendar-alt"></i> Agenda Sekolah</a></li>
-                    <li><a href="galeri.php" class="<?= $current_page == 'galeri.php' ? 'active' : ''; ?>"><i class="fas fa-images"></i> Galeri Kegiatan</a></li>
-                    <li><a href="guru.php" class="<?= $current_page == 'guru.php' ? 'active' : ''; ?>"><i class="fas fa-users"></i> Data Guru & Staff</a></li>
+                    <li><a href="index.php" class="<?= $current_page == 'index.php' ? 'active' : ''; ?>"><i class="fas fa-th-large"></i> Dashboard</a></li>
+                    <li><a href="berita.php" class="<?= $current_page == 'berita.php' ? 'active' : ''; ?>"><i class="fas fa-rss"></i> Berita & Artikel</a></li>
+                    <li><a href="agenda.php" class="<?= $current_page == 'agenda.php' ? 'active' : ''; ?>"><i class="fas fa-calendar-day"></i> Agenda Sekolah</a></li>
+                    <li><a href="galeri.php" class="<?= $current_page == 'galeri.php' ? 'active' : ''; ?>"><i class="fas fa-camera"></i> Galeri Kegiatan</a></li>
+                    <li><a href="guru.php" class="<?= $current_page == 'guru.php' ? 'active' : ''; ?>"><i class="fas fa-chalkboard-teacher"></i> Data Guru & Staff</a></li>
                 </ul>
 
-                <div class="menu-label">Settings</div>
+                <div class="menu-label">External</div>
                 <ul>
-                    <li><a href="pesan.php" class="<?= $current_page == 'pesan.php' ? 'active' : ''; ?>"><i class="fas fa-envelope"></i> Pesan</a></li>
-                    <li><a href="../index.php" target="_blank"><i class="fas fa-external-link-alt"></i> Lihat Website</a></li>
+                    <li><a href="pesan.php" class="<?= $current_page == 'pesan.php' ? 'active' : ''; ?>"><i class="fas fa-envelope"></i> Pesan Masuk</a></li>
+                    <li class="mt-4"><a href="../index.php" target="_blank" class="sidebar-action-btn"><i class="fas fa-external-link-alt"></i> Lihat Website</a></li>
                 </ul>
             </div>
 

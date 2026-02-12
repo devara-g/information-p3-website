@@ -20,6 +20,9 @@ for ($i = 6; $i >= 0; $i--) {
     $q = mysqli_query($conn, "SELECT COUNT(*) FROM pesan WHERE DATE(COALESCE(created_at, NOW())) = '" . mysqli_real_escape_string($conn, $date) . "'");
     $chartData[] = (int) ($q ? mysqli_fetch_row($q)[0] : 0);
 }
+$total_berita = (int) mysqli_fetch_row(mysqli_query($conn, "SELECT COUNT(*) FROM berita"))[0];
+$total_agenda = (int) mysqli_fetch_row(mysqli_query($conn, "SELECT COUNT(*) FROM agenda"))[0];
+
 ?>
 
 <!-- Welcome Banner -->
@@ -36,7 +39,7 @@ for ($i = 6; $i >= 0; $i--) {
             <i class="fas fa-newspaper"></i>
         </div>
         <div class="stat-info">
-            <h3>12</h3>
+            <h3><?= $total_berita ?></h3>
             <p>Berita Dipublish</p>
         </div>
     </div>
@@ -66,7 +69,7 @@ for ($i = 6; $i >= 0; $i--) {
             <i class="fas fa-calendar-check"></i>
         </div>
         <div class="stat-info">
-            <h3>5</h3>
+            <h3><?= $total_agenda ?></h3>
             <p>Agenda Mendatang</p>
         </div>
     </div>

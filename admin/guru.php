@@ -169,6 +169,7 @@ include 'layout/header.php';
         align-items: center;
         z-index: 2000;
         padding: 20px;
+        overflow-y: auto;
     }
 
     .form-card {
@@ -319,15 +320,22 @@ include 'layout/header.php';
             height: 35px;
         }
 
+        .form-overlay {
+            align-items: flex-start;
+            padding-top: 40px;
+            padding-bottom: 40px;
+        }
+
         .form-card {
             width: 95%;
-            padding: 20px;
-            max-height: 90vh;
-            overflow-y: auto;
+            padding: 25px 20px;
+            max-height: none;
+            margin-bottom: 20px;
         }
 
         .form-card h2 {
             font-size: 1.5rem;
+            margin-bottom: 20px;
         }
 
         div[style*="grid-template-columns: 1fr 1fr"] {
@@ -513,6 +521,7 @@ include 'layout/header.php';
     function toggleForm(show) {
         const overlay = document.getElementById('formOverlay');
         overlay.style.display = show ? 'flex' : 'none';
+        document.body.style.overflow = show ? 'hidden' : '';
     }
 
     // Handle File Name Display

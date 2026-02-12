@@ -1367,7 +1367,7 @@ footer::before {
 
 .form-control:focus {
   background: var(--white);
-  border-color: var(--secondary);
+  border  or: var(--secondary);
   outline: none;
   box-shadow: 0 10px 30px rgba(10, 196, 224, 0.1);
 }

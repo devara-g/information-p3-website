@@ -1047,7 +1047,7 @@ include 'layout/header.php';
                         <tr class="<?= $dibaca ? '' : 'unread-row' ?>">
                             <td>
                                 <?php if ($dibaca): ?>
-                                    <span class="badge badge-read"><i class="fas fa-check-double" style="font-size: 0.7rem;"></i> read  </span>
+                                    <span class="badge badge-read"><i class="fas fa-check-double" style="font-size: 0.7rem;"></i> read</span>
                                 <?php else: ?>
                                     <span class="badge badge-new"><i class="fas fa-circle" style="font-size: 6px;"></i> unread</span>
                                 <?php endif; ?>

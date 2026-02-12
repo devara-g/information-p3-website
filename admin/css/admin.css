@@ -50,7 +50,11 @@ body {
 /* Sidebar Premium Overhaul */
 .sidebar {
   width: 280px;
-  background: #0f172a; /* Deep Slate */
+  background: linear-gradient(
+    180deg,
+    var(--primary-dark, #071d4a) 0%,
+    #051331 100%
+  );
   color: #f8fafc;
   flex-shrink: 0;
   display: flex;
@@ -59,7 +63,7 @@ body {
   position: fixed;
   height: 100vh;
   z-index: 1000;
-  box-shadow: 10px 0 30px rgba(0, 0, 0, 0.1);
+  box-shadow: 10px 0 30px rgba(0, 0, 0, 0.2);
   border-right: 1px solid rgba(255, 255, 255, 0.05);
 }
 
@@ -68,21 +72,31 @@ body {
   display: flex;
   align-items: center;
   gap: 15px;
-  background: rgba(255, 255, 255, 0.03);
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.05) 0%,
+    transparent 100%
+  );
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   margin-bottom: 1rem;
 }
 
 .admin-logo-container {
   width: 50px;
   height: 50px;
-  background: white;
+  background: var(--white);
   border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 5px;
-  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
   transition: transform 0.3s ease;
+  background: linear-gradient(
+    135deg,
+    var(--white),
+    var(--accent-light, #faf2d3)
+  );
 }
 
 .sidebar:hover .admin-logo-container {
@@ -106,8 +120,8 @@ body {
 
 .sidebar-brand span {
   font-size: 0.65rem;
-  color: #94a3b8;
-  font-weight: 700;
+  color: var(--secondary, #0ac4e0);
+  font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 1.5px;
 }
@@ -133,6 +147,15 @@ body {
   margin-top: 0;
 }
 
+.sidebar-menu ul li a i {
+  color: var(--secondary, #0ac4e0);
+  opacity: 0.7;
+}
+
+.sidebar-menu ul li a:hover i {
+  opacity: 1;
+}
+
 .sidebar-menu ul li {
   margin-bottom: 0.5rem;
 }
@@ -143,8 +166,8 @@ body {
   gap: 14px;
   padding: 12px 20px;
   border-radius: 12px;
-  color: #94a3b8;
-  transition: all 0.3s ease;
+  color: rgba(255, 255, 255, 0.7);
+  transition: var(--transition, all 0.4s cubic-bezier(0.4, 0, 0.2, 1));
   font-weight: 600;
   font-size: 0.95rem;
   position: relative;
@@ -158,8 +181,8 @@ body {
 }
 
 .sidebar-menu ul li a:hover {
-  background: rgba(59, 130, 246, 0.08);
-  color: #f8fafc;
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
 }
 
 .sidebar-menu ul li a:hover i {
@@ -167,8 +190,8 @@ body {
 }
 
 .sidebar-menu ul li a.active {
-  background: linear-gradient(90deg, rgba(59, 130, 246, 0.15), transparent);
-  color: #3b82f6;
+  background: linear-gradient(90deg, rgba(10, 196, 224, 0.15), transparent);
+  color: var(--secondary, #0ac4e0);
 }
 
 .sidebar-menu ul li a.active::before {
@@ -178,14 +201,14 @@ body {
   top: 20%;
   height: 60%;
   width: 4px;
-  background: #3b82f6;
+  background: var(--secondary, #0ac4e0);
   border-radius: 0 4px 4px 0;
-  box-shadow: 4px 0 10px rgba(59, 130, 246, 0.5);
+  box-shadow: 4px 0 15px rgba(10, 196, 224, 0.6);
 }
 
 .sidebar-menu ul li a.active i {
-  color: #3b82f6;
-  filter: drop-shadow(0 0 5px rgba(59, 130, 246, 0.3));
+  color: var(--secondary, #0ac4e0);
+  filter: drop-shadow(0 0 5px rgba(10, 196, 224, 0.4));
 }
 
 .logout-btn {
@@ -215,6 +238,30 @@ body {
   box-shadow: 0 10px 20px rgba(244, 63, 94, 0.2);
 }
 
+/* Sidebar Action Button */
+.sidebar-action-btn {
+  background: var(--gradient-primary) !important;
+  color: white !important;
+  justify-content: center !important;
+  font-weight: 700 !important;
+  box-shadow: 0 4px 15px rgba(10, 196, 224, 0.3);
+  margin-top: 15px !important;
+}
+
+.sidebar-action-btn:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 25px rgba(10, 196, 224, 0.5) !important;
+}
+
+.sidebar-action-btn i {
+  color: white !important;
+  opacity: 1 !important;
+}
+
+.mt-4 {
+  margin-top: 1rem;
+}
+
 /* Main Content */
 .main-content {
   flex-grow: 1;
@@ -235,6 +282,9 @@ body {
   box-shadow: 0 4px 25px rgba(0, 0, 0, 0.03);
   gap: 15px;
   border: 1px solid rgba(255, 255, 255, 0.5);
+  position: sticky;
+  top: 15px;
+  z-index: 900;
 }
 
 .toggle-sidebar {
@@ -516,6 +566,16 @@ body {
 
   .top-bar {
     padding: 0.8rem 1rem;
+    position: sticky;
+    top: 10px;
+    margin-bottom: 1.5rem;
+    border-radius: 12px;
+  }
+
+  /* Prevent horizontal scroll from stagger animations */
+  .main-content {
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
   }
 
   .search-box {
