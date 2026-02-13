@@ -155,6 +155,30 @@ include 'layout/header.php';
         transform: scale(1.1);
     }
 
+    .btn-cancel-delete {
+        padding: 11px 25px;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: none;
+        background: #f1f5f9;
+        color: #475569;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        letter-spacing: 0.3px;
+        text-decoration: none;
+    }
+
+    .btn-cancel-delete:hover {
+        background: #e2e8f0;
+        color: #0f172a;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
     /* Form Section */
     .form-overlay {
         position: fixed;
@@ -175,43 +199,95 @@ include 'layout/header.php';
     .form-card {
         background: white;
         width: 100%;
-        max-width: 650px;
+        max-width: 500px;
         border-radius: 20px;
-        padding: 40px;
+        padding: 0;
         position: relative;
         box-shadow: 0 25px 70px rgba(0, 0, 0, 0.15);
-        animation: formSlideUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        animation: modalBounce 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        max-height: 90vh;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
     }
 
-    @keyframes formSlideUp {
+    @keyframes modalBounce {
         from {
             opacity: 0;
-            transform: translateY(30px);
+            transform: scale(0.9) translateY(30px);
         }
 
         to {
             opacity: 1;
-            transform: translateY(0);
+            transform: scale(1) translateY(0);
         }
     }
 
-    .form-card h2 {
-        margin-bottom: 25px;
+    .form-header {
+        padding: 25px 30px;
+        background: #f8fafc;
+        border-bottom: 1px solid #e2e8f0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .form-header h2 {
+        margin: 0;
         color: var(--primary);
         font-weight: 800;
-        font-size: 1.8rem;
-        border-bottom: 3px solid var(--accent);
-        display: inline-block;
-        padding-bottom: 5px;
+        font-size: 1.4rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .form-header h2 i {
+        width: 38px;
+        height: 38px;
+        background: rgba(11, 45, 114, 0.1);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
     }
 
     .close-form {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        font-size: 1.5rem;
+        font-size: 1.2rem;
         cursor: pointer;
         color: #999;
+        transition: 0.3s;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: white;
+        border: 1px solid #e2e8f0;
+    }
+
+    .close-form:hover {
+        color: #ef4444;
+        transform: rotate(90deg);
+        background: #fee2e2;
+        border-color: #fecaca;
+    }
+
+    .form-body {
+        padding: 25px 30px;
+        overflow-y: auto;
+        flex: 1;
+    }
+
+    .form-footer {
+        padding: 20px 30px;
+        background: #f8fafc;
+        border-top: 1px solid #e2e8f0;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
     }
 
     .form-group {
@@ -251,26 +327,22 @@ include 'layout/header.php';
         background: var(--gradient-primary);
         color: white;
         border: none;
-        padding: 14px;
-        width: 100%;
-        border-radius: 12px;
+        padding: 12px 25px;
+        border-radius: 10px;
         font-weight: 700;
-        font-size: 1rem;
+        font-size: 0.95rem;
         cursor: pointer;
-        margin-top: 20px;
         display: flex;
         align-items: center;
         justify-content: center;
         gap: 10px;
-        box-shadow: 0 10px 25px rgba(11, 45, 114, 0.2);
+        box-shadow: 0 8px 15px rgba(11, 45, 114, 0.15);
         transition: all 0.3s ease;
-        letter-spacing: 0.5px;
     }
 
     .btn-submit:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 15px 35px rgba(11, 45, 114, 0.3);
-        filter: brightness(1.1);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(11, 45, 114, 0.25);
     }
 
     .btn-submit:active {
@@ -410,7 +482,7 @@ include 'layout/header.php';
             <h1>Data Guru & Staff</h1>
             <p style="color: var(--gray);">Kelola informasi tenaga pendidik dan kependidikan.</p>
         </div>
-        <button class="btn-add" onclick="toggleForm(true)">
+        <button class="btn-add" onclick="openAddForm()">
             <i class="fas fa-plus"></i> Tambah Data
         </button>
     </div>
@@ -471,73 +543,90 @@ include 'layout/header.php';
 <!-- Modal Form -->
 <div class="form-overlay" id="formOverlay">
     <div class="form-card">
-        <i class="fas fa-times close-form" onclick="toggleForm(false)"></i>
-        <h2>Input Data Guru/Staff</h2>
-        <form action="" method="POST" enctype="multipart/form-data">
-            <div class="form-group">
-                <label>Nama Lengkap & Gelar</label>
-                <input type="text" name="nama" required placeholder="Contoh: Siti Aminah, S.Pd">
-            </div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+        <div class="form-header">
+            <h2 id="formTitle"><i class="fas fa-user-tie"></i> Input Guru/Staff</h2>
+            <div class="close-form" onclick="closeForm()"><i class="fas fa-times"></i></div>
+        </div>
+        <form action="" method="POST" enctype="multipart/form-data" style="display: contents;">
+            <div class="form-body">
                 <div class="form-group">
-                    <label>NIP / NUPTK</label>
-                    <input type="text" name="nip" placeholder="Masukkan nomor identitas">
+                    <label>Nama Lengkap & Gelar</label>
+                    <input type="text" name="nama" id="nama" required placeholder="Contoh: Siti Aminah, S.Pd">
                 </div>
-                <div class="form-group">
-                    <label>Jabatan</label>
-                    <select name="jabatan" required>
-                        <option value="">Pilih Jabatan</option>
-                        <option>Kepala Sekolah</option>
-                        <option>Wakil Kepala Sekolah</option>
-                        <option>Guru Mata Pelajaran</option>
-                        <option>Staff Tata Usaha</option>
-                        <option>Staff Perpustakaan</option>
-                    </select>
-                </div>
-            </div>
-            <div class="form-group">
-                <label>Mata Pelajaran / Bidang Tugas</label>
-                <input type="text" name="mapel" placeholder="Contoh: Matematika / Administrasi">
-            </div>
-            <div class="form-group">
-                <label>Foto Profil</label>
-                <div class="file-upload-wrapper">
-                    <input type="file" name="foto" class="file-upload-input" id="fotoInput">
-                    <div class="file-upload-label">
-                        <i class="fas fa-cloud-upload-alt"></i>
-                        <span>Klik atau seret foto ke sini</span>
-                        <span class="file-name" id="fileName"></span>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label>NIP / NUPTK</label>
+                        <input type="text" name="nip" id="nip" placeholder="Masukkan nomor identitas">
+                    </div>
+                    <div class="form-group">
+                        <label>Jabatan</label>
+                        <select name="jabatan" id="jabatan" required>
+                            <option value="">Pilih Jabatan</option>
+                            <option>Kepala Sekolah</option>
+                            <option>Wakil Kepala Sekolah</option>
+                            <option>Guru Mata Pelajaran</option>
+                            <option>Staff Tata Usaha</option>
+                            <option>Staff Perpustakaan</option>
+                        </select>
                     </div>
                 </div>
+                <div class="form-group">
+                    <label>Mata Pelajaran / Bidang Tugas</label>
+                    <input type="text" name="mapel" id="mapel" placeholder="Contoh: Matematika / Administrasi">
+                </div>
+                <div class="form-group">
+                    <label>Foto Profil</label>
+                    <div class="file-upload-wrapper">
+                        <input type="file" name="foto" class="file-upload-input" id="fotoInput" onchange="previewFile(this)">
+                        <div class="file-upload-label">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <span>Klik atau seret foto ke sini</span>
+                            <span class="file-name" id="fileName"></span>
+                        </div>
+                    </div>
+                </div>
+                <div id="imagePreview" style="display: none; margin-top: 15px; border-radius: 50%; width: 100px; height: 100px; overflow: hidden; border: 2px solid #e2e8f0; margin-left: auto; margin-right: auto;">
+                    <img src="" id="previewImg" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
             </div>
-            <button type="submit" class="btn-submit">
-                <i class="fas fa-save"></i> Simpan Data Guru & Staff
-            </button>
+            <div class="form-footer">
+                <button type="button" class="btn-cancel-delete" onclick="closeForm()">
+                    <i class="fas fa-times"></i> Batal
+                </button>
+                <button type="submit" class="btn-submit">
+                    <i class="fas fa-save"></i> <span id="btnText">Simpan Data Guru</span>
+                </button>
+            </div>
         </form>
     </div>
 </div>
 
 <script>
-    function toggleForm(show) {
+    function openAddForm() {
         const overlay = document.getElementById('formOverlay');
-        overlay.style.display = show ? 'flex' : 'none';
-        document.body.style.overflow = show ? 'hidden' : '';
+        overlay.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
     }
 
-    // Handle File Name Display
-    const fotoInput = document.getElementById('fotoInput');
-    const fileNameDisplay = document.getElementById('fileName');
-    const uploadLabel = document.querySelector('.file-upload-label span');
+    function closeForm() {
+        const overlay = document.getElementById('formOverlay');
+        overlay.style.display = 'none';
+        document.body.style.overflow = '';
+    }
 
-    if (fotoInput) {
-        fotoInput.addEventListener('change', function(e) {
-            if (this.files && this.files.length > 0) {
-                const name = this.files[0].name;
-                fileNameDisplay.textContent = name;
-                fileNameDisplay.style.display = 'block';
-                uploadLabel.textContent = 'Ganti file:';
+    function previewFile(input) {
+        const file = input.files[0];
+        if (file) {
+            document.getElementById('fileName').textContent = file.name;
+            document.getElementById('fileName').style.display = 'block';
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('imagePreview').style.display = 'block';
+                document.getElementById('previewImg').src = e.target.result;
             }
-        });
+            reader.readAsDataURL(file);
+        }
     }
 </script>
 

@@ -22,7 +22,7 @@ for ($i = 6; $i >= 0; $i--) {
 }
 $total_berita = (int) mysqli_fetch_row(mysqli_query($conn, "SELECT COUNT(*) FROM berita"))[0];
 $total_agenda = (int) mysqli_fetch_row(mysqli_query($conn, "SELECT COUNT(*) FROM agenda"))[0];
-
+$total_galeri = (int) mysqli_fetch_row(mysqli_query($conn, "SELECT COUNT(*) FROM galeri"))[0];
 ?>
 
 <!-- Welcome Banner -->
@@ -49,7 +49,7 @@ $total_agenda = (int) mysqli_fetch_row(mysqli_query($conn, "SELECT COUNT(*) FROM
             <i class="fas fa-images"></i>
         </div>
         <div class="stat-info">
-            <h3>48</h3>
+            <h3><?= $total_galeri ?></h3>
             <p>Foto Galeri</p>
         </div>
     </div>
@@ -93,48 +93,31 @@ $total_agenda = (int) mysqli_fetch_row(mysqli_query($conn, "SELECT COUNT(*) FROM
         </div>
 
         <div class="activity-list">
-            <div class="activity-item">
-                <div class="activity-icon">
-                    <i class="fas fa-edit"></i>
+            <?php
+            $q_recent = mysqli_query($conn, "SELECT id, nama, subjek, pesan, created_at FROM pesan WHERE COALESCE(dibaca, 0) = 0 ORDER BY id DESC LIMIT 5");
+            if (mysqli_num_rows($q_recent) > 0) {
+                while ($act = mysqli_fetch_assoc($q_recent)) {
+                    $time_str = date('d M Y, H:i', strtotime($act['created_at']));
+            ?>
+                    <div class="activity-item" onclick="location.href='pesan.php'" style="cursor: pointer;">
+                        <div class="activity-icon" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6;">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="activity-content">
+                            <h4><?= htmlspecialchars($act['nama']) ?></h4>
+                            <p><?= htmlspecialchars(substr($act['subjek'], 0, 40)) ?><?= strlen($act['subjek']) > 40 ? '...' : '' ?></p>
+                        </div>
+                        <div class="activity-time"><?= $time_str ?></div>
+                    </div>
+                <?php
+                }
+            } else {
+                ?>
+                <div style="text-align: center; padding: 40px; color: #94a3b8;">
+                    <i class="fas fa-check-circle" style="font-size: 2rem; margin-bottom: 15px; opacity: 0.3;"></i>
+                    <p>Semua pesan sudah dibaca</p>
                 </div>
-                <div class="activity-content">
-                    <h4>Update Berita</h4>
-                    <p>Admin mengedit "Juara 1 Lomba..."</p>
-                </div>
-                <div class="activity-time">5m lalu</div>
-            </div>
-
-            <div class="activity-item">
-                <div class="activity-icon">
-                    <i class="fas fa-plus"></i>
-                </div>
-                <div class="activity-content">
-                    <h4>Upload Galeri</h4>
-                    <p>Menambahkan 5 foto baru</p>
-                </div>
-                <div class="activity-time">1j lalu</div>
-            </div>
-
-            <div class="activity-item">
-                <div class="activity-icon">
-                    <i class="fas fa-trash"></i>
-                </div>
-                <div class="activity-content">
-                    <h4>Hapus Agenda</h4>
-                    <p>Menghapus agenda "Rapat Guru"</p>
-                </div>
-                <div class="activity-time">3j lalu</div>
-            </div>
-            <div class="activity-item">
-                <div class="activity-icon">
-                    <i class="fas fa-user-plus"></i>
-                </div>
-                <div class="activity-content">
-                    <h4>Data Guru</h4>
-                    <p>Menambahkan data guru baru</p>
-                </div>
-                <div class="activity-time">1h lalu</div>
-            </div>
+            <?php } ?>
         </div>
     </div>
 </div>

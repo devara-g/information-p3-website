@@ -6,6 +6,16 @@ include "../database/conn.php";
 if (isset($_GET['aksi']) && $_GET['aksi'] == 'hapus' && isset($_GET['id'])) {
     $id = (int) $_GET['id'];
     if ($id > 0) {
+        // Hapus foto jika ada
+        $query_foto = mysqli_query($conn, "SELECT foto FROM agenda WHERE id = $id");
+        $data_foto = mysqli_fetch_assoc($query_foto);
+        if (!empty($data_foto['foto'])) {
+            $file_path = '../' . $data_foto['foto'];
+            if (file_exists($file_path)) {
+                unlink($file_path);
+            }
+        }
+
         // Menggunakan prepared statement untuk keamanan
         $stmt = mysqli_prepare($conn, "DELETE FROM agenda WHERE id = ?");
         mysqli_stmt_bind_param($stmt, "i", $id);
@@ -30,11 +40,34 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['aksi']) && $_POST['aks
     $waktu = mysqli_real_escape_string($conn, $_POST['waktu']);
     $lokasi = mysqli_real_escape_string($conn, $_POST['lokasi']);
     $keterangan = mysqli_real_escape_string($conn, $_POST['keterangan']);
-    $status = 'Akan Datang'; // Default status
+    $status = 'akan datang'; // Default status
+
+    // Handle file upload
+    $foto = null;
+    if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
+        $allowed_types = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
+        $file_type = $_FILES['foto']['type'];
+        $file_size = $_FILES['foto']['size'];
+
+        if (in_array($file_type, $allowed_types) && $file_size <= 5 * 1024 * 1024) {
+            $target_dir = '../upload/img/';
+            if (!file_exists($target_dir)) {
+                mkdir($target_dir, 0777, true);
+            }
+
+            $extension = pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION);
+            $filename = 'agenda_' . time() . '_' . uniqid() . '.' . $extension;
+            $upload_path = $target_dir . $filename;
+
+            if (move_uploaded_file($_FILES['foto']['tmp_name'], $upload_path)) {
+                $foto = 'upload/img/' . $filename;
+            }
+        }
+    }
 
     // Prepared statement untuk INSERT
-    $stmt = mysqli_prepare($conn, "INSERT INTO agenda (judul, tanggal, waktu, lokasi, deskripsi, status) VALUES (?, ?, ?, ?, ?, ?)");
-    mysqli_stmt_bind_param($stmt, "ssssss", $judul, $tanggal, $waktu, $lokasi, $keterangan, $status);
+    $stmt = mysqli_prepare($conn, "INSERT INTO agenda (judul, tanggal, waktu, lokasi, deskripsi, status, foto) VALUES (?, ?, ?, ?, ?, ?, ?)");
+    mysqli_stmt_bind_param($stmt, "sssssss", $judul, $tanggal, $waktu, $lokasi, $keterangan, $status, $foto);
 
     if (mysqli_stmt_execute($stmt)) {
         header("Location: agenda.php?status=success&message=Agenda berhasil ditambahkan");
@@ -53,12 +86,51 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['aksi']) && $_POST['aks
     $tanggal = mysqli_real_escape_string($conn, $_POST['tanggal']);
     $waktu = mysqli_real_escape_string($conn, $_POST['waktu']);
     $lokasi = mysqli_real_escape_string($conn, $_POST['lokasi']);
-    $keterangan = mysqli_real_escape_string($conn, $_POST['deskripsi']);
+    $keterangan = mysqli_real_escape_string($conn, $_POST['keterangan']); // Fix field name from deskripsi
     $status = mysqli_real_escape_string($conn, $_POST['status']);
 
+    // Handle file upload
+    $sql_update = "UPDATE agenda SET judul=?, tanggal=?, waktu=?, lokasi=?, deskripsi=?, status=? WHERE id=?";
+    $bind_types = "ssssssi";
+    $bind_params = [$judul, $tanggal, $waktu, $lokasi, $keterangan, $status, $id];
+
+    if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
+        $allowed_types = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
+        $file_type = $_FILES['foto']['type'];
+        $file_size = $_FILES['foto']['size'];
+
+        if (in_array($file_type, $allowed_types) && $file_size <= 5 * 1024 * 1024) {
+            // Hapus foto lama
+            $query_foto_lama = mysqli_query($conn, "SELECT foto FROM agenda WHERE id = $id");
+            $data_foto_lama = mysqli_fetch_assoc($query_foto_lama);
+            if (!empty($data_foto_lama['foto'])) {
+                $file_path = '../' . $data_foto_lama['foto'];
+                if (file_exists($file_path)) {
+                    unlink($file_path);
+                }
+            }
+
+            $target_dir = '../upload/img/';
+            if (!file_exists($target_dir)) {
+                mkdir($target_dir, 0777, true);
+            }
+
+            $extension = pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION);
+            $filename = 'agenda_' . time() . '_' . uniqid() . '.' . $extension;
+            $upload_path = $target_dir . $filename;
+
+            if (move_uploaded_file($_FILES['foto']['tmp_name'], $upload_path)) {
+                $foto_new = 'upload/img/' . $filename;
+                $sql_update = "UPDATE agenda SET judul=?, tanggal=?, waktu=?, lokasi=?, deskripsi=?,    status=?, foto=? WHERE id=?";
+                $bind_types = "sssssssi";
+                $bind_params = [$judul, $tanggal, $waktu, $lokasi, $keterangan, $status, $foto_new, $id];
+            }
+        }
+    }
+
     // Prepared statement untuk UPDATE
-    $stmt = mysqli_prepare($conn, "UPDATE agenda SET judul=?, tanggal=?, waktu=?, lokasi=?, deskripsi=?, status=? WHERE id=?");
-    mysqli_stmt_bind_param($stmt, "ssssssi", $judul, $tanggal, $waktu, $lokasi, $keterangan, $status, $id);
+    $stmt = mysqli_prepare($conn, $sql_update);
+    mysqli_stmt_bind_param($stmt, $bind_types, ...$bind_params);
 
     if (mysqli_stmt_execute($stmt)) {
         header("Location: agenda.php?status=success&message=Agenda berhasil diperbarui");
@@ -88,8 +160,57 @@ include 'layout/header.php';
 
 <style>
     /* Internal CSS for Agenda Management */
+    /* Custom Scrollbar for Main Page & Content */
+    html {
+        overflow-y: scroll;
+        scrollbar-gutter: stable;
+    }
+
+    ::-webkit-scrollbar {
+        width: 12px;
+        height: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: #f1f5f9;
+        border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background-color: #94a3b8;
+        border-radius: 20px;
+        border: 3px solid #f1f5f9;
+        /* Makes the thumb look thinner */
+        transition: 0.3s;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background-color: #64748b;
+    }
+
+    /* Target the table horizontal scroll specifically */
+    .table-card div::-webkit-scrollbar {
+        height: 8px;
+    }
+
+    /* Distinct scrollbar for Form Body to differentiate from page scroll */
+    .form-body::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .form-body::-webkit-scrollbar-track {
+        background: #f8fafc;
+    }
+
+    .form-body::-webkit-scrollbar-thumb {
+        background-color: #cbd5e0;
+        border-radius: 10px;
+        border: 2px solid #f8fafc;
+    }
+
     .agenda-container {
         padding: 20px;
+        min-height: calc(100vh - 100px);
     }
 
     .header-panel {
@@ -288,6 +409,83 @@ include 'layout/header.php';
         transform: scale(1.1);
     }
 
+    /* Additional styles for image upload */
+    .file-upload-wrapper {
+        position: relative;
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    .file-upload-input {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+        z-index: 2;
+    }
+
+    .file-upload-label {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 25px;
+        background: #f8fafc;
+        border: 2px dashed #cbd5e0;
+        border-radius: 12px;
+        color: #64748b;
+        transition: all 0.3s ease;
+        text-align: center;
+    }
+
+    .file-upload-label i {
+        font-size: 2rem;
+        margin-bottom: 10px;
+        color: var(--primary);
+    }
+
+    .file-upload-label:hover {
+        border-color: var(--primary);
+        background: #f1f5f9;
+    }
+
+    .image-preview {
+        margin-top: 15px;
+        display: none;
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid #e2e8f0;
+        max-width: 200px;
+    }
+
+    .image-preview img {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    .agenda-thumb {
+        width: 60px;
+        height: 45px;
+        border-radius: 6px;
+        object-fit: cover;
+        border: 1px solid #eee;
+    }
+
+    .no-thumb {
+        width: 60px;
+        height: 45px;
+        background: #f1f5f9;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #94a3b8;
+        font-size: 0.7rem;
+        border: 1px dashed #cbd5e0;
+    }
+
     /* ============ PERBAIKAN 8: Style untuk Modal Form ============ */
     .form-overlay {
         position: fixed;
@@ -302,51 +500,100 @@ include 'layout/header.php';
         align-items: center;
         z-index: 2000;
         padding: 20px;
-        overflow-y: auto;
-        /* Allow overlay to scroll if modal is tall */
     }
 
     .form-card {
         background: white;
         width: 100%;
-        max-width: 650px;
+        max-width: 520px;
         border-radius: 20px;
-        padding: 40px;
+        padding: 0;
         position: relative;
         box-shadow: 0 25px 70px rgba(0, 0, 0, 0.15);
-        animation: formSlideUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        animation: modalBounce 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        max-height: 90vh;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
     }
 
-    @keyframes formSlideUp {
+    @keyframes modalBounce {
         from {
             opacity: 0;
-            transform: translateY(30px);
+            transform: scale(0.9) translateY(30px);
         }
 
         to {
             opacity: 1;
-            transform: translateY(0);
+            transform: scale(1) translateY(0);
         }
     }
 
-    .form-card h2 {
-        margin-bottom: 25px;
+    .form-header {
+        padding: 25px 30px;
+        background: #f8fafc;
+        border-bottom: 1px solid #e2e8f0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .form-header h2 {
+        margin: 0;
         color: var(--primary);
         font-weight: 800;
-        font-size: 1.8rem;
-        border-bottom: 3px solid var(--accent);
-        display: inline-block;
-        padding-bottom: 5px;
+        font-size: 1.4rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .form-header h2 i {
+        width: 38px;
+        height: 38px;
+        background: rgba(11, 45, 114, 0.1);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
     }
 
     .close-form {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        font-size: 1.5rem;
+        font-size: 1.2rem;
         cursor: pointer;
         color: #999;
         transition: 0.3s;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: white;
+        border: 1px solid #e2e8f0;
+    }
+
+    .close-form:hover {
+        color: #ef4444;
+        transform: rotate(90deg);
+        background: #fee2e2;
+        border-color: #fecaca;
+    }
+
+    .form-body {
+        padding: 25px 30px;
+        overflow-y: auto;
+        flex: 1;
+    }
+
+    .form-footer {
+        padding: 20px 30px;
+        background: #f8fafc;
+        border-top: 1px solid #e2e8f0;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
     }
 
     .close-form:hover {
@@ -391,26 +638,22 @@ include 'layout/header.php';
         background: var(--gradient-primary);
         color: white;
         border: none;
-        padding: 14px;
-        width: 100%;
-        border-radius: 12px;
+        padding: 12px 25px;
+        border-radius: 10px;
         font-weight: 700;
-        font-size: 1rem;
+        font-size: 0.95rem;
         cursor: pointer;
-        margin-top: 20px;
         display: flex;
         align-items: center;
         justify-content: center;
         gap: 10px;
-        box-shadow: 0 10px 25px rgba(11, 45, 114, 0.2);
+        box-shadow: 0 8px 15px rgba(11, 45, 114, 0.15);
         transition: all 0.3s ease;
-        letter-spacing: 0.5px;
     }
 
     .btn-submit:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 15px 35px rgba(11, 45, 114, 0.3);
-        filter: brightness(1.1);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(11, 45, 114, 0.25);
     }
 
     /* ============ PERBAIKAN 9: Style untuk Loading State ============ */
@@ -487,22 +730,28 @@ include 'layout/header.php';
         flex-wrap: wrap;
     }
 
-    .delete-confirm-btns .btn-cancel-delete {
-        padding: 12px 24px;
+    .btn-cancel-delete {
+        padding: 11px 25px;
         border-radius: 12px;
         font-weight: 600;
-        font-size: 0.95rem;
+        font-size: 0.9rem;
         cursor: pointer;
-        transition: all 0.3s ease;
-        border: 2px solid #e2e8f0;
-        background: white;
-        color: #64748b;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: none;
+        background: #f1f5f9;
+        color: #475569;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        letter-spacing: 0.3px;
+        text-decoration: none;
     }
 
-    .delete-confirm-btns .btn-cancel-delete:hover {
-        background: #f1f5f9;
-        border-color: #cbd5e1;
-        color: #475569;
+    .btn-cancel-delete:hover {
+        background: #e2e8f0;
+        color: #0f172a;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     }
 
     .delete-confirm-btns .btn-confirm-delete {
@@ -590,18 +839,16 @@ include 'layout/header.php';
 
         .form-overlay,
         .delete-confirm-overlay {
-            align-items: flex-start;
-            /* Better for tall modals on short screens */
-            padding-top: 40px;
-            padding-bottom: 40px;
+            align-items: center;
+            padding: 20px;
         }
 
         .form-card {
             width: 95%;
             padding: 25px 20px;
-            max-height: none;
-            /* Let the overlay handle scrolling */
-            margin-bottom: 20px;
+            max-height: 90vh;
+            overflow-y: auto;
+            margin-bottom: 0;
         }
 
         .form-card h2 {
@@ -653,6 +900,7 @@ include 'layout/header.php';
                 <thead>
                     <tr>
                         <th>No</th>
+                        <th>Gambar</th>
                         <th>Judul Kegiatan</th>
                         <th>Tanggal</th>
                         <th>Waktu</th>
@@ -674,21 +922,34 @@ include 'layout/header.php';
 
                     if (mysqli_num_rows($data) > 0) {
                         while ($row = mysqli_fetch_array($data)) {
-                            // ============ PERBAIKAN 12: Tentukan status berdasarkan tanggal ============
-                            $tanggal_sekarang = date('Y-m-d');
+                            // ============ PERBAIKAN 12: Tentukan status & badge ============
+                            $kat_db = strtolower($row['status']);
                             $badge_class = 'badge-upcoming';
                             $status_text = $row['status'];
 
-                            if ($row['tanggal'] == $tanggal_sekarang) {
+                            if ($kat_db == 'hari ini') {
                                 $badge_class = 'badge-today';
                                 $status_text = 'Hari Ini';
-                            } elseif ($row['tanggal'] < $tanggal_sekarang) {
+                            } elseif ($kat_db == 'selesai') {
                                 $badge_class = 'badge-completed';
                                 $status_text = 'Selesai';
+                            } elseif ($kat_db == 'di batalkan') {
+                                $badge_class = 'badge-cancelled';
+                                $status_text = 'Dibatalkan';
+                            } else {
+                                $badge_class = 'badge-upcoming';
+                                $status_text = 'Akan Datang';
                             }
                     ?>
                             <tr>
                                 <td><?= $no++ ?></td>
+                                <td>
+                                    <?php if (!empty($row['foto']) && file_exists('../' . $row['foto'])): ?>
+                                        <img src="../<?= $row['foto'] ?>" class="agenda-thumb" alt="Agenda">
+                                    <?php else: ?>
+                                        <div class="no-thumb"><i class="fas fa-image"></i></div>
+                                    <?php endif; ?>
+                                </td>
                                 <td style="font-weight: 500;"><?= htmlspecialchars($row['judul']) ?></td>
                                 <td><?= date('d M Y', strtotime($row['tanggal'])) ?></td>
                                 <td><?= htmlspecialchars($row['waktu']) ?></td>
@@ -696,10 +957,12 @@ include 'layout/header.php';
                                 <td><span class="badge <?= $badge_class ?>"><?= htmlspecialchars($status_text) ?></span></td>
                                 <td>
                                     <div class="action-btns">
-                                        <button class="btn-action btn-edit" onclick="openEditForm(<?= $row['id'] ?>)">
+                                        <button class="btn-action btn-edit" title="Edit"
+                                            onclick='openEditForm(<?= json_encode($row) ?>)'>
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <button class="btn-action btn-delete" onclick="confirmDelete(<?= $row['id'] ?>, '<?= htmlspecialchars(addslashes($row['judul'])) ?>')">
+                                        <button class="btn-action btn-delete" title="Hapus"
+                                            onclick="showDeleteModal(<?= $row['id'] ?>, '<?= htmlspecialchars(addslashes($row['judul'])) ?>')">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </div>
@@ -742,51 +1005,75 @@ include 'layout/header.php';
 <!-- ============ PERBAIKAN 13: Modal Form untuk Tambah/Edit ============ -->
 <div class="form-overlay" id="formOverlay">
     <div class="form-card">
-        <i class="fas fa-times close-form" onclick="closeForm()"></i>
-        <h2 id="formTitle">Input Agenda Baru</h2>
-        <form id="agendaForm" action="" method="POST">
-            <input type="hidden" name="aksi" id="formAksi" value="tambah">
-            <input type="hidden" name="id" id="agendaId" value="">
+        <div class="form-header">
+            <h2 id="formTitle"><i class="fas fa-calendar-alt"></i> Tambah Agenda</h2>
+            <div class="close-form" onclick="closeForm()"><i class="fas fa-times"></i></div>
+        </div>
+        <form id="agendaForm" action="" method="POST" enctype="multipart/form-data" style="display: contents;">
+            <div class="form-body">
+                <input type="hidden" name="aksi" id="formAksi" value="tambah">
+                <input type="hidden" name="id" id="agendaId" value="">
 
-            <div class="form-group">
-                <label>Judul Kegiatan <span style="color: red;">*</span></label>
-                <input type="text" name="judul" id="judul" required placeholder="Contoh: Rapat Mingguan">
-            </div>
-
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                 <div class="form-group">
-                    <label>Tanggal Pelaksanaan <span style="color: red;">*</span></label>
-                    <input type="date" name="tanggal" id="tanggal" required min="<?= date('Y-m-d') ?>">
+                    <label>Judul Kegiatan <span style="color: red;">*</span></label>
+                    <input type="text" name="judul" id="judul" required placeholder="Contoh: Rapat Mingguan">
                 </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label>Tanggal Pelaksanaan <span style="color: red;">*</span></label>
+                        <input type="date" name="tanggal" id="tanggal" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Waktu</label>
+                        <input type="text" name="waktu" id="waktu" placeholder="Contoh: 08:00 - 10:00">
+                    </div>
+                </div>
+
                 <div class="form-group">
-                    <label>Waktu</label>
-                    <input type="text" name="waktu" id="waktu" placeholder="Contoh: 08:00 - 10:00">
+                    <label>Lokasi</label>
+                    <input type="text" name="lokasi" id="lokasi" placeholder="Contoh: Aula Sekolah">
+                </div>
+
+                <div class="form-group">
+                    <label>Keterangan Tambahan</label>
+                    <textarea name="keterangan" id="keterangan" rows="4" placeholder="Detail kegiatan..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Foto Agenda</label>
+                    <div class="file-upload-wrapper">
+                        <input type="file" name="foto" id="foto" class="file-upload-input" onchange="previewImage(this)">
+                        <div class="file-upload-label" id="uploadLabelArea">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <span>Pilih foto atau tarik ke sini</span>
+                            <p style="font-size: 0.8rem; margin-top: 5px;">Format: JPG, PNG, GIF (Maks. 5MB)</p>
+                        </div>
+                    </div>
+                    <div id="imagePreview" class="image-preview">
+                        <img src="" id="previewImg" alt="Preview">
+                    </div>
+                </div>
+
+                <div class="form-group" id="statusGroup" style="display: none;">
+                    <label>Status</label>
+                    <select name="status" id="status">
+                        <option value="akan datang">Akan Datang</option>
+                        <option value="hari ini">Hari Ini</option>
+                        <option value="selesai">Selesai</option>
+                        <option value="di batalkan">Dibatalkan</option>
+                    </select>
                 </div>
             </div>
 
-            <div class="form-group">
-                <label>Lokasi</label>
-                <input type="text" name="lokasi" id="lokasi" placeholder="Contoh: Aula Sekolah">
+            <div class="form-footer">
+                <button type="button" class="btn-cancel-delete" onclick="closeForm()">
+                    <i class="fas fa-times"></i> Batal
+                </button>
+                <button type="submit" class="btn-submit" id="submitBtn">
+                    <i class="fas fa-save"></i> <span id="btnText">Simpan Agenda</span>
+                </button>
             </div>
-
-            <div class="form-group">
-                <label>Keterangan Tambahan</label>
-                <textarea name="keterangan" id="keterangan" rows="4" placeholder="Detail kegiatan..."></textarea>
-            </div>
-
-            <div class="form-group" id="statusGroup" style="display: none;">
-                <label>Status</label>
-                <select name="status" id="status">
-                    <option value="Akan Datang">Akan Datang</option>
-                    <option value="Hari Ini">Hari Ini</option>
-                    <option value="Selesai">Selesai</option>
-                    <option value="Dibatalkan">Dibatalkan</option>
-                </select>
-            </div>
-
-            <button type="submit" class="btn-submit" id="submitBtn">
-                <i class="fas fa-save"></i> <span id="btnText">Simpan Agenda & Jadwal</span>
-            </button>
         </form>
     </div>
 </div>
@@ -809,61 +1096,62 @@ include 'layout/header.php';
 </div>
 
 <script>
-    // ============ PERBAIKAN 15: Fungsi untuk Membuka Form Tambah ============
+    // State untuk menyimpan ID yang akan dihapus
+    let deleteId = null;
+
+    // Standardized Form Functions
     function openAddForm() {
-        document.getElementById('formTitle').innerText = 'Input Agenda Baru';
+        const overlay = document.getElementById('formOverlay');
+        const form = document.getElementById('agendaForm');
+        document.getElementById('formTitle').innerHTML = '<i class="fas fa-calendar-plus"></i> Tambah Agenda Baru';
+        document.getElementById('btnText').innerText = 'Simpan Agenda';
         document.getElementById('formAksi').value = 'tambah';
-        document.getElementById('btnText').innerText = 'Simpan Agenda & Jadwal';
-        document.getElementById('agendaForm').reset();
-        document.getElementById('agendaId').value = '';
         document.getElementById('statusGroup').style.display = 'none';
-        document.getElementById('formOverlay').style.display = 'flex';
+        form.reset();
+        document.getElementById('agendaId').value = '';
+        document.getElementById('imagePreview').style.display = 'none';
+        overlay.style.display = 'flex';
         document.body.style.overflow = 'hidden';
     }
 
-    // ============ PERBAIKAN 16: Fungsi untuk Membuka Form Edit ============
-    function openEditForm(id) {
-        // Tampilkan loading state
-        const btn = event.currentTarget;
-        const originalHtml = btn.innerHTML;
-        btn.innerHTML = '<span class="loading"></span>';
-        btn.disabled = true;
+    function openEditForm(data) {
+        const overlay = document.getElementById('formOverlay');
+        const form = document.getElementById('agendaForm');
+        document.getElementById('formTitle').innerHTML = '<i class="fas fa-edit"></i> Edit Agenda';
+        document.getElementById('btnText').innerText = 'Update Agenda';
+        document.getElementById('formAksi').value = 'edit';
+        document.getElementById('statusGroup').style.display = 'block';
 
-        // Fetch data dari server
-        fetch('get_agenda.php?id=' + id)
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    document.getElementById('formTitle').innerText = 'Edit Agenda';
-                    document.getElementById('formAksi').value = 'edit';
-                    document.getElementById('btnText').innerText = 'Update Agenda';
-                    document.getElementById('agendaId').value = data.data.id;
-                    document.getElementById('judul').value = data.data.judul;
-                    document.getElementById('tanggal').value = data.data.tanggal;
-                    document.getElementById('waktu').value = data.data.waktu;
-                    document.getElementById('lokasi').value = data.data.lokasi;
-                    document.getElementById('keterangan').value = data.data.keterangan;
-                    document.getElementById('status').value = data.data.status;
-                    document.getElementById('statusGroup').style.display = 'block';
-                    document.getElementById('formOverlay').style.display = 'flex';
-                    document.body.style.overflow = 'hidden';
-                } else {
-                    alert('Gagal mengambil data agenda');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Terjadi kesalahan saat mengambil data');
-            })
-            .finally(() => {
-                btn.innerHTML = originalHtml;
-                btn.disabled = false;
-            });
+        document.getElementById('agendaId').value = data.id || '';
+        document.getElementById('judul').value = data.judul || '';
+        document.getElementById('tanggal').value = data.tanggal || '';
+        document.getElementById('waktu').value = data.waktu || '';
+        document.getElementById('lokasi').value = data.lokasi || '';
+        document.getElementById('keterangan').value = data.deskripsi || '';
+        document.getElementById('status').value = data.status || 'akan datang';
+
+        // Preview image if exists
+        const preview = document.getElementById('imagePreview');
+        const previewImg = document.getElementById('previewImg');
+        if (data.foto) {
+            previewImg.src = '../' + data.foto;
+            preview.style.display = 'block';
+        } else {
+            preview.style.display = 'none';
+        }
+
+        overlay.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
     }
 
-    // ============ PERBAIKAN 17: Fungsi untuk Konfirmasi Hapus ============
-    function confirmDelete(id, judul) {
-        document.getElementById('deleteMessage').innerHTML = `Apakah Anda yakin ingin menghapus agenda:<br><strong>"${judul}"</strong>?`;
+    function closeForm() {
+        document.getElementById('formOverlay').style.display = 'none';
+        document.body.style.overflow = '';
+    }
+
+    function showDeleteModal(id, judul) {
+        deleteId = id;
+        document.getElementById('deleteMessage').innerHTML = `Yakin ingin menghapus agenda <strong>"${judul}"</strong>?<br>Tindakan ini tidak dapat dibatalkan.`;
         document.getElementById('deleteConfirmBtn').href = `?aksi=hapus&id=${id}`;
         document.getElementById('deleteOverlay').style.display = 'flex';
         document.body.style.overflow = 'hidden';
@@ -874,38 +1162,27 @@ include 'layout/header.php';
         document.body.style.overflow = '';
     }
 
-    // ============ PERBAIKAN 18: Fungsi untuk Menutup Form ============
-    function closeForm() {
-        document.getElementById('formOverlay').style.display = 'none';
-        document.getElementById('agendaForm').reset();
-        document.getElementById('statusGroup').style.display = 'none';
-        document.body.style.overflow = '';
+    function previewImage(input) {
+        const file = input.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.getElementById('imagePreview');
+                const previewImg = document.getElementById('previewImg');
+                previewImg.src = e.target.result;
+                preview.style.display = 'block';
+            }
+            reader.readAsDataURL(file);
+
+            // Update label
+            const labelArea = document.getElementById('uploadLabelArea');
+            if (labelArea) {
+                labelArea.querySelector('span').innerText = file.name;
+            }
+        }
     }
 
-    // ============ PERBAIKAN 19: Validasi Form Sebelum Submit ============
-    document.getElementById('agendaForm').addEventListener('submit', function(e) {
-        const judul = document.getElementById('judul').value.trim();
-        const tanggal = document.getElementById('tanggal').value;
-
-        if (judul === '') {
-            e.preventDefault();
-            alert('Judul kegiatan harus diisi!');
-            return false;
-        }
-
-        if (tanggal === '') {
-            e.preventDefault();
-            alert('Tanggal pelaksanaan harus diisi!');
-            return false;
-        }
-
-        // Tampilkan loading pada button submit
-        const submitBtn = document.getElementById('submitBtn');
-        submitBtn.innerHTML = '<span class="loading"></span> Menyimpan...';
-        submitBtn.disabled = true;
-    });
-
-    // ============ PERBAIKAN 20: Fungsi Pencarian Real-time ============
+    // REAL TIME SEARCH
     function searchTable() {
         const input = document.getElementById('searchInput');
         const filter = input.value.toUpperCase();
@@ -915,8 +1192,10 @@ include 'layout/header.php';
         for (let i = 1; i < tr.length; i++) {
             let found = false;
             const td = tr[i].getElementsByTagName('td');
+            // Skip "Belum ada agenda" row
+            if (tr[i].cells.length < 2) continue;
 
-            for (let j = 0; j < td.length - 1; j++) { // -1 untuk skip kolom aksi
+            for (let j = 0; j < td.length - 1; j++) {
                 if (td[j]) {
                     const textValue = td[j].textContent || td[j].innerText;
                     if (textValue.toUpperCase().indexOf(filter) > -1) {
@@ -925,44 +1204,28 @@ include 'layout/header.php';
                     }
                 }
             }
-
             tr[i].style.display = found ? '' : 'none';
         }
     }
 
-    // ============ PERBAIKAN 21: Set Tanggal Minimum ============
+    // Initialization
     document.addEventListener('DOMContentLoaded', function() {
-        const today = new Date().toISOString().split('T')[0];
-        const tanggalInput = document.getElementById('tanggal');
-        if (tanggalInput) {
-            tanggalInput.setAttribute('min', today);
+        // Auto-hide alert after 3 seconds
+        const alert = document.querySelector('.alert-msg');
+        if (alert) {
+            setTimeout(() => {
+                alert.style.opacity = '0';
+                alert.style.transform = 'translateY(-20px)';
+                setTimeout(() => alert.remove(), 400);
+            }, 3000);
         }
 
-        // Tutup modal jika klik di luar
+        // Close modal on outside click
         window.onclick = function(event) {
-            const formOverlay = document.getElementById('formOverlay');
-            const deleteOverlay = document.getElementById('deleteOverlay');
-
-            if (event.target == formOverlay) {
-                closeForm();
-            }
-            if (event.target == deleteOverlay) {
-                closeDeleteForm();
-            }
+            if (event.target == document.getElementById('formOverlay')) closeForm();
+            if (event.target == document.getElementById('deleteOverlay')) closeDeleteForm();
         }
     });
-
-    // ============ PERBAIKAN 22: Auto-hide Alert ============
-    setTimeout(function() {
-        const alerts = document.getElementsByClassName('alert-msg');
-        for (let alert of alerts) {
-            alert.style.transition = 'opacity 0.5s ease';
-            alert.style.opacity = '0';
-            setTimeout(() => {
-                alert.style.display = 'none';
-            }, 500);
-        }
-    }, 3000);
 </script>
 
 <?php include 'layout/footer.php'; ?>

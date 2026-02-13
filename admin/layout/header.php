@@ -23,6 +23,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
     <link rel="stylesheet" href="css/admin.css?v=<?= time(); ?>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -46,11 +47,11 @@ $current_page = basename($_SERVER['PHP_SELF']);
             <div class="sidebar-menu">
                 <div class="menu-label">Main Menu</div>
                 <ul>
-                    <li><a href="index.php" class="<?= $current_page == 'index.php' ? 'active' : ''; ?>"><i class="fas fa-th-large"></i> Dashboard</a></li>
-                    <li><a href="berita.php" class="<?= $current_page == 'berita.php' ? 'active' : ''; ?>"><i class="fas fa-rss"></i> Berita & Artikel</a></li>
-                    <li><a href="agenda.php" class="<?= $current_page == 'agenda.php' ? 'active' : ''; ?>"><i class="fas fa-calendar-day"></i> Agenda Sekolah</a></li>
-                    <li><a href="galeri.php" class="<?= $current_page == 'galeri.php' ? 'active' : ''; ?>"><i class="fas fa-camera"></i> Galeri Kegiatan</a></li>
-                    <li><a href="guru.php" class="<?= $current_page == 'guru.php' ? 'active' : ''; ?>"><i class="fas fa-chalkboard-teacher"></i> Data Guru & Staff</a></li>
+                    <li><a href="index.php" class="<?= $current_page == 'index.php' ? 'active' : ''; ?>"><i class="bx bxs-dashboard"></i> Dashboard</a></li>
+                    <li><a href="berita.php" class="<?= $current_page == 'berita.php' ? 'active' : ''; ?>"><i class="bx bxs-news"></i> Berita & Artikel</a></li>
+                    <li><a href="agenda.php" class="<?= $current_page == 'agenda.php' ? 'active' : ''; ?>"><i class="bx bxs-calendar-event"></i> Agenda Sekolah</a></li>
+                    <li><a href="galeri.php" class="<?= $current_page == 'galeri.php' ? 'active' : ''; ?>"><i class="bx bxs-camera"></i> Galeri Kegiatan</a></li>
+                    <li><a href="guru.php" class="<?= $current_page == 'guru.php' ? 'active' : ''; ?>"><i class="bx bxs-user-pin"></i> Data Guru & Staff</a></li>
                 </ul>
 
                 <div class="menu-label">External</div>
@@ -118,9 +119,15 @@ $current_page = basename($_SERVER['PHP_SELF']);
                     const btnCancelLogout = document.getElementById('btnCancelLogout');
 
                     if (logoutBtn && logoutModal && btnCancelLogout) {
-                        logoutBtn.addEventListener('click', function() {
-                            logoutModal.classList.add('active');
-                            document.body.style.overflow = 'hidden';
+                        logoutBtn.addEventListener('click', function(e) {
+                            if (window.innerWidth <= 768) {
+                                // Mobile: Direct logout for faster experience
+                                window.location.href = 'logout.php';
+                            } else {
+                                // Desktop: Show premium modal
+                                logoutModal.classList.add('active');
+                                document.body.style.overflow = 'hidden';
+                            }
                         });
 
                         btnCancelLogout.addEventListener('click', function() {

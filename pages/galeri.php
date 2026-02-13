@@ -11,41 +11,42 @@
     </section>
 
     <section class="gallery-content">
-        <div class="gallery-section">
-            <h2>Kegiatan Sekolah</h2>
-            <div class="gallery-grid">
-                <div class="gallery-item"><img src="../img/galeri/1.jpg" alt="Kegiatan 1"></div>
-                <div class="gallery-item"><img src="../img/galeri/2.jpg" alt="Kegiatan 2"></div>
-                <div class="gallery-item"><img src="../img/galeri/3.jpg" alt="Kegiatan 3"></div>
-                <div class="gallery-item"><img src="../img/galeri/4.jpg" alt="Kegiatan 4"></div>
-                <div class="gallery-item"><img src="../img/galeri/5.jpg" alt="Kegiatan 5"></div>
-                <div class="gallery-item"><img src="../img/galeri/6.jpg" alt="Kegiatan 6"></div>
-                <div class="gallery-item"><img src="../img/galeri/7.jpg" alt="Kegiatan 7"></div>
-                <div class="gallery-item"><img src="../img/galeri/8.jpg" alt="Kegiatan 8"></div>
-            </div>
-        </div>
+        <?php
+        include '../database/conn.php';
+        $categories = [
+            'Kegiatan Sekolah' => 'Kegiatan Sekolah',
+            'Prestasi Siswa' => 'Prestasi Siswa',
+            'Kegiatan Ekskul' => 'Kegiatan Ekskul'
+        ];
 
-        <div class="gallery-section">
-            <h2>Prestasi Siswa</h2>
-            <div class="gallery-grid">
-                <div class="gallery-item"><img src="../img/prestasi/1.jpg" alt="Prestasi 1"></div>
-                <div class="gallery-item"><img src="../img/prestasi/2.jpg" alt="Prestasi 2"></div>
-                <div class="gallery-item"><img src="../img/prestasi/3.jpg" alt="Prestasi 3"></div>
-                <div class="gallery-item"><img src="../img/prestasi/4.jpg" alt="Prestasi 4"></div>
+        foreach ($categories as $key => $title) :
+            $query = mysqli_query($conn, "SELECT * FROM galeri WHERE kategori = '$key' ORDER BY id DESC");
+        ?>
+            <div class="gallery-section">
+                <h2><?= $title ?></h2>
+                <div class="gallery-grid">
+                    <?php if (mysqli_num_rows($query) > 0) : ?>
+                        <?php while ($row = mysqli_fetch_assoc($query)) :
+                            $img_src = (!empty($row['foto']) && file_exists('../' . $row['foto'])) ? '../' . $row['foto'] : 'assets/img/no-image.jpg';
+                        ?>
+                            <div class="gallery-item">
+                                <img src="<?= $img_src ?>" alt="<?= htmlspecialchars($row['judul']) ?>">
+                                <div class="gallery-overlay">
+                                    <div class="overlay-content">
+                                        <p class="overlay-title"><?= htmlspecialchars($row['judul']) ?></p>
+                                        <?php if (!empty($row['deskripsi'])) : ?>
+                                            <p class="overlay-desc"><?= htmlspecialchars($row['deskripsi']) ?></p>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endwhile; ?>
+                    <?php else : ?>
+                        <p style="grid-column: 1/-1; text-align: center; color: var(--gray); padding: 50px 0;">Belum ada foto untuk kategori ini.</p>
+                    <?php endif; ?>
+                </div>
             </div>
-        </div>
-
-        <div class="gallery-section">
-            <h2>Kegiatan Ekskul</h2>
-            <div class="gallery-grid">
-                <div class="gallery-item"><img src="../img/ekskul/1.jpg" alt="Ekskul 1"></div>
-                <div class="gallery-item"><img src="../img/ekskul/2.jpg" alt="Ekskul 2"></div>
-                <div class="gallery-item"><img src="../img/ekskul/3.jpg" alt="Ekskul 3"></div>
-                <div class="gallery-item"><img src="../img/ekskul/4.jpg" alt="Ekskul 4"></div>
-                <div class="gallery-item"><img src="../img/ekskul/5.jpg" alt="Ekskul 5"></div>
-                <div class="gallery-item"><img src="../img/ekskul/6.jpg" alt="Ekskul 6"></div>
-            </div>
-        </div>
+        <?php endforeach; ?>
     </section>
 
     <?php include 'footer.php'; ?>

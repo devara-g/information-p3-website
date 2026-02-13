@@ -184,8 +184,57 @@ include 'layout/header.php';
 
 <style>
     /* Internal CSS for Berita Management */
+    /* Custom Scrollbar for Main Page & Content */
+    html {
+        overflow-y: scroll;
+        scrollbar-gutter: stable;
+    }
+
+    ::-webkit-scrollbar {
+        width: 12px;
+        height: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: #f1f5f9;
+        border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background-color: #94a3b8;
+        border-radius: 20px;
+        border: 3px solid #f1f5f9;
+        /* Makes the thumb look thinner */
+        transition: 0.3s;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background-color: #64748b;
+    }
+
+    /* Target the table horizontal scroll specifically */
+    .table-card div::-webkit-scrollbar {
+        height: 8px;
+    }
+
+    /* Distinct scrollbar for Form Body to differentiate from page scroll */
+    .form-body::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .form-body::-webkit-scrollbar-track {
+        background: #f8fafc;
+    }
+
+    .form-body::-webkit-scrollbar-thumb {
+        background-color: #cbd5e0;
+        border-radius: 10px;
+        border: 2px solid #f8fafc;
+    }
+
     .berita-container {
         padding: 20px;
+        min-height: calc(100vh - 100px);
     }
 
     .header-panel {
@@ -416,53 +465,95 @@ include 'layout/header.php';
     .form-card {
         background: white;
         width: 100%;
-        max-width: 700px;
+        max-width: 550px;
         border-radius: 20px;
-        padding: 40px;
+        padding: 0;
         position: relative;
         box-shadow: 0 25px 70px rgba(0, 0, 0, 0.15);
-        animation: formSlideUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        animation: modalBounce 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
         max-height: 90vh;
-        overflow-y: auto;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
     }
 
-    @keyframes formSlideUp {
+    @keyframes modalBounce {
         from {
             opacity: 0;
-            transform: translateY(30px);
+            transform: scale(0.9) translateY(30px);
         }
 
         to {
             opacity: 1;
-            transform: translateY(0);
+            transform: scale(1) translateY(0);
         }
     }
 
-    .form-card h2 {
-        margin-bottom: 25px;
+    .form-header {
+        padding: 25px 30px;
+        background: #f8fafc;
+        border-bottom: 1px solid #e2e8f0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .form-header h2 {
+        margin: 0;
         color: var(--primary);
         font-weight: 800;
-        font-size: 1.8rem;
-        border-bottom: 3px solid var(--accent);
-        display: inline-block;
-        padding-bottom: 5px;
+        font-size: 1.4rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .form-header h2 i {
+        width: 38px;
+        height: 38px;
+        background: rgba(11, 45, 114, 0.1);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
     }
 
     .close-form {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        font-size: 1.5rem;
+        font-size: 1.2rem;
         cursor: pointer;
         color: #999;
         transition: 0.3s;
-        width: 40px;
-        height: 40px;
+        width: 32px;
+        height: 32px;
         display: flex;
         align-items: center;
         justify-content: center;
         border-radius: 50%;
-        background: #f5f5f5;
+        background: white;
+        border: 1px solid #e2e8f0;
+    }
+
+    .close-form:hover {
+        color: #ef4444;
+        transform: rotate(90deg);
+        background: #fee2e2;
+        border-color: #fecaca;
+    }
+
+    .form-body {
+        padding: 25px 30px;
+        overflow-y: auto;
+        flex: 1;
+    }
+
+    .form-footer {
+        padding: 20px 30px;
+        background: #f8fafc;
+        border-top: 1px solid #e2e8f0;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
     }
 
     .close-form:hover {
@@ -557,26 +648,22 @@ include 'layout/header.php';
         background: linear-gradient(135deg, #0b2d72 0%, #0992c2 100%);
         color: white;
         border: none;
-        padding: 14px;
-        width: 100%;
-        border-radius: 12px;
+        padding: 12px 25px;
+        border-radius: 10px;
         font-weight: 700;
-        font-size: 1rem;
+        font-size: 0.95rem;
         cursor: pointer;
-        margin-top: 20px;
         display: flex;
         align-items: center;
         justify-content: center;
         gap: 10px;
-        box-shadow: 0 10px 25px rgba(11, 45, 114, 0.2);
+        box-shadow: 0 8px 15px rgba(11, 45, 114, 0.15);
         transition: all 0.3s ease;
-        letter-spacing: 0.5px;
     }
 
     .btn-submit:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 15px 35px rgba(11, 45, 114, 0.3);
-        filter: brightness(1.1);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(11, 45, 114, 0.25);
     }
 
     .btn-submit:active {
@@ -652,22 +739,28 @@ include 'layout/header.php';
         flex-wrap: wrap;
     }
 
-    .delete-confirm-btns .btn-cancel-delete {
-        padding: 12px 24px;
+    .btn-cancel-delete {
+        padding: 11px 25px;
         border-radius: 12px;
         font-weight: 600;
-        font-size: 0.95rem;
+        font-size: 0.9rem;
         cursor: pointer;
-        transition: all 0.3s ease;
-        border: 2px solid #e2e8f0;
-        background: white;
-        color: #64748b;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: none;
+        background: #f1f5f9;
+        color: #475569;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        letter-spacing: 0.3px;
+        text-decoration: none;
     }
 
-    .delete-confirm-btns .btn-cancel-delete:hover {
-        background: #f1f5f9;
-        border-color: #cbd5e1;
-        color: #475569;
+    .btn-cancel-delete:hover {
+        background: #e2e8f0;
+        color: #0f172a;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     }
 
     .delete-confirm-btns .btn-confirm-delete {
@@ -717,16 +810,16 @@ include 'layout/header.php';
 
         .form-overlay,
         .delete-confirm-overlay {
-            align-items: flex-start;
-            padding-top: 40px;
-            padding-bottom: 40px;
+            align-items: center;
+            padding: 20px;
         }
 
         .form-card {
             width: 95%;
             padding: 25px 20px;
-            max-height: none;
-            margin-bottom: 20px;
+            max-height: 90vh;
+            overflow-y: auto;
+            margin-bottom: 0;
         }
 
         .form-card h2 {
@@ -778,13 +871,13 @@ include 'layout/header.php';
         </div>
     <?php endif; ?>
 
-    <div class="header-panel stagger-item stagger-1">
+    <div class="header-panel">
         <div>
             <h1>Manajemen Berita</h1>
-            <p style="color: var(--gray);">Tampilkan dan kelola semua artikel berita sekolah.</p>
+            <p style="color: var(--gray);">Kelola artikel, pengumuman, dan berita terbaru sekolah.</p>
         </div>
-        <button class="btn-add" onclick="toggleForm('add')">
-            <i class="fas fa-plus"></i> Tambah Berita
+        <button class="btn-add" onclick="openAddForm()">
+            <i class="fas fa-plus"></i> Berita Baru
         </button>
     </div>
 
@@ -842,10 +935,12 @@ include 'layout/header.php';
                                 <td><?= htmlspecialchars($row['penulis']) ?></td>
                                 <td>
                                     <div class="action-btns">
-                                        <button class="btn-action btn-edit" onclick="editNews(<?= $row['id'] ?>)">
+                                        <button class="btn-action btn-edit" title="Edit"
+                                            onclick="openEditForm(<?= htmlspecialchars(json_encode($row)) ?>)">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <button class="btn-action btn-delete" onclick="showDeleteAlert(<?= $row['id'] ?>, '<?= htmlspecialchars(addslashes($row['judul'])) ?>')">
+                                        <button class="btn-action btn-delete" title="Hapus"
+                                            onclick="showDeleteAlert(<?= $row['id'] ?>, '<?= htmlspecialchars(addslashes($row['judul'])) ?>')">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </div>
@@ -859,7 +954,7 @@ include 'layout/header.php';
                             <td colspan="6" style="text-align: center; padding: 40px;">
                                 <i class="fas fa-newspaper" style="font-size: 48px; color: #ccc; margin-bottom: 15px;"></i>
                                 <p style="color: #999; font-size: 1.1rem;">Belum ada berita</p>
-                                <button onclick="toggleForm('add')" style="background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 8px; margin-top: 10px; cursor: pointer;">
+                                <button onclick="openAddForm()" style="background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 8px; margin-top: 10px; cursor: pointer;">
                                     <i class="fas fa-plus"></i> Tambah Berita Sekarang
                                 </button>
                             </td>
@@ -874,64 +969,67 @@ include 'layout/header.php';
 <!-- Modal Form for Add/Edit -->
 <div class="form-overlay" id="formOverlay">
     <div class="form-card">
-        <i class="fas fa-times close-form" onclick="toggleForm('close')"></i>
-        <h2 id="formTitle">Tambah Berita Baru</h2>
-        <form id="beritaForm" action="berita.php" method="POST" enctype="multipart/form-data">
-            <input type="hidden" name="id" id="beritaId">
+        <div class="form-header">
+            <h2 id="formTitle"><i class="fas fa-newspaper"></i> Tambah Berita</h2>
+            <div class="close-form" onclick="closeForm()"><i class="fas fa-times"></i></div>
+        </div>
+        <form id="beritaForm" action="" method="POST" enctype="multipart/form-data" style="display: contents;">
+            <div class="form-body">
+                <input type="hidden" name="id" id="beritaId">
 
-            <div class="form-group">
-                <label><i class="fas fa-heading"></i> Judul Berita</label>
-                <input type="text" name="judul" id="judul" required placeholder="Masukkan judul artikel">
-            </div>
-
-            <div class="grid-2">
                 <div class="form-group">
-                    <label><i class="fas fa-tag"></i> Kategori</label>
-                    <select name="kategori" id="kategori" required>
-                        <option value="">Pilih Kategori</option>
-                        <option value="kegiatan">Kegiatan</option>
-                        <option value="pengumuman">Pengumuman</option>
-                        <option value="prestasi">Prestasi</option>
-                    </select>
+                    <label>Judul Berita <span style="color: red;">*</span></label>
+                    <input type="text" name="judul" id="judul" required placeholder="Contoh: Kunjungan Industri 2024">
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Kategori <span style="color: red;">*</span></label>
+                        <select name="kategori" id="kategori" required>
+                            <option value="Pengumuman">Pengumuman</option>
+                            <option value="Prestasi">Prestasi</option>
+                            <option value="Kegiatan">Kegiatan</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Tanggal Publish <span style="color: red;">*</span></label>
+                        <input type="date" name="tanggal" id="tanggal" required value="<?= date('Y-m-d') ?>">
+                    </div>
                 </div>
 
                 <div class="form-group">
-                    <label><i class="fas fa-calendar"></i> Tanggal</label>
-                    <input type="date" name="tanggal" id="tanggal" value="<?= date('Y-m-d') ?>" required>
-                </div>
-            </div>
-
-            <div class="grid-2">
-                <div class="form-group">
-                    <label><i class="fas fa-user"></i> Penulis</label>
-                    <input type="text" name="penulis" id="penulis" required placeholder="Nama penulis">
+                    <label>Penulis/Sumber</label>
+                    <input type="text" name="penulis" id="penulis" placeholder="Contoh: Admin / Kesiswaan">
                 </div>
 
                 <div class="form-group">
-                    <label><i class="fas fa-image"></i> Upload Gambar</label>
+                    <label>Konten Berita <span style="color: red;">*</span></label>
+                    <textarea name="deskripsi" id="deskripsi" rows="6" required placeholder="Tuliskan isi berita di sini..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Foto Berita</label>
                     <div class="file-upload-wrapper">
-                        <input type="file" name="foto" class="file-upload-input" id="fotoInput" accept="image/*">
+                        <input type="file" name="foto" id="fotoInput" class="file-upload-input" onchange="previewFile(this)">
                         <div class="file-upload-label">
                             <i class="fas fa-cloud-upload-alt"></i>
-                            <span>Klik atau seret gambar ke sini</span>
-                            <span class="file-name" id="fileName"></span>
-                            <small style="margin-top: 8px; color: #666;">Format: JPG, PNG, GIF (Max. 5MB)</small>
+                            <span>Pilih foto atau tarik ke sini</span>
+                            <p style="font-size: 0.8rem; margin-top: 5px;">Foto landscape disarankan (Maks. 5MB)</p>
                         </div>
                     </div>
-                    <div class="image-preview" id="imagePreview">
-                        <img src="" alt="Preview">
+                    <div id="fileNameDisplay" class="file-name"></div>
+                    <div id="imagePreview" class="image-preview">
+                        <img src="" id="previewImg" alt="Preview">
                     </div>
                 </div>
             </div>
 
-            <div class="form-group">
-                <label><i class="fas fa-align-left"></i> Isi Berita</label>
-                <textarea name="deskripsi" id="deskripsi" rows="8" required placeholder="Tulis isi berita di sini..."></textarea>
-            </div>
-
-            <div id="formActions">
+            <div class="form-footer">
+                <button type="button" class="btn-cancel-delete" onclick="closeForm()">
+                    <i class="fas fa-times"></i> Batal
+                </button>
                 <button type="submit" name="submit" id="submitBtn" class="btn-submit">
-                    <i class="fas fa-save"></i> Simpan & Publikasikan Berita
+                    <i class="fas fa-save"></i> <span id="btnText">Publish Berita</span>
                 </button>
             </div>
         </form>
@@ -959,64 +1057,70 @@ include 'layout/header.php';
     // State untuk menyimpan ID yang akan dihapus
     let deleteId = null;
 
-    // Toggle Form Modal
-    function toggleForm(type, data = null) {
+    // Standardized Form Functions
+    function openAddForm() {
         const overlay = document.getElementById('formOverlay');
         const form = document.getElementById('beritaForm');
-        const title = document.getElementById('formTitle');
-        const submitBtn = document.getElementById('submitBtn');
+        document.getElementById('formTitle').innerHTML = '<i class="fas fa-newspaper"></i> Tambah Berita Baru';
+        document.getElementById('btnText').innerText = 'Publish Berita';
+        document.getElementById('submitBtn').name = 'submit';
+        form.reset();
+        document.getElementById('beritaId').value = '';
+        document.getElementById('imagePreview').style.display = 'none';
+        document.getElementById('fileNameDisplay').innerText = '';
+        overlay.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
 
-        if (type === 'close' || (type !== 'add' && type !== 'edit' && overlay.style.display === 'flex')) {
-            overlay.style.display = 'none';
-            document.body.style.overflow = ''; // Unlock background scroll
-            form.reset();
-            const preview = document.getElementById('imagePreview');
-            if (preview) preview.style.display = 'none';
-            const fileName = document.getElementById('fileName');
-            if (fileName) fileName.innerHTML = '';
+    function openEditForm(data) {
+        const overlay = document.getElementById('formOverlay');
+        const form = document.getElementById('beritaForm');
+        document.getElementById('formTitle').innerHTML = '<i class="fas fa-edit"></i> Edit Berita';
+        document.getElementById('btnText').innerText = 'Update Berita';
+        document.getElementById('submitBtn').name = 'edit';
 
-            // If it was an edit from URL, clear it
-            if (window.location.search.includes('edit_id')) {
-                window.history.replaceState({}, document.title, window.location.pathname);
-            }
-            return;
+        document.getElementById('beritaId').value = data.id || '';
+        document.getElementById('judul').value = data.judul || '';
+        document.getElementById('kategori').value = data.kategori || '';
+        document.getElementById('tanggal').value = data.tanggal || '';
+        document.getElementById('penulis').value = data.penulis || '';
+        document.getElementById('deskripsi').value = data.deskripsi || '';
+
+        // Preview image if exists
+        const preview = document.getElementById('imagePreview');
+        const previewImg = document.getElementById('previewImg');
+        if (data.foto) {
+            previewImg.src = '../' + data.foto;
+            preview.style.display = 'block';
+        } else {
+            preview.style.display = 'none';
         }
 
         overlay.style.display = 'flex';
-        document.body.style.overflow = 'hidden'; // Lock background scroll
+        document.body.style.overflow = 'hidden';
+    }
 
-        if (type === 'add') {
-            title.innerHTML = 'Tambah Berita Baru';
-            form.action = 'berita.php';
-            submitBtn.name = 'submit';
-            submitBtn.innerHTML = '<i class="fas fa-save"></i> Simpan & Publikasikan Berita';
-            form.reset();
-            document.getElementById('beritaId').value = '';
-            const preview = document.getElementById('imagePreview');
-            if (preview) preview.style.display = 'none';
-        } else if (type === 'edit') {
-            title.innerHTML = 'Edit Berita';
-            form.action = 'berita.php';
-            submitBtn.name = 'edit';
-            submitBtn.innerHTML = '<i class="fas fa-edit"></i> Update Berita';
+    function closeForm() {
+        document.getElementById('formOverlay').style.display = 'none';
+        document.body.style.overflow = '';
+        // If it was an edit from URL, clear it to clean the state
+        if (window.location.search.includes('edit_id')) {
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+    }
 
-            // Isi form dengan data yang ada
-            if (data) {
-                document.getElementById('beritaId').value = data.id || '';
-                document.getElementById('judul').value = data.judul || '';
-                document.getElementById('kategori').value = data.kategori || '';
-                document.getElementById('tanggal').value = data.tanggal || '';
-                document.getElementById('penulis').value = data.penulis || '';
-                document.getElementById('deskripsi').value = data.deskripsi || '';
-
-                // Tampilkan preview gambar jika ada
-                if (data.foto) {
-                    const preview = document.getElementById('imagePreview');
-                    const previewImg = preview.querySelector('img');
-                    previewImg.src = '../' + data.foto;
-                    preview.style.display = 'block';
-                }
+    function previewFile(input) {
+        const file = input.files[0];
+        if (file) {
+            document.getElementById('fileNameDisplay').innerText = file.name;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.getElementById('imagePreview');
+                const previewImg = document.getElementById('previewImg');
+                previewImg.src = e.target.result;
+                preview.style.display = 'block';
             }
+            reader.readAsDataURL(file);
         }
     }
 
@@ -1037,10 +1141,10 @@ include 'layout/header.php';
     });
 
     // Edit news - Fetch data via AJAX
-    function editNews(id) {
-        // Redirect ke halaman yang sama dengan parameter edit_id
-        window.location.href = 'berita.php?edit_id=' + id;
-    }
+    // function editNews(id) {
+    //     // Redirect ke halaman yang sama dengan parameter edit_id
+    //     window.location.href = 'berita.php?edit_id=' + id;
+    // }
 
     // Show custom delete alert
     function showDeleteAlert(id, judul) {
@@ -1064,24 +1168,6 @@ include 'layout/header.php';
         }
     });
 
-    // Show file name when selected
-    document.getElementById('fotoInput')?.addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        const fileName = file?.name;
-        document.getElementById('fileName').innerHTML = fileName || '';
-
-        // Preview image
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const preview = document.getElementById('imagePreview');
-                const previewImg = preview.querySelector('img');
-                previewImg.src = e.target.result;
-                preview.style.display = 'block';
-            }
-            reader.readAsDataURL(file);
-        }
-    });
 
     // Search functionality - REAL TIME
     document.getElementById('searchInput')?.addEventListener('keyup', function() {
@@ -1146,15 +1232,15 @@ include 'layout/header.php';
 
     // Show form if there are validation errors
     <?php if (isset($error)): ?>
-        toggleForm('add');
+        openAddForm();
     <?php endif; ?>
 
-    // Show edit form if edit_id is set
-    <?php if ($edit_data): ?>
-        window.onload = function() {
-            toggleForm('edit', <?= json_encode($edit_data) ?>);
-        }
-    <?php endif; ?>
+    // Open edit from URL if parameter exists
+    document.addEventListener('DOMContentLoaded', function() {
+        <?php if ($edit_data): ?>
+            openEditForm(<?= json_encode($edit_data) ?>);
+        <?php endif; ?>
+    });
 </script>
 
 <?php include 'layout/footer.php'; ?>

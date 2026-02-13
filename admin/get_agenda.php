@@ -22,7 +22,8 @@ if (isset($_GET['id'])) {
                 'waktu' => $data['waktu'],
                 'lokasi' => $data['lokasi'],
                 'keterangan' => $data['deskripsi'], // Note: column name is deskripsi in DB
-                'status' => $data['status']
+                'status' => $data['status'],
+                'foto' => $data['foto']
             ]
         ]);
     } else {
@@ -32,3 +33,4 @@ if (isset($_GET['id'])) {
 } else {
     echo json_encode(['success' => false, 'message' => 'ID tidak diberikan']);
 }
+?>

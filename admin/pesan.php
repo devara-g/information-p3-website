@@ -812,16 +812,27 @@ include 'layout/header.php';
     }
 
     #editModal .btn-close-text {
-        border: 2px solid #e2e8f0;
-        color: #64748b;
-        background: white;
-        transition: all 0.3s ease;
+        padding: 11px 25px;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: none;
+        background: #f1f5f9;
+        color: #475569;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        letter-spacing: 0.3px;
+        text-decoration: none;
     }
 
     #editModal .btn-close-text:hover {
-        background: #f1f5f9;
-        border-color: #cbd5e1;
-        color: #475569;
+        background: #e2e8f0;
+        color: #0f172a;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     }
 
     #editModal .btn-submit {
@@ -918,21 +929,27 @@ include 'layout/header.php';
     }
 
     .delete-confirm-btns .btn-cancel-delete {
-        padding: 12px 24px;
+        padding: 11px 25px;
         border-radius: 12px;
         font-weight: 600;
-        font-size: 0.95rem;
+        font-size: 0.9rem;
         cursor: pointer;
-        transition: all 0.3s ease;
-        border: 2px solid #e2e8f0;
-        background: white;
-        color: #64748b;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: none;
+        background: #f1f5f9;
+        color: #475569;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        letter-spacing: 0.3px;
+        text-decoration: none;
     }
 
     .delete-confirm-btns .btn-cancel-delete:hover {
-        background: #f1f5f9;
-        border-color: #cbd5e1;
-        color: #475569;
+        background: #e2e8f0;
+        color: #0f172a;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     }
 
     .delete-confirm-btns .btn-confirm-delete {
@@ -1034,7 +1051,7 @@ include 'layout/header.php';
                         <th style="width: 50px;">Status</th>
                         <th>Pengirim</th>
                         <th>Subjek</th>
-                        <th>Pesan</th>
+                        <th>Waktu</th>
                         <th style="text-align: right;">Aksi</th>
                     </tr>
                 </thead>
@@ -1061,13 +1078,28 @@ include 'layout/header.php';
                             <td>
                                 <div class="msg-subject"><?php echo $row['subjek']; ?></div>
                             </td>
-                            <td style="font-size: 0.85rem; color: #64748b;">
-                                <?php echo $row['pesan']; ?></td>
+                            <td style="font-size: 0.85rem; color: #94a3b8; white-space: nowrap;">
+                                <i class="far fa-clock" style="margin-right: 5px;"></i>
+                                <?= date('d M Y, H:i', strtotime($row['created_at'])) ?>
+                            </td>
                             <td style="text-align: right;">
-                                <button class="btn-action btn-view" data-id="<?= (int)($row['id'] ?? 0) ?>" data-nama="<?= htmlspecialchars($row['nama']) ?>" data-email="<?= htmlspecialchars($row['email']) ?>" data-subjek="<?= htmlspecialchars($row['subjek']) ?>" data-pesan="<?= htmlspecialchars($row['pesan']) ?>" onclick="openMessage(this)">
+                                <button class="btn-action btn-view"
+                                    data-id="<?= (int)($row['id'] ?? 0) ?>"
+                                    data-nama="<?= htmlspecialchars($row['nama']) ?>"
+                                    data-email="<?= htmlspecialchars($row['email']) ?>"
+                                    data-subjek="<?= htmlspecialchars($row['subjek']) ?>"
+                                    data-pesan="<?= htmlspecialchars($row['pesan']) ?>"
+                                    data-date="<?= date('d M Y, H:i', strtotime($row['created_at'])) ?>"
+                                    onclick="openMessage(this)">
                                     <i class="fas fa-eye"></i>
                                 </button>
-                                <button class="btn-action btn-edit" data-id="<?= (int)($row['id'] ?? 0) ?>" data-nama="<?= htmlspecialchars($row['nama']) ?>" data-email="<?= htmlspecialchars($row['email']) ?>" data-subjek="<?= htmlspecialchars($row['subjek']) ?>" data-pesan="<?= htmlspecialchars($row['pesan']) ?>" onclick="openEdit(this)">
+                                <button class="btn-action btn-edit"
+                                    data-id="<?= (int)($row['id'] ?? 0) ?>"
+                                    data-nama="<?= htmlspecialchars($row['nama']) ?>"
+                                    data-email="<?= htmlspecialchars($row['email']) ?>"
+                                    data-subjek="<?= htmlspecialchars($row['subjek']) ?>"
+                                    data-pesan="<?= htmlspecialchars($row['pesan']) ?>"
+                                    onclick="openEdit(this)">
                                     <i class="fas fa-edit"></i>
                                 </button>
                                 <button type="button" class="btn-action btn-delete" data-delete-url="?aksi=hapus&id=<?= (int)($row['id'] ?? 0) ?>" onclick="openDeleteConfirm(this)">
@@ -1122,7 +1154,9 @@ include 'layout/header.php';
         <h3>Hapus Pesan?</h3>
         <p>Yakin ingin menghapus pesan ini? Tindakan ini tidak dapat dibatalkan.</p>
         <div class="delete-confirm-btns">
-            <button type="button" class="btn-cancel-delete" onclick="closeDeleteConfirm()">Batal</button>
+            <button type="button" class="btn-cancel-delete" onclick="closeDeleteConfirm()">
+                <i class="fas fa-times"></i> Batal
+            </button>
             <a href="#" class="btn-confirm-delete" id="confirmDeleteBtn">
                 <i class="fas fa-trash"></i> Hapus
             </a>
@@ -1158,7 +1192,9 @@ include 'layout/header.php';
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn-close-text" onclick="closeEdit()">Batal</button>
+                <button type="button" class="btn-close-text" onclick="closeEdit()">
+                    <i class="fas fa-times"></i> Batal
+                </button>
                 <button type="submit" name="edit_pesan" class="btn-submit" style="margin: 0 0 0 15px;">
                     <i class="fas fa-save"></i> Simpan Perubahan
                 </button>
@@ -1176,7 +1212,7 @@ include 'layout/header.php';
         document.getElementById('modalEmail').style.cssText = 'font-size: 0.9rem; color: #60a5fa !important; font-weight: 500; margin-top: 4px;';
         document.getElementById('modalSubject').innerText = d.subjek || 'Detail Pesan';
         document.getElementById('modalContent').innerText = d.pesan || '';
-        document.getElementById('modalDate').innerText = "Recent";
+        document.getElementById('modalDate').innerText = d.date || '-';
         document.getElementById('markReadBtn').href = id ? '?aksi=baca&id=' + id : '#';
         document.getElementById('msgModal').style.display = 'flex';
         document.body.style.overflow = 'hidden';

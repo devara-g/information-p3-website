@@ -279,8 +279,202 @@ include 'header.php'; ?>
         box-shadow: 0 12px 35px rgba(11, 45, 114, 0.45);
     }
 </style>
+<!-- Recent Feedback Section -->
+<section class="feedback-section" data-aos="fade-up">
+    <div class="container">
+        <div class="section-title-wrapper" style="text-align: center; margin-bottom: 40px;">
+            <span class="section-badge" style="background: rgba(11, 45, 114, 0.1); color: var(--primary); padding: 8px 20px; border-radius: 50px; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 2px;">Suara Pengunjung</span>
+            <h2 style="font-size: 2.5rem; color: var(--primary); font-weight: 800; margin-top: 15px;">Pesan Terbaru</h2>
+            <p style="color: #64748b; max-width: 600px; margin: 10px auto;">Apa yang mereka katakan tentang SMP PGRI 3 BOGOR.</p>
+        </div>
 
+        <div class="feedback-ticker-container">
+            <div class="feedback-ticker-wrapper">
+                <div class="feedback-ticker-track">
+                    <?php
+                    $q_feedback = mysqli_query($conn, "SELECT nama, pesan, created_at FROM pesan ORDER BY id DESC LIMIT 15");
+                    if (mysqli_num_rows($q_feedback) > 0) {
+                        // Loop twice for seamless infinite scroll
+                        $feedbacks = [];
+                        while ($fb = mysqli_fetch_assoc($q_feedback)) {
+                            $feedbacks[] = $fb;
+                        }
 
+                        // Output messages twice to create infinite loop effect
+                        for ($i = 0; $i < 2; $i++) {
+                            foreach ($feedbacks as $fb) {
+                    ?>
+                                <div class="feedback-item">
+                                    <div class="feedback-header">
+                                        <div class="user-avatar-mini">
+                                            <i class="fas fa-user-circle"></i>
+                                        </div>
+                                        <div class="user-meta">
+                                            <h4><?= htmlspecialchars($fb['nama']) ?></h4>
+                                            <span><?= date('d M Y', strtotime($fb['created_at'])) ?></span>
+                                        </div>
+                                        <div class="quote-icon">
+                                            <i class="fas fa-quote-right"></i>
+                                        </div>
+                                    </div>
+                                    <div class="feedback-body">
+                                        <p>"<?= htmlspecialchars(substr($fb['pesan'], 0, 150)) ?><?= strlen($fb['pesan']) > 150 ? '...' : '' ?>"</p>
+                                    </div>
+                                </div>
+                    <?php
+                            }
+                        }
+                    } else {
+                        echo '<p style="text-align:center; color:#94a3b8; padding: 40px;">Belum ada pesan terbaru.</p>';
+                    }
+                    ?>
+                </div>
+            </div>
+
+            <!-- Gradient Overlays for better depth -->
+            <div class="ticker-overlay-top"></div>
+            <div class="ticker-overlay-bottom"></div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .feedback-section {
+        padding: 80px 0;
+        background: radial-gradient(circle at 50% 50%, #f1f5f9 0%, #ffffff 100%);
+        overflow: hidden;
+    }
+
+    .feedback-ticker-container {
+        position: relative;
+        max-width: 800px;
+        margin: 0 auto;
+        height: 500px;
+        /* Fixed height for scroll */
+        background: white;
+        border-radius: 30px;
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.05);
+        border: 1px solid rgba(226, 232, 240, 0.8);
+        overflow: hidden;
+    }
+
+    .feedback-ticker-wrapper {
+        padding: 40px;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .feedback-ticker-track {
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+        animation: tickerScroll 40s linear infinite;
+    }
+
+    .feedback-ticker-track:hover {
+        animation-play-state: paused;
+    }
+
+    @keyframes tickerScroll {
+        0% {
+            transform: translateY(0);
+        }
+
+        100% {
+            transform: translateY(-50%);
+        }
+
+        /* Scroll through the first set */
+    }
+
+    .feedback-item {
+        background: #f8fafc;
+        padding: 25px;
+        border-radius: 20px;
+        border: 1px solid #e2e8f0;
+        transition: all 0.3s ease;
+    }
+
+    .feedback-item:hover {
+        transform: scale(1.02);
+        background: white;
+        box-shadow: 0 15px 30px rgba(11, 45, 114, 0.05);
+        border-color: #3b82f6;
+    }
+
+    .feedback-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 15px;
+        position: relative;
+    }
+
+    .user-avatar-mini {
+        font-size: 2.2rem;
+        color: #3b82f6;
+        opacity: 0.8;
+    }
+
+    .user-meta h4 {
+        font-size: 1rem;
+        color: var(--primary);
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .user-meta span {
+        font-size: 0.75rem;
+        color: #94a3b8;
+        font-weight: 500;
+    }
+
+    .quote-icon {
+        margin-left: auto;
+        font-size: 1.2rem;
+        color: rgba(59, 130, 246, 0.15);
+    }
+
+    .feedback-body p {
+        color: #475569;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        font-style: italic;
+        margin: 0;
+    }
+
+    /* Gradients for smooth fade */
+    .ticker-overlay-top,
+    .ticker-overlay-bottom {
+        position: absolute;
+        left: 0;
+        right: 0;
+        height: 80px;
+        pointer-events: none;
+        z-index: 5;
+    }
+
+    .ticker-overlay-top {
+        top: 0;
+        background: linear-gradient(to bottom, white 0%, transparent 100%);
+    }
+
+    .ticker-overlay-bottom {
+        bottom: 0;
+        background: linear-gradient(to top, white 0%, transparent 100%);
+    }
+
+    @media (max-width: 768px) {
+        .feedback-ticker-container {
+            height: 400px;
+            margin: 0 20px;
+        }
+
+        .feedback-ticker-wrapper {
+            padding: 20px;
+        }
+    }
+</style>
 
 <section class="map-section">
     <div class="map-wrapper" data-delay="0.5s">
