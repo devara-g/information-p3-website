@@ -182,692 +182,47 @@ $title = "Manajemen Berita";
 include 'layout/header.php';
 ?>
 
-<style>
-    /* Internal CSS for Berita Management */
-    /* Custom Scrollbar for Main Page & Content */
-    html {
-        overflow-y: scroll;
-        scrollbar-gutter: stable;
-    }
 
-    ::-webkit-scrollbar {
-        width: 12px;
-        height: 10px;
-    }
 
-    ::-webkit-scrollbar-track {
-        background: #f1f5f9;
-        border-radius: 10px;
-    }
-
-    ::-webkit-scrollbar-thumb {
-        background-color: #94a3b8;
-        border-radius: 20px;
-        border: 3px solid #f1f5f9;
-        /* Makes the thumb look thinner */
-        transition: 0.3s;
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-        background-color: #64748b;
-    }
-
-    /* Target the table horizontal scroll specifically */
-    .table-card div::-webkit-scrollbar {
-        height: 8px;
-    }
-
-    /* Distinct scrollbar for Form Body to differentiate from page scroll */
-    .form-body::-webkit-scrollbar {
-        width: 8px;
-    }
-
-    .form-body::-webkit-scrollbar-track {
-        background: #f8fafc;
-    }
-
-    .form-body::-webkit-scrollbar-thumb {
-        background-color: #cbd5e0;
-        border-radius: 10px;
-        border: 2px solid #f8fafc;
-    }
-
-    .berita-container {
-        padding: 20px;
-        min-height: calc(100vh - 100px);
-    }
-
-    .header-panel {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        background: white;
-        padding: 20px;
-        border-radius: 12px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-        margin-bottom: 25px;
-    }
-
-    .header-panel h1 {
-        font-size: 1.8rem;
-        color: var(--primary);
-        margin: 0;
-    }
-
-    .btn-add {
-        background: var(--primary);
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 8px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-weight: 600;
-        transition: 0.3s;
-    }
-
-    .btn-add:hover {
-        background: var(--primary-dark);
-        transform: translateY(-2px);
-    }
-
-    .table-card {
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-        overflow: hidden;
-    }
-
-    .table-header {
-        padding: 20px;
-        border-bottom: 1px solid #f0f0f0;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .table-header h3 {
-        margin: 0;
-        color: var(--dark);
-    }
-
-    .search-input {
-        padding: 8px 15px;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        width: 250px;
-        outline: none;
-    }
-
-    .search-input:focus {
-        border-color: var(--primary);
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        min-width: 800px;
-    }
-
-    th {
-        background: #f8fafc;
-        padding: 15px 20px;
-        text-align: left;
-        color: var(--gray);
-        font-weight: 600;
-        font-size: 0.9rem;
-    }
-
-    td {
-        padding: 15px 20px;
-        border-bottom: 1px solid #f1f5f9;
-        color: var(--dark);
-        font-size: 0.95rem;
-    }
-
-    .news-thumb {
-        width: 80px;
-        height: 60px;
-        border-radius: 6px;
-        object-fit: cover;
-        border: 1px solid #eee;
-    }
-
-    .no-image {
-        width: 80px;
-        height: 60px;
-        background: #f5f5f5;
-        border-radius: 6px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #999;
-        font-size: 12px;
-        border: 1px dashed #ddd;
-    }
-
-    .badge {
-        padding: 4px 10px;
-        border-radius: 20px;
-        font-size: 0.8rem;
-        font-weight: 500;
-    }
-
-    .badge-info {
-        background: #e0f2fe;
-        color: #0369a1;
-    }
-
-    .badge-success {
-        background: #dcfce7;
-        color: #15803d;
-    }
-
-    .badge-warning {
-        background: #fff3cd;
-        color: #856404;
-    }
-
-    .action-btns {
-        display: flex;
-        gap: 8px;
-    }
-
-    .btn-action {
-        width: 32px;
-        height: 32px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 6px;
-        border: none;
-        cursor: pointer;
-        transition: 0.2s;
-    }
-
-    .btn-edit {
-        background: #fef3c7;
-        color: #d97706;
-    }
-
-    .btn-delete {
-        background: #fee2e2;
-        color: #dc2626;
-    }
-
-    .btn-action:hover {
-        transform: scale(1.1);
-    }
-
-    /* Alert Styling */
-    .alert-msg {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        padding: 18px 24px;
-        border-radius: 14px;
-        margin-bottom: 20px;
-        font-weight: 600;
-        font-size: 0.95rem;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        animation: alertSlideIn 0.4s ease-out;
-        border-left: 4px solid;
-    }
-
-    .alert-msg i {
-        font-size: 1.3rem;
-        flex-shrink: 0;
-    }
-
-    .alert-success {
-        background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
-        color: #15803d;
-        border-left-color: #22c55e;
-    }
-
-    .alert-error {
-        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
-        color: #dc2626;
-        border-left-color: #ef4444;
-    }
-
-    @keyframes alertSlideIn {
-        from {
-            opacity: 0;
-            transform: translateY(-12px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    /* Form Section */
-    .form-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(11, 45, 114, 0.4);
-        backdrop-filter: blur(10px);
-        display: none;
-        justify-content: center;
-        align-items: center;
-        z-index: 2000;
-        padding: 20px;
-        overflow-y: auto;
-    }
-
-    .form-card {
-        background: white;
-        width: 100%;
-        max-width: 550px;
-        border-radius: 20px;
-        padding: 0;
-        position: relative;
-        box-shadow: 0 25px 70px rgba(0, 0, 0, 0.15);
-        animation: modalBounce 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-        max-height: 90vh;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-    }
-
-    @keyframes modalBounce {
-        from {
-            opacity: 0;
-            transform: scale(0.9) translateY(30px);
-        }
-
-        to {
-            opacity: 1;
-            transform: scale(1) translateY(0);
-        }
-    }
-
-    .form-header {
-        padding: 25px 30px;
-        background: #f8fafc;
-        border-bottom: 1px solid #e2e8f0;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .form-header h2 {
-        margin: 0;
-        color: var(--primary);
-        font-weight: 800;
-        font-size: 1.4rem;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .form-header h2 i {
-        width: 38px;
-        height: 38px;
-        background: rgba(11, 45, 114, 0.1);
-        border-radius: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.1rem;
-    }
-
-    .close-form {
-        font-size: 1.2rem;
-        cursor: pointer;
-        color: #999;
-        transition: 0.3s;
-        width: 32px;
-        height: 32px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 50%;
-        background: white;
-        border: 1px solid #e2e8f0;
-    }
-
-    .close-form:hover {
-        color: #ef4444;
-        transform: rotate(90deg);
-        background: #fee2e2;
-        border-color: #fecaca;
-    }
-
-    .form-body {
-        padding: 25px 30px;
-        overflow-y: auto;
-        flex: 1;
-    }
-
-    .form-footer {
-        padding: 20px 30px;
-        background: #f8fafc;
-        border-top: 1px solid #e2e8f0;
-        display: flex;
-        justify-content: flex-end;
-        gap: 10px;
-    }
-
-    .close-form:hover {
-        color: var(--primary);
-        background: #e0e0e0;
-        transform: rotate(90deg);
-    }
-
-    .form-group {
-        margin-bottom: 20px;
-    }
-
-    .form-group label {
-        display: block;
-        margin-bottom: 8px;
-        font-weight: 600;
-        color: var(--dark);
-        font-size: 0.95rem;
-    }
-
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-        width: 100%;
-        padding: 12px 16px;
-        border: 2px solid #e2e8f0;
-        border-radius: 12px;
-        outline: none;
-        transition: all 0.3s ease;
-        background: #f8fafc;
-        font-size: 0.95rem;
-        font-family: inherit;
-    }
-
-    .form-group input:focus,
-    .form-group select:focus,
-    .form-group textarea:focus {
-        border-color: #0992c2;
-        background: white;
-        box-shadow: 0 0 0 4px rgba(9, 146, 194, 0.1);
-    }
-
-    /* File Upload Styling */
-    .file-upload-wrapper {
-        position: relative;
-        width: 100%;
-    }
-
-    .file-upload-input {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        opacity: 0;
-        cursor: pointer;
-        z-index: 2;
-    }
-
-    .file-upload-label {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 25px;
-        background: #f8fafc;
-        border: 2px dashed #cbd5e0;
-        border-radius: 12px;
-        color: #64748b;
-        transition: all 0.3s ease;
-        text-align: center;
-    }
-
-    .file-upload-label i {
-        font-size: 2rem;
-        margin-bottom: 10px;
-        color: var(--primary);
-    }
-
-    .file-upload-label:hover {
-        border-color: var(--primary);
-        background: #f1f5f9;
-    }
-
-    .file-name {
-        margin-top: 10px;
-        font-size: 0.85rem;
-        color: var(--primary);
-        font-weight: 500;
-        word-break: break-all;
-    }
-
-    .btn-submit {
-        background: linear-gradient(135deg, #0b2d72 0%, #0992c2 100%);
-        color: white;
-        border: none;
-        padding: 12px 25px;
-        border-radius: 10px;
-        font-weight: 700;
-        font-size: 0.95rem;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-        box-shadow: 0 8px 15px rgba(11, 45, 114, 0.15);
-        transition: all 0.3s ease;
-    }
-
-    .btn-submit:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 20px rgba(11, 45, 114, 0.25);
-    }
-
-    .btn-submit:active {
-        transform: translateY(-1px);
-    }
-
-    .grid-2 {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 20px;
-    }
-
-    /* Delete Confirmation Modal */
-    .delete-confirm-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(15, 23, 42, 0.6);
-        backdrop-filter: blur(8px);
-        display: none;
-        justify-content: center;
-        align-items: center;
-        z-index: 10000;
-        padding: 20px;
-        overflow-y: auto;
-    }
-
-    .delete-confirm-modal {
-        background: white;
-        border-radius: 20px;
-        padding: 32px;
-        max-width: 420px;
-        width: 100%;
-        text-align: center;
-        box-shadow: 0 25px 70px rgba(0, 0, 0, 0.2);
-        animation: alertPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    .delete-confirm-icon {
-        width: 72px;
-        height: 72px;
-        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
-        color: #ef4444;
-        font-size: 2rem;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 20px;
-        border: 3px solid rgba(239, 68, 68, 0.2);
-    }
-
-    .delete-confirm-modal h3 {
-        font-size: 1.25rem;
-        color: var(--primary);
-        margin: 0 0 10px;
-        font-weight: 700;
-    }
-
-    .delete-confirm-modal p {
-        color: #64748b;
-        font-size: 0.95rem;
-        margin: 0 0 28px;
-        line-height: 1.5;
-    }
-
-    .delete-confirm-btns {
-        display: flex;
-        gap: 12px;
-        justify-content: center;
-        flex-wrap: wrap;
-    }
-
-    .btn-cancel-delete {
-        padding: 11px 25px;
-        border-radius: 12px;
-        font-weight: 600;
-        font-size: 0.9rem;
-        cursor: pointer;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        border: none;
-        background: #f1f5f9;
-        color: #475569;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        letter-spacing: 0.3px;
-        text-decoration: none;
-    }
-
-    .btn-cancel-delete:hover {
-        background: #e2e8f0;
-        color: #0f172a;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    }
-
-    .delete-confirm-btns .btn-confirm-delete {
-        padding: 12px 24px;
-        border-radius: 12px;
-        font-weight: 600;
-        font-size: 0.95rem;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        border: none;
-        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-        color: white;
-        box-shadow: 0 8px 20px rgba(239, 68, 68, 0.35);
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .delete-confirm-btns .btn-confirm-delete:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 12px 28px rgba(239, 68, 68, 0.45);
-        color: white;
-    }
-
-    /* Preview Gambar */
-    .image-preview {
-        margin-top: 15px;
-        display: none;
-        border-radius: 10px;
-        overflow: hidden;
-        border: 1px solid #e2e8f0;
-        max-width: 200px;
-    }
-
-    .image-preview img {
-        width: 100%;
-        height: auto;
-        display: block;
-    }
-
-    @media (max-width: 768px) {
-        .grid-2 {
-            grid-template-columns: 1fr;
-            gap: 15px;
-        }
-
-        .form-overlay,
-        .delete-confirm-overlay {
-            align-items: center;
-            padding: 20px;
-        }
-
-        .form-card {
-            width: 95%;
-            padding: 25px 20px;
-            max-height: 90vh;
-            overflow-y: auto;
-            margin-bottom: 0;
-        }
-
-        .form-card h2 {
-            font-size: 1.5rem;
-            margin-bottom: 20px;
-        }
-
-        .alert-msg {
-            padding: 14px 18px;
-            font-size: 0.85rem;
-            gap: 10px;
-        }
-    }
-</style>
-
-<div class="berita-container">
-    <?php if (isset($_GET['success'])): ?>
-        <div class="alert-msg alert-success">
-            <i class="fas fa-check-circle"></i>
-            <span>Berita berhasil ditambahkan!</span>
+<div class="admin-page-container">
+    <?php if (isset($_GET['success']) || (isset($_GET['edit']) && $_GET['edit'] == '1') || (isset($_GET['hapus']) && $_GET['hapus'] == '1')): ?>
+        <div class="alert-container" id="alertContainer">
+            <div class="alert alert-success">
+                <i class="fas fa-check-circle"></i>
+                <div class="alert-content">
+                    <div class="alert-title">Berhasil!</div>
+                    <div class="alert-message">
+                        <?php
+                        if (isset($_GET['success'])) echo "Berita berhasil ditambahkan!";
+                        elseif (isset($_GET['edit'])) echo "Berita berhasil diperbarui!";
+                        elseif (isset($_GET['hapus'])) echo "Berita berhasil dihapus!";
+                        ?>
+                    </div>
+                </div>
+                <div class="alert-close" onclick="this.closest('.alert-container').remove()">
+                    <i class="fas fa-times"></i>
+                </div>
+            </div>
         </div>
     <?php endif; ?>
 
-    <?php if (isset($_GET['edit']) && $_GET['edit'] == '1'): ?>
-        <div class="alert-msg alert-success">
-            <i class="fas fa-check-circle"></i>
-            <span>Berita berhasil diperbarui!</span>
-        </div>
-    <?php endif; ?>
-
-    <?php if (isset($_GET['hapus']) && $_GET['hapus'] == '1'): ?>
-        <div class="alert-msg alert-success">
-            <i class="fas fa-check-circle"></i>
-            <span>Berita berhasil dihapus!</span>
-        </div>
-    <?php endif; ?>
-
-    <?php if (isset($_GET['hapus']) && $_GET['hapus'] == '0'): ?>
-        <div class="alert-msg alert-error">
-            <i class="fas fa-exclamation-circle"></i>
-            <span>Gagal menghapus berita!</span>
-        </div>
-    <?php endif; ?>
-
-    <?php if (isset($error)): ?>
-        <div class="alert-msg alert-error">
-            <i class="fas fa-exclamation-circle"></i>
-            <span><?= $error ?></span>
+    <?php if ((isset($_GET['hapus']) && $_GET['hapus'] == '0') || isset($error)): ?>
+        <div class="alert-container" id="alertContainer">
+            <div class="alert alert-error">
+                <i class="fas fa-exclamation-circle"></i>
+                <div class="alert-content">
+                    <div class="alert-title">Gagal!</div>
+                    <div class="alert-message">
+                        <?php
+                        if (isset($error)) echo $error;
+                        else echo "Gagal menghapus berita!";
+                        ?>
+                    </div>
+                </div>
+                <div class="alert-close" onclick="this.closest('.alert-container').remove()">
+                    <i class="fas fa-times"></i>
+                </div>
+            </div>
         </div>
     <?php endif; ?>
 
@@ -881,100 +236,108 @@ include 'layout/header.php';
         </button>
     </div>
 
-    <!-- Output Table -->
-    <div class="table-card stagger-item stagger-2">
-        <div class="table-header">
-            <h3>Daftar Berita</h3>
-            <div style="display: flex; gap: 10px;">
-                <input type="text" class="search-input" id="searchInput" placeholder="Cari berita...">
-                <button onclick="resetSearch()" class="btn-action" style="background: #f1f5f9; color: #64748b; width: auto; padding: 0 15px;">
-                    <i class="fas fa-times"></i> Reset
-                </button>
+    <!-- Toolbar & Search -->
+    <div class="card-panel stagger-item stagger-2" style="margin-bottom: 2rem; border-radius: 20px;">
+        <div class="table-header" style="border-bottom: none; padding-bottom: 0; margin-bottom: 0;">
+            <h3><i class="fas fa-list-ul" style="margin-right: 10px; color: var(--accent);"></i> Daftar Berita</h3>
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <div class="header-search">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Cari berita..." value="">
+                </div>
+                <button onclick="resetSearch()" class="btn-cancel" style="padding: 10px 15px; width: auto; margin:0;">Reset</button>
             </div>
         </div>
-        <div style="overflow-x: auto;">
-            <table id="newsTable">
-                <thead>
-                    <tr>
-                        <th>Gambar</th>
-                        <th>Judul Berita</th>
-                        <th>Kategori</th>
-                        <th>Tanggal</th>
-                        <th>Penulis</th>
-                        <th style="text-align: center;">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody id="newsTableBody">
-                    <?php
-                    $sql = "SELECT * FROM berita ORDER BY tanggal DESC";
-                    $result = mysqli_query($conn, $sql);
-                    if (mysqli_num_rows($result) > 0) {
-                        while ($row = mysqli_fetch_assoc($result)) {
+    </div>
 
-                            // Set badge color based on category
-                            $badge_class = 'badge-info';
-                            if (strtolower($row['kategori']) == 'prestasi') {
-                                $badge_class = 'badge-success';
-                            } elseif (strtolower($row['kategori']) == 'pengumuman') {
-                                $badge_class = 'badge-warning';
-                            }
-                    ?>
-                            <tr>
-                                <td>
-                                    <?php if ($row['foto'] && file_exists('../' . $row['foto'])): ?>
-                                        <img src="../<?= htmlspecialchars($row['foto']) ?>" class="news-thumb" alt="Thumbnail">
-                                    <?php else: ?>
-                                        <div class="no-image">
-                                            <i class="fas fa-image"></i>
-                                        </div>
-                                    <?php endif; ?>
-                                </td>
-                                <td style="font-weight: 500;"><?= htmlspecialchars($row['judul']) ?></td>
-                                <td><span class="badge <?= $badge_class ?>"><?= htmlspecialchars($row['kategori']) ?></span></td>
-                                <td><?= date('d/m/Y', strtotime($row['tanggal'])) ?></td>
-                                <td><?= htmlspecialchars($row['penulis']) ?></td>
-                                <td>
-                                    <div class="action-btns">
-                                        <button class="btn-action btn-edit" title="Edit"
-                                            onclick="openEditForm(<?= htmlspecialchars(json_encode($row)) ?>)">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn-action btn-delete" title="Hapus"
-                                            onclick="showDeleteAlert(<?= $row['id'] ?>, '<?= htmlspecialchars(addslashes($row['judul'])) ?>')">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        <?php
-                        }
-                    } else {
-                        ?>
-                        <tr id="noDataRow">
-                            <td colspan="6" style="text-align: center; padding: 40px;">
-                                <i class="fas fa-newspaper" style="font-size: 48px; color: #ccc; margin-bottom: 15px;"></i>
-                                <p style="color: #999; font-size: 1.1rem;">Belum ada berita</p>
-                                <button onclick="openAddForm()" style="background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 8px; margin-top: 10px; cursor: pointer;">
-                                    <i class="fas fa-plus"></i> Tambah Berita Sekarang
+    <!-- News Grid Output -->
+    <div class="news-grid stagger-item stagger-2" id="newsGrid">
+
+        <?php
+        $sql = "SELECT * FROM berita ORDER BY tanggal DESC";
+        $result = mysqli_query($conn, $sql);
+        if (mysqli_num_rows($result) > 0) {
+            $delay = 0;
+            while ($row = mysqli_fetch_assoc($result)) {
+                $delay += 0.05;
+
+                // Set badge color based on category
+                $badge_class = 'badge-primary';
+                if (strtolower($row['kategori']) == 'prestasi') {
+                    $badge_class = 'badge-success';
+                } elseif (strtolower($row['kategori']) == 'pengumuman') {
+                    $badge_class = 'badge-warning';
+                }
+        ?>
+                <div class="content-card" style="animation-delay: <?= $delay ?>s;">
+                    <?php if ($row['foto'] && file_exists('../' . $row['foto'])): ?>
+                        <img src="../<?= htmlspecialchars($row['foto']) ?>" class="card-img-top" alt="Thumbnail">
+                    <?php else: ?>
+                        <div class="card-img-top" style="background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-newspaper" style="font-size: 3rem; color: #94a3b8;"></i>
+                        </div>
+                    <?php endif; ?>
+
+                    <div class="card-body">
+                        <div class="card-category">
+                            <span class="badge <?= $badge_class ?>" style="border-radius: 6px; padding: 4px 10px; font-size: 0.75rem;"><?= htmlspecialchars($row['kategori']) ?></span>
+                            <span style="color: var(--slate-400); font-weight: 500; font-size: 0.8rem; display: flex; align-items: center; gap: 5px;">
+                                <i class="far fa-calendar-alt"></i> <?= date('d/m/Y', strtotime($row['tanggal'])) ?>
+                            </span>
+                        </div>
+
+                        <h3 class="card-title"><?= htmlspecialchars($row['judul']) ?></h3>
+
+                        <div class="card-desc">
+                            <?= htmlspecialchars(strip_tags(substr($row['deskripsi'], 0, 150))) . (strlen($row['deskripsi']) > 150 ? '...' : '') ?>
+                        </div>
+
+                        <div class="card-footer">
+                            <div class="card-author" style="font-size: 0.85rem; color: var(--slate-500); display: flex; align-items: center; gap: 6px;">
+                                <div style="width: 24px; height: 24px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem;">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <?= htmlspecialchars($row['penulis']) ?: 'Admin' ?>
+                            </div>
+
+                            <div class="card-actions">
+                                <button class="btn-card-action" title="Edit" onclick="openEditForm(<?= htmlspecialchars(json_encode($row)) ?>)">
+                                    <i class="fas fa-edit"></i>
                                 </button>
-                            </td>
-                        </tr>
-                    <?php } ?>
-                </tbody>
-            </table>
-        </div>
+                                <button class="btn-card-action delete" title="Hapus" onclick="showDeleteAlert(<?= $row['id'] ?>, '<?= htmlspecialchars(addslashes($row['judul'])) ?>')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <?php
+            }
+        } else {
+            ?>
+            <div class="empty-grid-state">
+                <i class="fas fa-newspaper empty-icon"></i>
+                <h3>Belum ada berita</h3>
+                <p style="color: var(--gray);">Silakan tambahkan berita atau artikel baru.</p>
+                <div style="margin-top: 1.5rem;">
+                    <button class="btn-add" onclick="openAddForm()">
+                        <i class="fas fa-plus"></i> Artikel Baru
+                    </button>
+                </div>
+            </div>
+        <?php } ?>
     </div>
 </div>
 
 <!-- Modal Form for Add/Edit -->
-<div class="form-overlay" id="formOverlay">
-    <div class="form-card">
-        <div class="form-header">
+<div class="modal-overlay" id="formOverlay">
+    <div class="modal-card">
+        <div class="modal-header">
             <h2 id="formTitle"><i class="fas fa-newspaper"></i> Tambah Berita</h2>
-            <div class="close-form" onclick="closeForm()"><i class="fas fa-times"></i></div>
+            <div class="btn-close-modal" onclick="closeForm()"><i class="fas fa-times"></i></div>
         </div>
         <form id="beritaForm" action="" method="POST" enctype="multipart/form-data" style="display: contents;">
-            <div class="form-body">
+            <div class="modal-body">
                 <input type="hidden" name="id" id="beritaId">
 
                 <div class="form-group">
@@ -1024,8 +387,8 @@ include 'layout/header.php';
                 </div>
             </div>
 
-            <div class="form-footer">
-                <button type="button" class="btn-cancel-delete" onclick="closeForm()">
+            <div class="modal-footer">
+                <button type="button" class="btn-cancel" onclick="closeForm()">
                     <i class="fas fa-times"></i> Batal
                 </button>
                 <button type="submit" name="submit" id="submitBtn" class="btn-submit">
@@ -1037,15 +400,15 @@ include 'layout/header.php';
 </div>
 
 <!-- Delete Confirmation Modal -->
-<div class="delete-confirm-overlay" id="deleteAlertOverlay" onclick="if(event.target===this) hideDeleteAlert()">
-    <div class="delete-confirm-modal" onclick="event.stopPropagation()">
-        <div class="delete-confirm-icon">
+<div class="delete-modal-overlay" id="deleteModal" onclick="if(event.target===this) hideDeleteAlert()">
+    <div class="delete-modal-card" onclick="event.stopPropagation()">
+        <div class="delete-icon">
             <i class="fas fa-trash-alt"></i>
         </div>
         <h3>Hapus Berita?</h3>
         <p id="deleteAlertMessage">Yakin ingin menghapus berita "<span id="deleteNewsTitle"></span>"? Tindakan ini tidak dapat dibatalkan.</p>
-        <div class="delete-confirm-btns">
-            <button type="button" class="btn-cancel-delete" onclick="hideDeleteAlert()">Batal</button>
+        <div class="delete-actions">
+            <button type="button" class="btn-cancel" onclick="hideDeleteAlert()">Batal</button>
             <a href="#" class="btn-confirm-delete" id="confirmDeleteBtn">
                 <i class="fas fa-trash"></i> Hapus
             </a>
@@ -1139,6 +502,16 @@ include 'layout/header.php';
             }
         }
     });
+    // Pindahkan modal ke body agar fixed relative ke viewport (bukan main-content yg punya transform)
+    document.addEventListener('DOMContentLoaded', function() {
+        const editModal = document.getElementById('editModal');
+        const msgModal = document.getElementById('msgModal');
+        const deleteModal = document.getElementById('deleteModal');
+        if (editModal) document.body.appendChild(editModal);
+        if (msgModal) document.body.appendChild(msgModal);
+        if (deleteModal) document.body.appendChild(deleteModal);
+    });
+
 
     // Edit news - Fetch data via AJAX
     // function editNews(id) {
@@ -1150,13 +523,13 @@ include 'layout/header.php';
     function showDeleteAlert(id, judul) {
         deleteId = id;
         document.getElementById('deleteNewsTitle').textContent = judul;
-        document.getElementById('deleteAlertOverlay').style.display = 'flex';
+        document.getElementById('deleteModal').style.display = 'flex';
         document.body.style.overflow = 'hidden';
     }
 
     // Hide delete alert
     function hideDeleteAlert() {
-        document.getElementById('deleteAlertOverlay').style.display = 'none';
+        document.getElementById('deleteModal').style.display = 'none';
         document.body.style.overflow = '';
         deleteId = null;
     }
@@ -1170,44 +543,57 @@ include 'layout/header.php';
 
 
     // Search functionality - REAL TIME
+    // Search functionality - REAL TIME (Updated for Grid)
     document.getElementById('searchInput')?.addEventListener('keyup', function() {
         const searchValue = this.value.toLowerCase().trim();
-        const tableRows = document.querySelectorAll('#newsTable tbody tr');
+        const cards = document.querySelectorAll('.news-grid .content-card');
         let visibleCount = 0;
+        let emptyState = document.querySelector('.empty-grid-state');
 
-        tableRows.forEach(row => {
-            // Skip row "Belum ada berita"
-            if (row.id === 'noDataRow') return;
+        cards.forEach(card => {
+            const title = card.querySelector('.card-title').textContent.toLowerCase();
+            const category = card.querySelector('.card-category .badge').textContent.toLowerCase();
+            const desc = card.querySelector('.card-desc').textContent.toLowerCase();
+            const author = card.querySelector('.card-author').textContent.toLowerCase();
 
-            const judul = row.cells[1]?.textContent.toLowerCase() || '';
-            const kategori = row.cells[2]?.textContent.toLowerCase() || '';
-            const penulis = row.cells[4]?.textContent.toLowerCase() || '';
-
-            if (judul.includes(searchValue) || kategori.includes(searchValue) || penulis.includes(searchValue)) {
-                row.style.display = '';
+            if (title.includes(searchValue) || category.includes(searchValue) || desc.includes(searchValue) || author.includes(searchValue)) {
+                card.style.display = 'flex'; // Grid items are flex col
                 visibleCount++;
             } else {
-                row.style.display = 'none';
+                card.style.display = 'none';
             }
         });
 
-        // Tampilkan pesan jika tidak ada hasil
-        const noDataRow = document.getElementById('noDataRow');
-        if (noDataRow) {
-            if (visibleCount === 0 && tableRows.length > 1) {
-                if (!noDataRow) {
-                    const tbody = document.getElementById('newsTableBody');
-                    const newRow = document.createElement('tr');
-                    newRow.id = 'noDataRow';
-                    newRow.innerHTML = '<td colspan="6" style="text-align: center; padding: 40px;">' +
-                        '<i class="fas fa-search" style="font-size: 48px; color: #ccc; margin-bottom: 15px;"></i>' +
-                        '<p style="color: #999; font-size: 1.1rem;">Tidak ada berita yang ditemukan</p>' +
-                        '</td>';
-                    tbody.appendChild(newRow);
-                }
+        // Handle empty state visibility
+        if (visibleCount === 0) {
+            if (!emptyState) {
+                const grid = document.getElementById('newsGrid');
+                const emptyDiv = document.createElement('div');
+                emptyDiv.className = 'empty-grid-state';
+                emptyDiv.innerHTML = `
+                    <i class="fas fa-search empty-icon"></i>
+                    <h3>Tidak ada berita ditemukan</h3>
+                    <p style="color: var(--gray);">Coba kata kunci lain atau reset pencarian.</p>
+                `;
+                grid.appendChild(emptyDiv);
             } else {
-                if (noDataRow && visibleCount > 0) {
-                    noDataRow.remove();
+                emptyState.style.display = 'flex';
+                // Update text if needed, but generic "not found" is fine
+                emptyState.querySelector('h3').textContent = 'Tidak ada berita ditemukan';
+                emptyState.querySelector('p').textContent = 'Coba kata kunci lain atau reset pencarian.';
+                // Hide button if search result is empty
+                const btn = emptyState.querySelector('.btn-add');
+                if (btn) btn.style.display = 'none';
+            }
+        } else {
+            if (emptyState) {
+                // If it was the dynamic search empty state, remove it. 
+                // If it was the original empty state (no data at all), keep it hidden? 
+                // Actually if visibleCount > 0, we have data, so hide any empty state.
+                if (emptyState.innerHTML.includes('fa-search')) {
+                    emptyState.remove();
+                } else {
+                    emptyState.style.display = 'none';
                 }
             }
         }
@@ -1216,8 +602,10 @@ include 'layout/header.php';
     // Reset search
     function resetSearch() {
         const searchInput = document.getElementById('searchInput');
-        searchInput.value = '';
-        searchInput.dispatchEvent(new Event('keyup'));
+        if (searchInput) {
+            searchInput.value = '';
+            searchInput.dispatchEvent(new Event('keyup'));
+        }
     }
 
     // Auto-hide alert after 3 seconds
@@ -1241,6 +629,11 @@ include 'layout/header.php';
             openEditForm(<?= json_encode($edit_data) ?>);
         <?php endif; ?>
     });
+    // Pindahkan modal ke body agar fixed relative ke viewport
+    const deleteModalOverlay = document.getElementById('deleteModalOverlay');
+    const formOverlay = document.getElementById('formOverlay');
+    if (deleteModalOverlay) document.body.appendChild(deleteModalOverlay);
+    if (formOverlay) document.body.appendChild(formOverlay);
 </script>
 
 <?php include 'layout/footer.php'; ?>

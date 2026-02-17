@@ -23,6 +23,7 @@ for ($i = 6; $i >= 0; $i--) {
 $total_berita = (int) mysqli_fetch_row(mysqli_query($conn, "SELECT COUNT(*) FROM berita"))[0];
 $total_agenda = (int) mysqli_fetch_row(mysqli_query($conn, "SELECT COUNT(*) FROM agenda"))[0];
 $total_galeri = (int) mysqli_fetch_row(mysqli_query($conn, "SELECT COUNT(*) FROM galeri"))[0];
+$total_guru = (int) mysqli_fetch_row(mysqli_query($conn, "SELECT COUNT(*) FROM teachers"))[0];
 ?>
 
 <!-- Welcome Banner -->
@@ -59,7 +60,7 @@ $total_galeri = (int) mysqli_fetch_row(mysqli_query($conn, "SELECT COUNT(*) FROM
             <i class="fas fa-chalkboard-teacher"></i>
         </div>
         <div class="stat-info">
-            <h3>24</h3>
+            <h3><?= $total_guru ?></h3>
             <p>Total Guru</p>
         </div>
     </div>

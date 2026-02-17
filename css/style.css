@@ -573,86 +573,275 @@ nav {
   box-shadow: 0 0 80px rgba(11, 45, 114, 0.7);
 }
 
-/* Sambutan Kepala Sekolah */
+/* Sambutan Kepala Sekolah - Premium Modern Style */
 .sambutan-section {
-  padding: 6rem 2rem;
-  background: var(--white);
+  padding: 12rem 2rem;
+  background: radial-gradient(circle at 0% 0%, #fdfdfd 0%, #f7f9fc 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Background Decoration */
+.sambutan-section::before {
+  content: "SMP PGRI 3";
+  position: absolute;
+  top: 10%;
+  right: -5%;
+  font-size: 15rem;
+  font-weight: 900;
+  color: rgba(11, 45, 114, 0.03);
+  z-index: 0;
+  white-space: nowrap;
+  pointer-events: none;
 }
 
 .section-title {
   text-align: center;
-  font-size: 2.8rem;
-  background: var(--gradient-primary);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  margin-bottom: 3rem;
+  font-family: "Playfair Display", serif;
+  font-size: 4rem;
+  color: var(--primary);
+  margin-bottom: 7rem;
   font-weight: 800;
-  animation: fadeInUp 0.8s ease-out;
+  position: relative;
+  z-index: 1;
+}
+
+.section-title::after {
+  content: "";
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 5px;
+  background: var(--gradient-primary);
+  border-radius: 10px;
 }
 
 .sambutan-content {
-  max-width: 1200px;
+  max-width: 1300px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 300px 1fr;
-  gap: 4rem;
-  align-items: start;
+  grid-template-columns: 460px 1fr; /* Diperbesar sesuai request */
+  gap: 8rem;
+  align-items: center;
+  position: relative;
+  z-index: 1;
 }
 
 .sambutan-foto {
-  text-align: center;
-  animation: fadeIn 1s ease-out;
+  position: relative;
+}
+
+/* Cooler Multi-layer Frame */
+.sambutan-foto::before {
+  content: "";
+  position: absolute;
+  top: 30px;
+  right: -30px;
+  bottom: -30px;
+  left: 30px;
+  background: var(--accent);
+  z-index: -1;
+  border-radius: 10px;
+  transition: var(--transition);
+}
+
+.sambutan-foto::after {
+  content: "";
+  position: absolute;
+  top: -20px;
+  left: -20px;
+  width: 100px;
+  height: 100px;
+  border-top: 8px solid var(--primary);
+  border-left: 8px solid var(--primary);
+  z-index: 2;
 }
 
 .sambutan-foto img {
-  width: 220px;
-  height: 220px;
-  border-radius: 50%;
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  aspect-ratio: 4/5;
   object-fit: cover;
-  background: linear-gradient(135deg, var(--gray-light) 0%, var(--gray) 100%);
-  margin-bottom: 1rem;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+  box-shadow: 30px 30px 80px rgba(0,0,0,0.15);
   transition: var(--transition);
-  border: 5px solid var(--white);
-} 
+  display: block;
+}
 
-.sambutan-foto img:hover {
-  transform: scale(1.05);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+.sambutan-foto:hover img {
+  transform: translateY(-15px) scale(1.02);
+  box-shadow: 40px 40px 100px rgba(0,0,0,0.2);
+}
+
+.sambutan-foto:hover::before {
+  transform: translate(15px, 15px);
 }
 
 .sambutan-foto h4 {
+  margin-top: 3rem;
+  font-family: "Playfair Display", serif;
+  font-size: 2rem;
   color: var(--primary);
-  font-size: 1.2rem;
-  font-weight: 600;
+  font-weight: 800;
+  line-height: 1.2;
 }
 
+.sambutan-foto p {
+  color: var(--primary-light);
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  font-size: 0.9rem;
+  font-weight: 800;
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sambutan-foto p::before {
+  content: "";
+  width: 20px;
+  height: 2px;
+  background: var(--primary-light);
+}
+
+/* Realistic Frosted Glass Effect */
 .sambutan-text {
-  background: var(--light);
-  padding: 2.5rem;
-  border-radius: 20px;
-  border-left: 5px solid var(--accent);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-  animation: fadeInUp 1s ease-out 0.2s both;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.4) 0%,
+    rgba(255, 255, 255, 0.1) 100%
+  );
+  backdrop-filter: blur(35px);
+  -webkit-backdrop-filter: blur(35px);
+  padding: 5rem;
+  border-radius: 20px; /* Siku lebih tajam sedikit biar kayak kaca asli */
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 
+    0 25px 50px rgba(0, 0, 0, 0.05),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+  transition: var(--transition);
+}
+
+/* Glass Shine Reflection */
+.sambutan-text::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  transform: skewX(-25deg);
+  transition: 0.8s;
+  pointer-events: none;
+}
+
+.sambutan-text:hover::after {
+  left: 150%;
+}
+
+.sambutan-text:hover {
+  transform: translateY(-8px);
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.8);
+}
+
+.sambutan-text::before {
+  content: '"';
+  position: absolute;
+  top: -10px;
+  left: 30px;
+  font-size: 12rem;
+  font-family: serif;
+  color: #fff;
+  opacity: 0.2;
+  line-height: 1;
+  z-index: 0;
 }
 
 .sambutan-text p {
-  margin-bottom: 1rem;
-  text-align: justify;
-  color: var(--gray);
-  line-height: 1.8;
+  font-size: 1.25rem;
+  line-height: 2.1;
+  color: #1a202c;
+  font-weight: 500;
+  position: relative;
+  z-index: 1;
+}
+
+.sambutan-text p:first-of-type {
+  font-family: "Playfair Display", serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--primary);
+  font-style: italic;
+  margin-bottom: 3rem;
+  padding-left: 2rem;
+  border-left: 5px solid var(--accent);
 }
 
 .ttd {
-  text-align: right;
-  margin-top: 2rem;
-  font-weight: 600;
+  margin-top: 5rem;
+  text-align: left;
 }
 
-.ttd p {
-  margin-bottom: 0.3rem;
-  color: var(--dark);
+.ttd p:first-child {
+  font-size: 1rem;
+  color: var(--primary-light);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.ttd p:last-child {
+  font-family: "Playfair Display", serif;
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--primary);
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+
+@media (max-width: 1200px) {
+  .sambutan-content {
+    grid-template-columns: 1fr;
+    gap: 6rem;
+    max-width: 800px;
+  }
+  
+  .sambutan-foto {
+    max-width: 450px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  
+  .sambutan-foto p {
+    justify-content: center;
+  }
+  
+  .ttd {
+    text-align: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .sambutan-text {
+    padding: 2.5rem;
+  }
+  
+  .section-title {
+    font-size: 3rem;
+  }
 }
 
 /* Page Hero Sections */

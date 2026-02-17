@@ -169,6 +169,15 @@ $current_page = basename($_SERVER['PHP_SELF']);
                         });
                     });
                 });
+                    // Pindahkan modal ke body agar fixed relative ke viewport (bukan main-content yg punya transform)
+    document.addEventListener('DOMContentLoaded', function() {
+        const editModal = document.getElementById('editModal');
+        const msgModal = document.getElementById('msgModal');
+        const deleteModal = document.getElementById('deleteModal');
+        if (editModal) document.body.appendChild(editModal);
+        if (msgModal) document.body.appendChild(msgModal);
+        if (deleteModal) document.body.appendChild(deleteModal);
+    });
             </script>
 
             <!-- Logout Confirmation Modal -->

@@ -6,19 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SMP PGRI 3 BOGOR - Sekolah Hebat Indonesia</title>
 
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=<?= time(); ?>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="icon" href="img/p3hd.jpg">
+    <link rel="icon" href="img/p3hd.jpg?v=<?= time(); ?>">
 </head>
 
 <body>
     <header>
         <nav>
             <a href="index.php" class="logo">
-                <img src="img/pgri3-photoroom.png" alt="Logo Sekolah">
+                <img src="img/p3hd.jpg?v=<?= time(); ?>" alt="Logo Sekolah">
                 <span>SMP PGRI 3 BGR</span>
             </a>
 
@@ -69,4 +69,4 @@
         <i class="fas fa-cog"></i>
     </a>
 
-    <script src="js/main.js"></script>
+    <script src="js/main.js?v=<?= time(); ?>"></script>

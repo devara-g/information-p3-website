@@ -17,7 +17,7 @@
             <div class="principal-bubble">
                 <i class="fas fa-quote-left quote-icon"></i>
                 <h3>"Pendidikan adalah passport masa depan"</h3>
-                <p>- Drs. Indra Robriandri, M.Si -</p>
+                <p>- Indra Robriandri, S.Pd -</p>
             </div>
         </div>
 
@@ -34,7 +34,7 @@
     <div class="sambutan-content">
         <div class="sambutan-foto">
             <img src="img/kepsek.jpg" alt="Kepala Sekolah">
-            <h4>Drs. Indra Robriandri, M.Si</h4>
+            <h4>Indra Robriandri, S.Pd</h4>
             <p>Kepala Sekolah</p>
         </div>
         <div class="sambutan-text">
@@ -42,11 +42,11 @@
             <p>Segala puji bagi Allah SWT yang telah memberikan rahmat dan hidayahnya sehingga kita dapat berkumpul di sini. Saya ucapkan selamat datang di website resmi SMP PGRI 3 BOGOR.</p>
             <p>Kami berkomitmen untuk memberikan pendidikan terbaik bagi putra-putri Anda, mencetak generasi yang tidak hanya cerdas secara intelektual, tetapi juga memiliki karakter yang kuat dan berakhlak mulia.</p>
             <p>Sekolah kami berkomitmen untuk memberikan pendidikan terbaik bagi seluruh siswa. Dengan didukung oleh tenaga pengajar yang profesional dan fasilitas yang memadai, kami yakin akan menghasilkan lulusan yang kompeten dan berakhlak mulia.</p>
-            <p>Mari bersama kita tingkatkan kualitas pendidikan dan mewujudkan generasi yang cerdas, kreatif, dan ber创新.</p>
+            <p>Mari bersama kita tingkatkan kualitas pendidikan dan mewujudkan generasi yang cerdas, kreatif, dan iman.</p>
             <p>Wassalamu'alaikum Wr. Wb.</p>
             <div class="ttd">
-                <p>Jakarta, Februari 2026</p>
-                <p>Drs. Indra Robriandri, M.Si</p>
+                <p>Bogor, Februari 2026</p>
+                <p> Indra Robriandri, S.Pd</p>
             </div>
         </div>
     </div>

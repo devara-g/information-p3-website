@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>SMP PGRI 3 BGR - Sekolah Hebat Indonesia</title>
         <link rel="stylesheet" href="../css/style.css?v=<?= time(); ?>">
-        <link rel="icon" href="../img/pgri3-photoroom.png">
+        <link rel="icon" href="../img/p3hd.jpg">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -17,7 +17,7 @@
         <header>
             <nav>
                 <a href="../index.php" class="logo">
-                    <img src="../img/pgri3-photoroom.png" alt="Logo Sekolah">
+                    <img src="../img/p3hd.jpg?v=<?= time(); ?>" alt="Logo Sekolah">
                     <span>SMP PGRI 3 BGR</span>
                 </a>
 
@@ -68,4 +68,4 @@
             <i class="fas fa-user-cog"></i>
         </a>
 
-        <script src="../js/main.js"></script>
+        <script src="../js/main.js?v=<?= time(); ?>"></script>
