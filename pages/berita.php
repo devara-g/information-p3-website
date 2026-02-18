@@ -175,7 +175,7 @@
                 </div>
                 <h2>Belum Ada Berita</h2>
                 <p>Saat ini belum ada berita yang dipublikasikan. Silakan kembali lagi nanti untuk mendapatkan informasi terbaru dari SMP PGRI 3 BOGOR.</p>
-                <a href="index.php" class="empty-state-btn">
+                <a href="../index.php" class="empty-state-btn">
                     <i class="fas fa-home"></i> Kembali ke Beranda
                 </a>
             </div>

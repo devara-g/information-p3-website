@@ -335,6 +335,13 @@ include 'layout/header.php';
         document.getElementById('imagePreview').style.display = 'none';
         document.getElementById('previewImg').src = ''; // Clear previous image
         document.getElementById('uploadLabelArea').querySelector('span').innerText = 'Klik atau seret foto ke sini'; // Reset upload text
+        
+        // Bounce animation for modal
+        const modalCard = overlay.querySelector('.modal-card');
+        modalCard.style.animation = 'none';
+        modalCard.offsetHeight;
+        modalCard.style.animation = 'editModalIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
+        
         overlay.style.display = 'flex';
         document.body.style.overflow = 'hidden';
     }
@@ -363,6 +370,12 @@ include 'layout/header.php';
         }
         document.getElementById('uploadLabelArea').querySelector('span').innerText = 'Klik atau seret foto ke sini'; // Reset upload text
 
+        // Bounce animation for modal
+        const modalCard = overlay.querySelector('.modal-card');
+        modalCard.style.animation = 'none';
+        modalCard.offsetHeight;
+        modalCard.style.animation = 'editModalIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
+        
         overlay.style.display = 'flex';
         document.body.style.overflow = 'hidden';
     }

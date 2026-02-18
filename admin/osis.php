@@ -1,5 +1,5 @@
 <?php
-$title = "Manajemen Guru & Staff";
+$title = "Manajemen Data OSIS";
 include '../database/conn.php';
 
 // Proses CRUD
@@ -9,7 +9,7 @@ $messageType = '';
 // Tangkap pesan dari redirect
 if (isset($_GET['msg'])) {
     if ($_GET['msg'] == 'updated') {
-        $message = "Data guru berhasil diupdate!";
+        $message = "Data OSIS berhasil diupdate!";
         $messageType = "success";
     }
 }
@@ -17,7 +17,8 @@ if (isset($_GET['msg'])) {
 // HANDLE TAMBAH DATA
 if (isset($_POST['action']) && $_POST['action'] == 'add') {
     $nama = $conn->real_escape_string($_POST['nama']);
-    $nip = $conn->real_escape_string($_POST['nip']);
+    $position = $conn->real_escape_string($_POST['position']);
+    $kelas = $conn->real_escape_string($_POST['kelas']);
     $category = $conn->real_escape_string($_POST['category']);
 
     // Handle upload foto
@@ -33,24 +34,19 @@ if (isset($_POST['action']) && $_POST['action'] == 'add') {
     }
 
     // Dapatkan sort_order terakhir untuk category ini
-    $result = $conn->query("SELECT MAX(sort_order) as max_sort FROM teachers WHERE category = '$category'");
+    $result = $conn->query("SELECT MAX(sort_order) as max_sort FROM osis WHERE category = '$category'");
     $row = $result->fetch_assoc();
     $sort_order = ($row['max_sort'] ?? 0) + 1;
 
-    $sql = "INSERT INTO teachers (category, name, nip, photo_filename, sort_order) 
-            VALUES ('$category', '$nama', '$nip', '$photo_filename', $sort_order)";
+    $sql = "INSERT INTO osis (category, name, position, kelas, photo_filename, sort_order) 
+            VALUES ('$category', '$nama', '$position', '$kelas', '$photo_filename', $sort_order)";
 
     if ($conn->query($sql)) {
-        $message = "Data guru berhasil ditambahkan!";
+        $message = "Data OSIS berhasil ditambahkan!";
         $messageType = "success";
     } else {
-        if ($conn->errno == 1062) {
-            $message = "NIP <strong>" . htmlspecialchars($_POST['nip']) . "</strong> sudah terdaftar! Gunakan NIP yang berbeda.";
-            $messageType = "warning";
-        } else {
-            $message = "Error: " . $conn->error;
-            $messageType = "error";
-        }
+        $message = "Error: " . $conn->error;
+        $messageType = "error";
     }
 }
 
@@ -58,14 +54,15 @@ if (isset($_POST['action']) && $_POST['action'] == 'add') {
 if (isset($_POST['action']) && $_POST['action'] == 'edit') {
     $id = $_POST['id'];
     $nama = $conn->real_escape_string($_POST['nama']);
-    $nip = $conn->real_escape_string($_POST['nip']);
+    $position = $conn->real_escape_string($_POST['position']);
+    $kelas = $conn->real_escape_string($_POST['kelas']);
     $category = $conn->real_escape_string($_POST['category']);
 
     // Cek apakah ada upload foto baru
     $foto_sql = "";
     if (isset($_FILES['foto']) && $_FILES['foto']['error'] == 0) {
         // Hapus foto lama
-        $result = $conn->query("SELECT photo_filename FROM teachers WHERE id = $id");
+        $result = $conn->query("SELECT photo_filename FROM osis WHERE id = $id");
         $old = $result->fetch_assoc();
         if ($old['photo_filename'] && file_exists('../upload/img/' . $old['photo_filename'])) {
             unlink('../upload/img/' . $old['photo_filename']);
@@ -78,24 +75,20 @@ if (isset($_POST['action']) && $_POST['action'] == 'edit') {
         $foto_sql = ", photo_filename = '$photo_filename'";
     }
 
-    $sql = "UPDATE teachers SET 
+    $sql = "UPDATE osis SET 
             category = '$category',
             name = '$nama',
-            nip = '$nip'
+            position = '$position',
+            kelas = '$kelas'
             $foto_sql
             WHERE id = $id";
 
     if ($conn->query($sql)) {
-        header("Location: guru.php?msg=updated");
+        header("Location: osis.php?msg=updated");
         exit;
     } else {
-        if ($conn->errno == 1062) {
-            $message = "NIP <strong>" . htmlspecialchars($_POST['nip']) . "</strong> sudah terdaftar! Gunakan NIP yang berbeda.";
-            $messageType = "warning";
-        } else {
-            $message = "Error: " . $conn->error;
-            $messageType = "error";
-        }
+        $message = "Error: " . $conn->error;
+        $messageType = "error";
     }
 }
 
@@ -104,14 +97,14 @@ if (isset($_GET['delete'])) {
     $id = $_GET['delete'];
 
     // Hapus foto
-    $result = $conn->query("SELECT photo_filename FROM teachers WHERE id = $id");
+    $result = $conn->query("SELECT photo_filename FROM osis WHERE id = $id");
     $data = $result->fetch_assoc();
     if ($data['photo_filename'] && file_exists('../upload/img/' . $data['photo_filename'])) {
         unlink('../upload/img/' . $data['photo_filename']);
     }
 
-    if ($conn->query("DELETE FROM teachers WHERE id = $id")) {
-        $message = "Data guru berhasil dihapus!";
+    if ($conn->query("DELETE FROM osis WHERE id = $id")) {
+        $message = "Data OSIS berhasil dihapus!";
         $messageType = "success";
     } else {
         $message = "Error: " . $conn->error;
@@ -123,31 +116,30 @@ if (isset($_GET['delete'])) {
 $editData = null;
 if (isset($_GET['edit'])) {
     $id = $_GET['edit'];
-    $result = $conn->query("SELECT * FROM teachers WHERE id = $id");
+    $result = $conn->query("SELECT * FROM osis WHERE id = $id");
     $editData = $result->fetch_assoc();
 }
 
 // AMBIL SEMUA DATA
 $search = isset($_GET['search']) ? $conn->real_escape_string($_GET['search']) : '';
-$sql = "SELECT * FROM teachers";
+$sql = "SELECT * FROM osis";
 if ($search) {
-    $sql .= " WHERE name LIKE '%$search%' OR nip LIKE '%$search%'";
+    $sql .= " WHERE name LIKE '%$search%' OR position LIKE '%$search%' OR kelas LIKE '%$search%'";
 }
-$sql .= " ORDER BY FIELD(category, '7', '8', '9', 'mapel'), sort_order ASC";
+$sql .= " ORDER BY FIELD(category, 'ketua', 'waket', 'sekretaris', 'bendahara', 'seksi'), sort_order ASC";
 $result = $conn->query($sql);
 
 // Mapping category ke nama display
 $categoryNames = [
-    '7' => 'Wali Kelas 7',
-    '8' => 'Wali Kelas 8',
-    '9' => 'Wali Kelas 9',
-    'mapel' => 'Guru Mata Pelajaran'
+    'ketua' => 'Ketua & Wakil Ketua',
+    'waket' => 'Wakil Ketua',
+    'sekretaris' => 'Sekretaris',
+    'bendahara' => 'Bendahara',
+    'seksi' => 'Seksi'
 ];
 
 include 'layout/header.php';
 ?>
-
-
 
 <div class="admin-page-container">
     <!-- Alert Message -->
@@ -180,33 +172,34 @@ include 'layout/header.php';
 
     <div class="header-panel stagger-item stagger-1">
         <div>
-            <h1>Data Guru & Staff</h1>
-            <p style="color: var(--gray);">Kelola informasi tenaga pendidik dan kependidikan.</p>
+            <h1>Data OSIS</h1>
+            <p style="color: var(--gray);">Kelola informasi kepengurusan OSIS SMP PGRI 3 BOGOR.</p>
         </div>
         <button class="btn-add" onclick="openAddForm()">
             <i class="fas fa-plus"></i> Tambah Data
         </button>
     </div>
 
-    <!-- Output Table -->
     <!-- Toolbar & Search -->
     <div class="card-panel stagger-item stagger-2" style="margin-bottom: 2rem; border-radius: 20px;">
         <div class="table-header" style="border-bottom: none; padding-bottom: 0; margin-bottom: 0; box-shadow: none; border: none; padding: 0;">
-            <h3><i class="fas fa-list-ul" style="margin-right: 10px; color: var(--accent);"></i> Daftar Guru & Staff</h3>
+            <h3><i class="fas fa-users" style="margin-right: 10px; color: var(--accent);"></i> Daftar Pengurus OSIS</h3>
             <form method="GET" style="display: flex; gap: 10px; align-items: center;">
                 <div class="header-search">
                     <i class="fas fa-search"></i>
-                    <input type="text" name="search" placeholder="Cari nama atau NIP..." value="<?php echo htmlspecialchars($search); ?>">
+                    <input type="text" name="search" placeholder="Cari nama, posisi, atau kelas..." value="<?php echo htmlspecialchars($search); ?>">
                 </div>
-                <button type="submit" class="btn-submit" style="padding: 10px 15px; width: auto; margin:0;"><i class="fas fa-search"></i></button>
+                <button type="submit" class="btn-submit" style="padding: 10px 15px; width: auto; margin:0;">
+                    <i class="fas fa-search"></i>
+                </button>
                 <?php if ($search): ?>
-                    <a href="guru.php" class="btn-cancel" style="padding: 10px 15px; text-decoration:none;">Reset</a>
+                    <a href="osis.php" class="btn-cancel" style="padding: 10px 15px; text-decoration:none;">Reset</a>
                 <?php endif; ?>
             </form>
         </div>
     </div>
 
-    <!-- Teacher Grid Layout -->
+    <!-- OSIS Card Grid Layout -->
     <div class="teacher-grid">
         <?php if ($result->num_rows > 0): ?>
             <?php
@@ -228,16 +221,23 @@ include 'layout/header.php';
                     <div class="teacher-info">
                         <h3><?php echo htmlspecialchars($row['name']); ?></h3>
 
-                        <?php if ($row['nip']): ?>
+                        <?php if ($row['position']): ?>
                             <span class="teacher-nip">
-                                <i class="fas fa-id-badge" style="margin-right: 5px; opacity: 0.7;"></i>
-                                <?php echo htmlspecialchars($row['nip']); ?>
+                                <i class="fas fa-briefcase" style="margin-right: 5px; opacity: 0.7;"></i>
+                                <?php echo htmlspecialchars($row['position']); ?>
+                            </span>
+                        <?php endif; ?>
+
+                        <?php if ($row['kelas']): ?>
+                            <span class="teacher-nip">
+                                <i class="fas fa-school" style="margin-right: 5px; opacity: 0.7;"></i>
+                                <?php echo htmlspecialchars($row['kelas']); ?>
                             </span>
                         <?php endif; ?>
 
                         <div class="teacher-role">
-                            <span class="badge <?php echo ($row['category'] == 'mapel') ? 'badge-secondary' : 'badge-primary'; ?>">
-                                <?php echo $categoryNames[$row['category']]; ?>
+                            <span class="badge badge-<?php echo $row['category']; ?>">
+                                <?php echo $categoryNames[$row['category']] ?? $row['category']; ?>
                             </span>
                         </div>
                     </div>
@@ -246,7 +246,7 @@ include 'layout/header.php';
                         <a href="?edit=<?php echo $row['id']; ?><?php echo $search ? '&search=' . $search : ''; ?>" class="btn-card-action" title="Edit">
                             <i class="fas fa-edit"></i>
                         </a>
-                        <a href="javascript:void(0)" onclick="openDeleteModal('<?php echo $row['id']; ?>', '<?php echo htmlspecialchars(addslashes($row['name'])); ?>', '<?php echo htmlspecialchars($row['nip']); ?>', '<?php echo $row['category']; ?>')" class="btn-card-action delete" title="Hapus">
+                        <a href="javascript:void(0)" onclick="openDeleteModal('<?php echo $row['id']; ?>', '<?php echo htmlspecialchars(addslashes($row['name'])); ?>', '<?php echo htmlspecialchars($row['position']); ?>', '<?php echo $row['category']; ?>')" class="btn-card-action delete" title="Hapus">
                             <i class="fas fa-trash"></i>
                         </a>
                     </div>
@@ -256,10 +256,10 @@ include 'layout/header.php';
             <div class="empty-grid-state">
                 <i class="fas fa-users empty-icon"></i>
                 <h3>Data Tidak Ditemukan</h3>
-                <p style="color: var(--gray);">Belum ada data guru atau pencarian tidak sesuai.</p>
+                <p style="color: var(--gray);">Belum ada data OSIS atau pencarian tidak sesuai.</p>
                 <div style="margin-top: 1.5rem;">
                     <button class="btn-add" onclick="openAddForm()">
-                        <i class="fas fa-plus"></i> Tambah Guru Baru
+                        <i class="fas fa-plus"></i> Tambah OSIS Baru
                     </button>
                 </div>
             </div>
@@ -272,38 +272,42 @@ include 'layout/header.php';
     <div class="modal-card">
         <div class="modal-header">
             <h2 id="formTitle">
-                <i class="fas <?php echo $editData ? 'fa-user-edit' : 'fa-user-tie'; ?>"></i>
-                <?php echo $editData ? 'Edit Data Guru' : 'Input Guru/Staff'; ?>
+                <i class="fas <?php echo $editData ? 'fa-user-edit' : 'fa-user-plus'; ?>"></i>
+                <?php echo $editData ? 'Edit Data OSIS' : 'Tambah Data OSIS'; ?>
             </h2>
             <div class="btn-close-modal" onclick="closeForm()"><i class="fas fa-times"></i></div>
         </div>
-        <form action="" method="POST" enctype="multipart/form-data" id="teacherForm" style="display: contents;">
+        <form action="" method="POST" enctype="multipart/form-data" id="osisForm" style="display: contents;">
             <input type="hidden" name="action" value="<?php echo $editData ? 'edit' : 'add'; ?>" id="action">
             <?php if ($editData): ?>
-                <input type="hidden" name="id" value="<?php echo $editData['id']; ?>" id="teacherId">
+                <input type="hidden" name="id" value="<?php echo $editData['id']; ?>" id="osisId">
             <?php endif; ?>
 
             <div class="modal-body">
                 <div class="form-group">
-                    <label>Nama Lengkap & Gelar</label>
-                    <input type="text" name="nama" id="nama" required placeholder="Contoh: Siti Aminah, S.Pd" value="<?php echo $editData ? htmlspecialchars($editData['name']) : ''; ?>">
+                    <label>Nama Lengkap</label>
+                    <input type="text" name="nama" id="nama" required placeholder="Masukkan nama lengkap" value="<?php echo $editData ? htmlspecialchars($editData['name']) : ''; ?>">
                 </div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                    <div class="form-group">
-                        <label>NIP / NUPTK</label>
-                        <input type="text" name="nip" id="nip" placeholder="Masukkan nomor identitas" value="<?php echo $editData ? htmlspecialchars($editData['nip']) : ''; ?>" onkeyup="checkNIP(this.value)" onblur="checkNIP(this.value)">
-                        <div class="error-message" id="nipError"></div>
-                    </div>
                     <div class="form-group">
                         <label>Kategori</label>
                         <select name="category" id="category" required>
                             <option value="">Pilih Kategori</option>
-                            <option value="7" <?php echo ($editData && $editData['category'] == '7') ? 'selected' : ''; ?>>Wali Kelas 7</option>
-                            <option value="8" <?php echo ($editData && $editData['category'] == '8') ? 'selected' : ''; ?>>Wali Kelas 8</option>
-                            <option value="9" <?php echo ($editData && $editData['category'] == '9') ? 'selected' : ''; ?>>Wali Kelas 9</option>
-                            <option value="mapel" <?php echo ($editData && $editData['category'] == 'mapel') ? 'selected' : ''; ?>>Guru Mata Pelajaran</option>
+                            <option value="ketua" <?php echo ($editData && $editData['category'] == 'ketua') ? 'selected' : ''; ?>>Ketua & Wakil Ketua</option>
+                            <option value="waket" <?php echo ($editData && $editData['category'] == 'waket') ? 'selected' : ''; ?>>Wakil Ketua</option>
+                            <option value="sekretaris" <?php echo ($editData && $editData['category'] == 'sekretaris') ? 'selected' : ''; ?>>Sekretaris</option>
+                            <option value="bendahara" <?php echo ($editData && $editData['category'] == 'bendahara') ? 'selected' : ''; ?>>Bendahara</option>
+                            <option value="seksi" <?php echo ($editData && $editData['category'] == 'seksi') ? 'selected' : ''; ?>>Seksi</option>
                         </select>
                     </div>
+                    <div class="form-group">
+                        <label>Jabatan</label>
+                        <input type="text" name="position" id="position" required placeholder="Contoh: Ketua OSIS, Sie Kebugaran" value="<?php echo $editData ? htmlspecialchars($editData['position']) : ''; ?>">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Kelas</label>
+                    <input type="text" name="kelas" id="kelas" required placeholder="Contoh: XII TKR A" value="<?php echo $editData ? htmlspecialchars($editData['kelas']) : ''; ?>">
                 </div>
                 <div class="form-group">
                     <label>Foto Profil</label>
@@ -340,18 +344,19 @@ include 'layout/header.php';
         </form>
     </div>
 </div>
+
 <!-- Delete Confirmation Modal -->
 <div class="delete-modal-overlay" id="deleteModal">
-    <div class="delete-modal-card" id="deleteModal">
+    <div class="delete-modal-card" id="deleteModalCard">
         <div class="delete-icon">
             <i class="fas fa-exclamation-triangle"></i>
         </div>
         <h3>Hapus Data?</h3>
-        <p class="warning-text">Anda akan menghapus data guru berikut:</p>
-        <div class="highlight-text" id="deleteTeacherInfo">
-            <p><i class="fas fa-user"></i> <strong id="deleteTeacherName"></strong></p>
-            <p><i class="fas fa-id-card"></i> NIP: <span id="deleteTeacherNip"></span></p>
-            <p><i class="fas fa-tag"></i> <span id="deleteTeacherCategory"></span></p>
+        <p class="warning-text">Anda akan menghapus data OSIS berikut:</p>
+        <div class="highlight-text" id="deleteOsisInfo">
+            <p><i class="fas fa-user"></i> <strong id="deleteOsisName"></strong></p>
+            <p><i class="fas fa-briefcase"></i> <span id="deleteOsisPosition"></span></p>
+            <p><i class="fas fa-tag"></i> <span id="deleteOsisCategory"></span></p>
         </div>
         <p style="color: #94a3b8; font-size: 0.9rem; margin: 8px 0 0;">
             <i class="fas fa-info-circle"></i> Tindakan ini tidak dapat dibatalkan
@@ -368,10 +373,6 @@ include 'layout/header.php';
 </div>
 
 <script>
-    let nipValid = true;
-    let currentNip = '<?php echo $editData ? $editData['nip'] : ''; ?>';
-    let checkTimeout;
-
     function openAddForm() {
         // Reset semua input text/select/file
         document.querySelectorAll('#formOverlay input:not([type="hidden"]), #formOverlay select').forEach(el => {
@@ -401,13 +402,8 @@ include 'layout/header.php';
             el.textContent = '';
         });
 
-        // Reset validasi NIP
-        nipValid = true;
-        currentNip = '';
-        document.getElementById('submitBtn').disabled = false;
-
         // Update judul dan tombol
-        document.getElementById('formTitle').innerHTML = '<i class="fas fa-user-tie"></i> Input Guru/Staff';
+        document.getElementById('formTitle').innerHTML = '<i class="fas fa-user-plus"></i> Tambah Data OSIS';
         document.getElementById('btnText').innerText = 'Simpan';
 
         // Tampilkan overlay dengan bounce animation
@@ -416,7 +412,7 @@ include 'layout/header.php';
         modalCard.style.animation = 'none';
         modalCard.offsetHeight; // Trigger reflow
         modalCard.style.animation = 'editModalIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
-        
+
         overlay.style.display = 'flex';
         document.body.style.overflow = 'hidden';
     }
@@ -446,112 +442,6 @@ include 'layout/header.php';
         }
     }
 
-    function checkNIP(nip) {
-        // Clear previous timeout
-        clearTimeout(checkTimeout);
-
-        // Get action and ID for edit mode
-        const action = document.getElementById('action').value;
-        const teacherId = document.getElementById('teacherId') ? document.getElementById('teacherId').value : null;
-
-        // Get elements
-        const nipInput = document.getElementById('nip');
-        const errorElement = document.getElementById('nipError');
-        const submitBtn = document.getElementById('submitBtn');
-
-        // Remove previous error states
-        nipInput.classList.remove('input-error');
-        errorElement.classList.remove('show');
-
-        // If NIP is empty, consider it valid (but required will handle it)
-        if (!nip.trim()) {
-            nipValid = true;
-            submitBtn.disabled = false;
-            return;
-        }
-
-        // If NIP is same as current in edit mode, skip validation
-        if (action === 'edit' && nip === currentNip) {
-            nipValid = true;
-            submitBtn.disabled = false;
-            return;
-        }
-
-        // Show loading state
-        submitBtn.disabled = true;
-
-        // Set timeout to avoid too many requests
-        checkTimeout = setTimeout(() => {
-            // Make AJAX request to check NIP
-            fetch('check_nip.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: 'nip=' + encodeURIComponent(nip) + '&action=' + action + '&id=' + (teacherId || '')
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.exists) {
-                        // NIP already exists
-                        nipInput.classList.add('input-error');
-                        errorElement.textContent = 'NIP ' + nip + ' sudah terdaftar! Gunakan NIP yang berbeda.';
-                        errorElement.classList.add('show');
-                        nipValid = false;
-                        submitBtn.disabled = true;
-                    } else {
-                        // NIP is available
-                        nipValid = true;
-                        submitBtn.disabled = false;
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    // If error occurs, allow submission (server will handle it)
-                    nipValid = true;
-                    submitBtn.disabled = false;
-                });
-        }, 500); // Wait 500ms after user stops typing
-    }
-
-    // Form submission validation
-    document.getElementById('teacherForm').addEventListener('submit', function(e) {
-        if (!nipValid) {
-            e.preventDefault();
-            // Show alert that NIP is duplicate
-            const nipInput = document.getElementById('nip');
-            nipInput.focus();
-
-            // Create temporary alert
-            const alertDiv = document.createElement('div');
-            alertDiv.className = 'alert-container';
-            alertDiv.id = 'tempAlert';
-            alertDiv.innerHTML = `
-                <div class="alert alert-warning">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <div class="alert-content">
-                        <div class="alert-title">Peringatan!</div>
-                        <div class="alert-message">NIP sudah terdaftar! Silakan gunakan NIP yang berbeda.</div>
-                    </div>
-                    <div class="alert-close" onclick="this.closest('.alert-container').remove()">
-                        <i class="fas fa-times"></i>
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(alertDiv);
-
-            // Auto remove after 5 seconds
-            setTimeout(() => {
-                const tempAlert = document.getElementById('tempAlert');
-                if (tempAlert) {
-                    tempAlert.style.transition = 'opacity 0.5s ease';
-                    tempAlert.style.opacity = '0';
-                    setTimeout(() => tempAlert.remove(), 500);
-                }
-            }, 5000);
-        }
-    });
-
     // Close modal jika klik di luar form
     document.getElementById('formOverlay').addEventListener('click', function(e) {
         if (e.target === this) closeForm();
@@ -566,22 +456,24 @@ include 'layout/header.php';
             setTimeout(() => alertContainer.remove(), 500);
         }
     }, 5000);
+
     // Delete Modal Functions
     let deleteUrl = '';
 
-    function openDeleteModal(id, name, nip, category) {
-        // Set teacher info
-        document.getElementById('deleteTeacherName').textContent = name;
-        document.getElementById('deleteTeacherNip').textContent = nip || '-';
+    function openDeleteModal(id, name, position, category) {
+        // Set OSIS info
+        document.getElementById('deleteOsisName').textContent = name;
+        document.getElementById('deleteOsisPosition').textContent = position || '-';
 
         // Map category to display name
         const categoryNames = {
-            '7': 'Wali Kelas 7',
-            '8': 'Wali Kelas 8',
-            '9': 'Wali Kelas 9',
-            'mapel': 'Guru Mata Pelajaran'
+            'ketua': 'Ketua & Wakil Ketua',
+            'waket': 'Wakil Ketua',
+            'sekretaris': 'Sekretaris',
+            'bendahara': 'Bendahara',
+            'seksi': 'Seksi'
         };
-        document.getElementById('deleteTeacherCategory').textContent = categoryNames[category] || category;
+        document.getElementById('deleteOsisCategory').textContent = categoryNames[category] || category;
 
         // Set delete URL with current search parameters
         const urlParams = new URLSearchParams(window.location.search);
@@ -608,10 +500,9 @@ include 'layout/header.php';
     // Add loading state when delete is clicked
     document.addEventListener('DOMContentLoaded', function() {
         // Pindahkan modal ke body agar fixed relative ke viewport
-        // (bukan main-content yg punya transform dari page-transition)
         const deleteModalOverlay = document.getElementById('deleteModal');
         const formOverlay = document.getElementById('formOverlay');
-        if (deleteModalOverlay) document.body.appendChild(deleteModal);
+        if (deleteModalOverlay) document.body.appendChild(deleteModalOverlay);
         if (formOverlay) document.body.appendChild(formOverlay);
 
         const confirmBtn = document.getElementById('confirmDeleteBtn');

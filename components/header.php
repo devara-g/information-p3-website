@@ -54,6 +54,7 @@
                 <li class="dropdown">
                     <a href="#"><i class="fas fa-sitemap"></i> Struktur <i class="fas fa-chevron-down" style="font-size: 0.7rem; margin-left: 4px;"></i></a>
                     <ul class="dropdown-menu">
+                        <li><a href="pages/kesiswaan.php"><i class="fas fa-user-tie"></i> Kesiswaan</a></li>
                         <li><a href="pages/struktur.php"><i class="fas fa-user-tie"></i> Kepsek & TU</a></li>
                         <li><a href="pages/osis.php"><i class="fas fa-users"></i> OSIS</a></li>
                         <li><a href="pages/mpk.php"><i class="fas fa-user-friends"></i> MPK</a></li>

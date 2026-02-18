@@ -11,13 +11,12 @@
 </section>
 
 <section class="news-content">
-    <div class="news-grid">
-        <!-- data dummy agenda, nnti pake db ya jing -->
-        <?php
-        include '../database/conn.php';
-        $data = mysqli_query($conn, "SELECT * FROM agenda");
-
-
+    <?php
+    include '../database/conn.php';
+    $data = mysqli_query($conn, "SELECT * FROM agenda ORDER BY tanggal DESC");
+    
+    if (mysqli_num_rows($data) > 0) {
+        echo '<div class="news-grid">';
         foreach ($data as $a) {
             $foto_path = (!empty($a['foto']) && file_exists('../' . $a['foto'])) ? '../' . $a['foto'] : 'assets/img/no-image.jpg';
             echo '
@@ -34,8 +33,17 @@
             </div>
             ';
         }
-        ?>
-    </div>
+        echo '</div>';
+    } else {
+        echo '
+        <div class="empty-state" style="text-align: center; padding: 80px 20px; background: #fff; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.08);">
+            <i class="fas fa-calendar-times" style="font-size: 4rem; color: #bdc3c7; margin-bottom: 20px;"></i>
+            <h3 style="color: #2c3e50; font-size: 1.5rem; margin-bottom: 10px;">Agenda Kosong</h3>
+            <p style="color: #7f8c8d;">Belum ada agenda sekolah yang tersedia.</p>
+        </div>
+        ';
+    }
+    ?>
 </section>
 
 <?php include 'footer.php'; ?>

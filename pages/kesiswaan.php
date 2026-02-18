@@ -20,7 +20,7 @@
         <div class="about-card">
             <div class="about-card-icon"><i class="fas fa-theater-masks"></i></div>
             <h3>Ekstrakurikuler</h3>
-            <p>25 kegiatan ekskul meliputi olahraga, seni, ilmiah, dan keagamaan untuk pengembangan bakat siswa.</p>
+            <p>7 kegiatan ekskul meliputi olahraga, seni, ilmiah, dan keagamaan untuk pengembangan bakat siswa.</p>
         </div>
         <div class="about-card">
             <div class="about-card-icon"><i class="fas fa-trophy"></i></div>
@@ -33,14 +33,14 @@
             <p>Layanan BK untuk pengembangan potensi, karir, dan penyelesaian masalah siswa.</p>
         </div>
         <div class="about-card">
-            <div class="about-card-icon"><i class="fas fa-briefcase"></i></div>
-            <h3>PKL & Magang</h3>
-            <p>Program Praktik Kerja Lapangan di berbagai perusahaan mitra dengan pendampingan intensif.</p>
+            <div class="about-card-icon"><i class="fas fa-mosque"></i></div>
+            <h3>program religi</h3>
+            <p>program religi untuk meningkatkan keimanan dan ketakwaan siswa</p>
         </div>
         <div class="about-card">
             <div class="about-card-icon"><i class="fas fa-graduation-cap"></i></div>
             <h3>Kelulusan & Alumni</h3>
-            <p>Tingkat kelulusan 100% dengan lulusan yang tersebar di berbagai PTN dan dunia kerja.</p>
+            <p>Tingkat kelulusan 100% dengan lulusan yang tersebar di berbagai sma dan smk negri.</p>
         </div>
     </div>
 </section>
