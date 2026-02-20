@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Feb 13, 2026 at 12:14 PM
+-- Generation Time: Feb 18, 2026 at 03:23 PM
 -- Server version: 8.0.30
 -- PHP Version: 8.3.27
 
@@ -57,14 +57,6 @@ CREATE TABLE `agenda` (
   `deskripsi` longtext NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
---
--- Dumping data for table `agenda`
---
-
-INSERT INTO `agenda` (`id`, `judul`, `foto`, `tanggal`, `waktu`, `lokasi`, `status`, `deskripsi`) VALUES
-(3, 'aaa', 'upload/img/agenda_1770952628_698e97b4832f3.jpg', '2026-02-13', 'asas', 'ass', 'akan datang', 'ass'),
-(5, 'Makalah Sejara', 'upload/img/agenda_1770979615_698f011f09de1.jpg', '2026-02-13', '08:00 -09:00', 'aula', 'akan datang', 'ksajjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj');
-
 -- --------------------------------------------------------
 
 --
@@ -91,17 +83,58 @@ CREATE TABLE `galeri` (
   `id` int NOT NULL,
   `judul` varchar(200) NOT NULL,
   `foto` varchar(255) NOT NULL,
-  `kategori` enum('kegiatan sekolah','prestasi siswa','kegiatan eskul') NOT NULL,
+  `kategori` varchar(100) NOT NULL,
   `deskripsi` varchar(200) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+-- --------------------------------------------------------
+
 --
--- Dumping data for table `galeri`
+-- Table structure for table `kepsek`
 --
 
-INSERT INTO `galeri` (`id`, `judul`, `foto`, `kategori`, `deskripsi`) VALUES
-(1, 'a', 'upload/img/galeri_1770956559_698ea70f08c98.jpg', 'kegiatan sekolah', 'a'),
-(2, 'a', 'upload/img/galeri_1770956599_698ea7374bf0a.jpg', 'kegiatan sekolah', 'a');
+CREATE TABLE `kepsek` (
+  `id` int NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `nip` varchar(50) NOT NULL,
+  `position` enum('kepsek dan wakasek','tata usaha','sekre','wakil ketua') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `photo_filename` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `mpk`
+--
+
+CREATE TABLE `mpk` (
+  `id` int NOT NULL,
+  `category` enum('ketua','waket','sekretaris','bendahara','anggota') NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `position` varchar(100) NOT NULL,
+  `kelas` varchar(50) NOT NULL,
+  `photo_filename` varchar(100) DEFAULT NULL,
+  `sort_order` int DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `osis`
+--
+
+CREATE TABLE `osis` (
+  `id` int NOT NULL,
+  `category` enum('ketua','waket','sekretaris','bendahara','seksi') NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `position` varchar(100) NOT NULL,
+  `kelas` varchar(50) NOT NULL,
+  `photo_filename` varchar(100) DEFAULT NULL,
+  `sort_order` int DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -125,10 +158,27 @@ CREATE TABLE `pesan` (
 
 INSERT INTO `pesan` (`id`, `nama`, `email`, `subjek`, `pesan`, `dibaca`, `created_at`) VALUES
 (24, 'devara hermawan', 'defarahermawan@gmail.com', 'hai', 'a', 1, '2026-02-12 15:25:58'),
-(25, 'devara hermawan', 'defarahermawan@gmail.com', 'hai', 'aa', 0, '2026-02-12 16:45:09'),
+(25, 'devara hermawan', 'defarahermawan@gmail.com', 'hai', 'aa', 1, '2026-02-12 16:45:09'),
 (26, 'devara hermawan', 'defarahermawan@gmail.com', 'tes', 'tes', 1, '2026-02-13 09:44:46'),
 (28, 'devara hermawan', 'defarahermawan@gmail.com', 'tes', 'tes', 0, '2026-02-13 09:53:14'),
-(29, 'devara hermawan', 'defarahermawan@gmail.com', 'a', 'a', 0, '2026-02-13 11:17:59');
+(29, 'devara hermawan', 'defarahermawan@gmail.com', 'a', 'a', 0, '2026-02-13 11:17:59'),
+(31, 'devara hermawan', 'defarahermawan@gmail.com', 'hai', 'halo admin', 0, '2026-02-16 14:56:24');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `teachers`
+--
+
+CREATE TABLE `teachers` (
+  `id` int NOT NULL,
+  `category` enum('7','8','9','mapel') NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `nip` varchar(50) NOT NULL,
+  `photo_filename` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `sort_order` int DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Indexes for dumped tables
@@ -159,10 +209,35 @@ ALTER TABLE `galeri`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `kepsek`
+--
+ALTER TABLE `kepsek`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `mpk`
+--
+ALTER TABLE `mpk`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `osis`
+--
+ALTER TABLE `osis`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `pesan`
 --
 ALTER TABLE `pesan`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `teachers`
+--
+ALTER TABLE `teachers`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `nip` (`nip`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -184,7 +259,7 @@ ALTER TABLE `agenda`
 -- AUTO_INCREMENT for table `berita`
 --
 ALTER TABLE `berita`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `galeri`
@@ -193,10 +268,34 @@ ALTER TABLE `galeri`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
+-- AUTO_INCREMENT for table `kepsek`
+--
+ALTER TABLE `kepsek`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
+-- AUTO_INCREMENT for table `mpk`
+--
+ALTER TABLE `mpk`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+
+--
+-- AUTO_INCREMENT for table `osis`
+--
+ALTER TABLE `osis`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
 -- AUTO_INCREMENT for table `pesan`
 --
 ALTER TABLE `pesan`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+
+--
+-- AUTO_INCREMENT for table `teachers`
+--
+ALTER TABLE `teachers`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

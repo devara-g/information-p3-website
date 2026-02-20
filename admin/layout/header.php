@@ -28,160 +28,131 @@ $current_page = basename($_SERVER['PHP_SELF']);
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* Dropdown Menu Styles - Fixed */
-        .sidebar-menu .dropdown {
-            position: relative;
-        }
+        /* ===== Sidebar Dropdown - Unified Accordion Style (All Screens) ===== */
 
-        .sidebar-menu .dropdown > a {
+        /* Arrow indicator on the toggle link */
+        .sidebar-menu .dropdown>a {
             display: flex;
             align-items: center;
-            justify-content: space-between;
         }
 
-        .sidebar-menu .dropdown > a::after {
-            content: '\f105';
-            font-family: 'Font Awesome 6 Free';
-            font-weight: 900;
-            font-size: 12px;
-            transition: transform 0.3s ease;
+        .sidebar-menu .dropdown>a .arrow {
+            margin-left: auto;
+            font-size: 11px;
+            color: #64748b;
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                color 0.3s ease;
+            flex-shrink: 0;
         }
 
-        .sidebar-menu .dropdown:hover > a::after,
-        .sidebar-menu .dropdown.active > a::after,
-        .sidebar-menu .dropdown.show > a::after {
+        .sidebar-menu .dropdown.show>a .arrow {
             transform: rotate(90deg);
+            color: #38bdf8;
         }
 
-        /* Fix dropdown positioning - ini yang utama */
+        /* Active parent link highlight */
+        .sidebar-menu .dropdown.show>a {
+            color: #f8fafc;
+            background: rgba(56, 189, 248, 0.08);
+            border-radius: 14px;
+        }
+
+        /* ===== Accordion submenu - works on ALL screen sizes ===== */
         .sidebar-menu .dropdown .dropdown-menu {
-            display: none;
-            position: fixed;
-            left: 260px; /* Lebar sidebar */
-            margin-top: -45px; /* Sesuaikan posisi vertikal */
-            min-width: 220px;
-            background: #1e293b;
-            border-radius: 8px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-            list-style: none;
-            padding: 10px 0;
-            z-index: 99999; /* Z-index sangat tinggi */
-            border: 1px solid rgba(255,255,255,0.1);
-        }
+            display: block;
+            /* must be block for max-height animation */
+            position: static;
+            /* in-flow, never floating */
+            left: unset;
+            top: unset;
+            transform: none;
+            width: auto;
 
-        /* Sesuaikan posisi untuk setiap item dropdown */
-        .sidebar-menu li:nth-child(5) .dropdown-menu { /* Data Guru & Staff */
-            top: 220px; /* Sesuaikan dengan posisi menu */
-        }
+            /* Collapsed state */
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            visibility: hidden;
 
-        .sidebar-menu .dropdown:hover > .dropdown-menu,
-        .sidebar-menu .dropdown.active > .dropdown-menu,
-        .sidebar-menu .dropdown.show > .dropdown-menu {
-            display: block !important;
-        }
-
-        .sidebar-menu .dropdown .dropdown-menu li {
+            /* Sidebar-matching colors */
+            background: rgba(255, 255, 255, 0.03);
+            border-left: 2px solid rgba(56, 189, 248, 0.2);
+            border-radius: 0 0 10px 10px;
+            margin: 0 8px 0 16px;
             padding: 0;
-            margin: 0;
+            list-style: none;
+            box-shadow: none;
+            z-index: auto;
+
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.35s ease,
+                visibility 0.35s ease,
+                margin 0.35s ease,
+                padding 0.35s ease;
+        }
+
+        /* Expanded state */
+        .sidebar-menu .dropdown.show .dropdown-menu {
+            max-height: 500px;
+            opacity: 1;
+            visibility: visible;
+            margin-top: 6px;
+            margin-bottom: 8px;
+            padding: 4px 0;
+        }
+
+        /* Submenu items */
+        .sidebar-menu .dropdown .dropdown-menu li {
+            margin: 2px 0;
+            padding: 0;
         }
 
         .sidebar-menu .dropdown .dropdown-menu li a {
-            padding: 12px 20px;
+            padding: 9px 14px;
             display: flex;
             align-items: center;
-            gap: 12px;
-            color: rgba(255, 255, 255, 0.8);
-            transition: all 0.3s ease;
-            border-left: 3px solid transparent;
-            font-size: 14px;
-        }
-
-        .sidebar-menu .dropdown .dropdown-menu li a:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border-left-color: var(--accent, #4f46e5);
+            gap: 10px;
+            color: #94a3b8;
+            /* Slate 400 - matches sidebar inactive */
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-decoration: none;
+            border-left: 2px solid transparent;
+            border-radius: 8px;
+            margin: 0 4px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .sidebar-menu .dropdown .dropdown-menu li a i {
-            font-size: 16px;
-            width: 20px;
+            font-size: 14px;
+            width: 18px;
             text-align: center;
+            color: #64748b;
+            /* Slate 500 - matches sidebar icon color */
+            transition: color 0.3s ease, transform 0.3s ease;
         }
 
-        /* Hapus transform dari main content */
-        .main-content {
-            margin-left: 260px;
-            padding: 20px;
-            transition: margin-left 0.3s ease;
-            /* Hapus transform property */
+        .sidebar-menu .dropdown .dropdown-menu li a:hover {
+            background: rgba(56, 189, 248, 0.06);
+            color: #f8fafc;
+            border-left-color: #38bdf8;
         }
 
-        /* Fix untuk mobile */
-        @media (max-width: 768px) {
-            .main-content {
-                margin-left: 0;
-            }
-            
-            .sidebar-menu .dropdown .dropdown-menu {
-                position: static !important;
-                left: 0;
-                margin-top: 0;
-                margin-left: 20px;
-                box-shadow: none;
-                background: rgba(0,0,0,0.2);
-                width: calc(100% - 20px);
-            }
-            
-            .sidebar-menu .dropdown .dropdown-menu li a {
-                padding-left: 40px;
-            }
+        .sidebar-menu .dropdown .dropdown-menu li a:hover i {
+            color: #38bdf8;
+            transform: scale(1.1);
         }
 
-        /* Menu label styling */
-        .menu-label {
-            padding: 20px 20px 8px;
-            font-size: 12px;
-            text-transform: uppercase;
-            color: rgba(255,255,255,0.4);
-            letter-spacing: 1px;
+        .sidebar-menu .dropdown .dropdown-menu li a.active {
+            background: rgba(56, 189, 248, 0.12);
+            color: #38bdf8;
+            border-left-color: #38bdf8;
+            font-weight: 700;
         }
 
-        /* Fix untuk modal */
-        .logout-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.5);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 100000;
-        }
-
-        .logout-overlay.active {
-            display: flex;
-        }
-
-        .logout-modal {
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            max-width: 400px;
-            width: 90%;
-            position: relative;
-            z-index: 100001;
-        }
-
-        /* Sidebar fixed */
-        .sidebar {
-            position: fixed;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 260px;
-            z-index: 1000;
+        .sidebar-menu .dropdown .dropdown-menu li a.active i {
+            color: #38bdf8;
+            filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.4));
         }
     </style>
 </head>
@@ -208,7 +179,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
                     <li><a href="berita.php" class="<?= $current_page == 'berita.php' ? 'active' : ''; ?>"><i class="bx bxs-news"></i> Berita & Artikel</a></li>
                     <li><a href="agenda.php" class="<?= $current_page == 'agenda.php' ? 'active' : ''; ?>"><i class="bx bxs-calendar-event"></i> Agenda Sekolah</a></li>
                     <li><a href="galeri.php" class="<?= $current_page == 'galeri.php' ? 'active' : ''; ?>"><i class="bx bxs-camera"></i> Galeri Kegiatan</a></li>
-                    <li class="dropdown <?= in_array($current_page, ['guru.php', 'osis.php', 'mpk.php', 'kepsek.php']) ? 'active' : ''; ?>">
+                    <li class="dropdown <?= in_array($current_page, ['guru.php', 'osis.php', 'mpk.php', 'kepsek.php']) ? 'active show' : ''; ?>">
                         <a href="javascript:void(0)" class="dropdown-toggle"><i class="bx bxs-user-pin"></i> Data Guru & Staff <i class="fas fa-chevron-right arrow"></i></a>
                         <ul class="dropdown-menu">
                             <li><a href="guru.php" class="<?= $current_page == 'guru.php' ? 'active' : ''; ?>"><i class="fas fa-chalkboard-teacher"></i> Data Guru</a></li>
@@ -305,21 +276,21 @@ $current_page = basename($_SERVER['PHP_SELF']);
 
                     // Dropdown Toggle Logic - Improved
                     const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
-                    
+
                     dropdownToggles.forEach(toggle => {
                         toggle.addEventListener('click', function(e) {
                             e.preventDefault();
                             e.stopPropagation();
-                            
+
                             const dropdown = this.closest('.dropdown');
-                            
-                            // Close other dropdowns
+
+                            // Close other dropdowns (Accordion logic)
                             document.querySelectorAll('.dropdown.show').forEach(d => {
                                 if (d !== dropdown) {
                                     d.classList.remove('show');
                                 }
                             });
-                            
+
                             // Toggle current dropdown
                             dropdown.classList.toggle('show');
                         });
@@ -327,38 +298,11 @@ $current_page = basename($_SERVER['PHP_SELF']);
 
                     // Close dropdown when clicking outside
                     document.addEventListener('click', function(e) {
-                        if (!e.target.closest('.dropdown')) {
+                        if (!e.target.closest('.sidebar')) {
                             document.querySelectorAll('.dropdown.show').forEach(d => {
                                 d.classList.remove('show');
                             });
                         }
-                    });
-
-                    // Adjust dropdown position based on scroll
-                    function adjustDropdownPosition() {
-                        const activeDropdown = document.querySelector('.dropdown.show');
-                        if (activeDropdown) {
-                            const dropdownMenu = activeDropdown.querySelector('.dropdown-menu');
-                            const rect = activeDropdown.getBoundingClientRect();
-                            
-                            if (dropdownMenu) {
-                                // Pastikan dropdown tidak keluar dari viewport
-                                if (rect.top + dropdownMenu.offsetHeight > window.innerHeight) {
-                                    dropdownMenu.style.top = 'auto';
-                                    dropdownMenu.style.bottom = '0';
-                                } else {
-                                    dropdownMenu.style.top = rect.top + 'px';
-                                    dropdownMenu.style.bottom = 'auto';
-                                }
-                            }
-                        }
-                    }
-
-                    window.addEventListener('scroll', function() {
-                        // Sembunyikan dropdown saat scroll
-                        document.querySelectorAll('.dropdown.show').forEach(d => {
-                            d.classList.remove('show');
-                        });
                     });
 
                     // File Upload Logic
