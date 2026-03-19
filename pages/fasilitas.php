@@ -8,6 +8,7 @@
     </div>
     <h1>Fasilitas Sekolah</h1>
     <p>Fasilitas modern untuk mendukung kegiatan belajar mengajar</p>
+    <?php include 'wave.php'; ?>
 </section>
 
 <section class="gallery-content">

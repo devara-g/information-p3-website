@@ -8,6 +8,7 @@
     </div>
     <h1>Kesiswaan</h1>
     <p>Informasi kegiatan kesiswaan SMP PGRI 3 BOGOR</p>
+    <?php include 'wave.php'; ?>
 </section>
 
 <section class="about-content">

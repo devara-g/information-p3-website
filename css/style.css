@@ -43,6 +43,7 @@ body {
 /* Smooth Scroll */
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 /* Selection */
@@ -181,8 +182,13 @@ ul {
 }
 
 @keyframes heroFloat {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-15px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
 }
 
 /* Utility Classes */
@@ -218,6 +224,77 @@ header {
 header.scrolled {
   padding: 0.75rem 2rem;
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.12);
+}
+
+/* Floating Header for Pages (Liquid Glass Effect) */
+header.floating-header {
+  width: calc(100% - 4rem) !important;
+  left: 2rem !important;
+  right: 2rem !important;
+  top: 1.5rem !important;
+  border-radius: 30px; /* Lebih melengkung seperti cairan */
+  background: 
+    /* Efek shine menyapu */
+    linear-gradient(
+      105deg,
+      transparent 20%,
+      rgba(255, 255, 255, 0.4) 25%,
+      transparent 30%
+    ) -150% 0% / 200% 100% no-repeat,
+    /* Warna liquid glass base */
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.4) 0%,
+      rgba(255, 255, 255, 0.1) 100%
+    );
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 
+    0 8px 32px 0 rgba(11, 45, 114, 0.1),
+    inset 0 2px 0 0 rgba(255, 255, 255, 0.5), /* Highlight atas */
+    inset 0 0 20px rgba(255, 255, 255, 0.3); /* Cahaya glow di dalam */
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05); /* Sedikit transparan di bawah */
+  animation: liquidShineBg 6s ease-in-out infinite;
+  /* overflow: hidden; DIHAPUS agar dropdown tidak terpotong */
+}
+
+@keyframes liquidShineBg {
+  0% { background-position: 200% 0, 0 0; }
+  25% { background-position: -100% 0, 0 0; }
+  100% { background-position: -100% 0, 0 0; }
+}
+
+header.floating-header.scrolled {
+  top: 1rem !important;
+  background: 
+    linear-gradient(
+      105deg,
+      transparent 20%,
+      rgba(255, 255, 255, 0.6) 25%,
+      transparent 30%
+    ) -150% 0% / 200% 100% no-repeat,
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.6) 0%,
+      rgba(255, 255, 255, 0.3) 100%
+    );
+  box-shadow: 
+    0 10px 40px rgba(11, 45, 114, 0.15),
+    inset 0 2px 0 0 rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+}
+
+@media (max-width: 768px) {
+  header.floating-header {
+    width: calc(100% - 2rem) !important;
+    left: 1rem !important;
+    right: 1rem !important;
+    top: 1rem !important;
+    padding: 0.8rem 1.5rem;
+    border-radius: 20px;
+  }
 }
 
 nav {
@@ -544,7 +621,7 @@ nav {
     transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
     box-shadow 0.4s ease;
   opacity: 0;
-  animation: 
+  animation:
     heroSpringIn 1.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
     heroFloat 6s ease-in-out infinite 1.5s;
   animation-delay: 0.8s, 0s;
@@ -665,14 +742,14 @@ nav {
   border-radius: 10px;
   aspect-ratio: 4/5;
   object-fit: cover;
-  box-shadow: 30px 30px 80px rgba(0,0,0,0.15);
+  box-shadow: 30px 30px 80px rgba(0, 0, 0, 0.15);
   transition: var(--transition);
   display: block;
 }
 
 .sambutan-foto:hover img {
   transform: translateY(-15px) scale(1.02);
-  box-shadow: 40px 40px 100px rgba(0,0,0,0.2);
+  box-shadow: 40px 40px 100px rgba(0, 0, 0, 0.2);
 }
 
 .sambutan-foto:hover::before {
@@ -721,7 +798,7 @@ nav {
   border: 1px solid rgba(255, 255, 255, 0.4);
   position: relative;
   overflow: hidden;
-  box-shadow: 
+  box-shadow:
     0 25px 50px rgba(0, 0, 0, 0.05),
     inset 0 0 0 1px rgba(255, 255, 255, 0.2);
   transition: var(--transition);
@@ -818,17 +895,17 @@ nav {
     gap: 6rem;
     max-width: 800px;
   }
-  
+
   .sambutan-foto {
     max-width: 450px;
     margin: 0 auto;
     text-align: center;
   }
-  
+
   .sambutan-foto p {
     justify-content: center;
   }
-  
+
   .ttd {
     text-align: center;
   }
@@ -838,18 +915,19 @@ nav {
   .sambutan-text {
     padding: 2.5rem;
   }
-  
+
   .section-title {
     font-size: 3rem;
   }
 }
 
 /* Page Hero Sections */
+.hero,
 .about-hero,
 .news-hero,
 .gallery-hero,
 .structure-hero {
-  padding: 10rem 2rem 5rem;
+  padding: 10rem 2rem 150px;
   background: var(--gradient-primary);
   text-align: center;
   color: var(--white);
@@ -857,26 +935,11 @@ nav {
   overflow: hidden;
 }
 
-.about-hero::before,
-.news-hero::before,
-.gallery-hero::before,
-.structure-hero::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="rgba(255,255,255,0.1)" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,138.7C960,139,1056,117,1152,101.3C1248,85,1344,75,1392,69.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>')
-    no-repeat bottom;
-  background-size: cover;
-  opacity: 0.2;
-}
-
 .about-hero h1,
 .news-hero h1,
 .gallery-hero h1,
-.structure-hero h1 {
+.structure-hero h1,
+.hero h1 {
   font-size: 3.5rem;
   margin-bottom: 1rem;
   font-weight: 800;
@@ -888,12 +951,77 @@ nav {
 .about-hero p,
 .news-hero p,
 .gallery-hero p,
-.structure-hero p {
+.structure-hero p,
+.hero p {
   font-size: 1.2rem;
   opacity: 0.95;
   animation: fadeInUp 0.8s ease-out 0.2s both;
   position: relative;
   z-index: 1;
+}
+
+/* ===== Wave Separator (Dynamic Parallax) ===== */
+.wave-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  line-height: 0;
+}
+
+.waves {
+  position: relative;
+  width: 100%;
+  height: 15vh;
+  margin-bottom: -7px; /* Fix for safari */
+  min-height: 100px;
+  max-height: 150px;
+}
+
+/* Animation */
+.parallax > use {
+  animation: move-forever 25s cubic-bezier(0.55, 0.5, 0.45, 0.5) infinite;
+}
+
+.parallax > use:nth-child(1) {
+  animation-delay: -2s;
+  animation-duration: 7s;
+}
+
+.parallax > use:nth-child(2) {
+  animation-delay: -3s;
+  animation-duration: 10s;
+}
+
+.parallax > use:nth-child(3) {
+  animation-delay: -4s;
+  animation-duration: 13s;
+}
+
+.parallax > use:nth-child(4) {
+  animation-delay: -5s;
+  animation-duration: 20s;
+}
+
+@keyframes move-forever {
+  0% {
+    transform: translate3d(-90px, 0, 0);
+  }
+  100% {
+    transform: translate3d(85px, 0, 0);
+  }
+}
+
+/* Shrink for mobile */
+@media (max-width: 768px) {
+  .waves {
+    height: 40px;
+    min-height: 40px;
+  }
+  .blue-section {
+    padding-bottom: 80px;
+  }
 }
 
 /* About Page */
@@ -1615,7 +1743,7 @@ footer::before {
 
 .form-control:focus {
   background: var(--white);
-  border  or: var(--secondary);
+  border-color: var(--secondary);
   outline: none;
   box-shadow: 0 10px 30px rgba(10, 196, 224, 0.1);
 }
@@ -1676,34 +1804,74 @@ footer::before {
 /* Responsive */
 @media (max-width: 768px) {
   .floating-shapes {
-    display: none;
+    display: flex;
+  }
+
+  header {
+    padding: 0.5rem 0.8rem !important;
+  }
+
+  header.scrolled {
+    padding: 0.4rem 0.8rem !important;
+  }
+
+  .logo {
+    font-size: 1rem;
+    gap: 6px;
+  }
+
+  .logo img {
+    width: 35px;
+    height: 35px;
+  }
+
+  .logo span {
+    white-space: normal;
+    line-height: 1.1;
+    max-width: 150px;
   }
 
   .mobile-menu {
     display: flex;
+    gap: 4px;
   }
 
   .nav-links {
     position: absolute;
-    top: 100%;
+    top: calc(100% + 15px);
     left: 0;
     width: 100%;
-    background: var(--white);
+    /* Liquid Glass styling for mobile menu */
+    background: 
+      linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.7) 0%,
+        rgba(255, 255, 255, 0.4) 100%
+      );
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    box-shadow: 
+      0 15px 40px rgba(11, 45, 114, 0.15),
+      inset 0 2px 0 0 rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
     flex-direction: column;
     padding: 0;
     max-height: 0;
     overflow: hidden;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     text-align: center;
-    border-top: 1px solid var(--gray-light);
     margin-right: 0 !important;
+    opacity: 0;
+    transform: translateY(-10px);
   }
 
   .nav-links.active {
-    max-height: calc(100vh - 80px);
-    padding: 2rem;
+    max-height: calc(100vh - 100px);
+    padding: 1.5rem 1rem;
     overflow-y: auto;
+    opacity: 1;
+    transform: translateY(0);
   }
 
   .nav-links::-webkit-scrollbar {
@@ -1724,12 +1892,13 @@ footer::before {
     color: var(--dark);
     padding: 1rem;
     display: block;
-    border-radius: 8px;
+    border-radius: 12px;
     transition: var(--transition);
   }
 
   .nav-links li a:hover {
-    background: var(--light);
+    background: rgba(255, 255, 255, 0.5);
+    box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.5);
   }
 
   /* Dropdown in mobile */
@@ -1739,29 +1908,35 @@ footer::before {
     visibility: visible;
     transform: none;
     box-shadow: none;
-    background: var(--light);
+    background: rgba(255, 255, 255, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     margin-top: 0.5rem;
-    border-radius: 8px;
+    border-radius: 12px;
     max-height: 0;
     overflow: hidden;
     transition:
-      max-height 0.3s ease,
-      padding 0.3s ease;
+      max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+      padding 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     padding: 0;
   }
 
   .dropdown.active .dropdown-menu {
-    max-height: 300px;
-    padding: 0.5rem 0;
+    max-height: 400px;
+    padding: 0.8rem 0;
   }
 
   .dropdown-menu li a {
     padding: 0.8rem 1.5rem;
     font-size: 0.95rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .dropdown-menu li:last-child a {
+    border-bottom: none;
   }
 
   .dropdown-menu li a:hover {
-    background: var(--white);
+    background: rgba(255, 255, 255, 0.4);
     padding-left: 2rem;
   }
 
@@ -1773,19 +1948,51 @@ footer::before {
   .hero-content {
     grid-template-columns: 1fr;
     text-align: center;
+    padding: 1rem;
+    gap: 1.5rem;
   }
 
   .hero-text h1 {
-    font-size: 2.5rem;
+    font-size: clamp(1.8rem, 8vw, 2.5rem);
+    line-height: 1.2;
+    text-align: center;
+  }
+
+  .hero-text p.fade-up-delay {
+    font-size: 1rem;
+    padding: 0 0.5rem;
+    margin-bottom: 1.5rem;
   }
 
   .principal-photo {
-    width: 300px;
-    height: 300px;
+    width: 240px;
+    height: 240px;
+    max-width: 80vw;
+    max-height: 80vw;
+    margin: 0 auto;
   }
 
-  .sambutan-content {
-    grid-template-columns: 1fr;
+  .principal-bubble {
+    padding: 1.2rem;
+    margin-top: 1rem;
+    text-align: center;
+  }
+
+  .principal-bubble h3 {
+    font-size: 1.1rem;
+  }
+
+  .about-hero,
+  .news-hero,
+  .gallery-hero,
+  .structure-hero,
+  .hero {
+    padding: 6rem 1rem 80px;
+  }
+
+  .waves {
+    height: 45px;
+    min-height: 45px;
   }
 
   .sambutan-foto {
@@ -2144,7 +2351,7 @@ footer::before {
   .timeline-row {
     flex-direction: column;
     align-items: flex-start;
-    margin-left: 70px; /* Space for line */
+    padding-left: 70px; /* Space for line */
     margin-bottom: 3rem;
   }
 

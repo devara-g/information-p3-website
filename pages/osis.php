@@ -47,6 +47,7 @@ function getSectionCount($data, $positions)
     </div>
     <h1>Organisasi Siswa Intra Sekolah (OSIS)</h1>
     <p>Kepengurusan OSIS SMP PGRI 3 BOGOR Periode 2025/2026</p>
+    <?php include 'wave.php'; ?>
 </section>
 
 <section class="guru-content">

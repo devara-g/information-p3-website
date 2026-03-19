@@ -7,6 +7,7 @@
     <title>SMP PGRI 3 BOGOR - Sekolah Hebat Indonesia</title>
 
     <link rel="stylesheet" href="css/style.css?v=<?= time(); ?>">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
@@ -15,7 +16,7 @@
 </head>
 
 <body>
-    <header>
+    <header class="floating-header">
         <nav>
             <a href="index.php" class="logo">
                 <img src="img/p3hd.jpg?v=<?= time(); ?>" alt="Logo Sekolah">
@@ -29,45 +30,45 @@
             </div>
 
             <ul class="nav-links">
-                <li><a href="index.php"><i class="fas fa-home"></i> Beranda</a></li>
+                <li><a href="index.php">Beranda</a></li>
                 <li class="dropdown">
-                    <a href="#"><i class="fas fa-info-circle"></i> Tentang <i class="fas fa-chevron-down" style="font-size: 0.7rem; margin-left: 4px;"></i></a>
+                    <a href="#">Tentang <i class="fas fa-chevron-down" style="font-size: 0.7rem; margin-left: 4px;"></i></a>
                     <ul class="dropdown-menu">
-                        <li><a href="pages/about.php"><i class="fas fa-school"></i> Profil Sekolah</a></li>
-                        <li><a href="pages/visi-misi.php"><i class="fas fa-bullseye"></i> Visi & Misi</a></li>
+                        <li><a href="pages/about.php">Profil Sekolah</a></li>
+                        <li><a href="pages/visi-misi.php">Visi & Misi</a></li>
                     </ul>
                 </li>
                 <li class="dropdown">
-                    <a href="#"><i class="fas fa-newspaper"></i> Berita <i class="fas fa-chevron-down" style="font-size: 0.7rem; margin-left: 4px;"></i></a>
+                    <a href="#">Berita <i class="fas fa-chevron-down" style="font-size: 0.7rem; margin-left: 4px;"></i></a>
                     <ul class="dropdown-menu">
-                        <li><a href="pages/berita.php"><i class="fas fa-rss"></i> Berita Terbaru</a></li>
-                        <li><a href="pages/agenda.php"><i class="fas fa-calendar-alt"></i> Agenda Sekolah</a></li>
+                        <li><a href="pages/berita.php">Berita Terbaru</a></li>
+                        <li><a href="pages/agenda.php">Agenda Sekolah</a></li>
                     </ul>
                 </li>
                 <li class="dropdown">
-                    <a href="#"><i class="fas fa-images"></i> Galeri <i class="fas fa-chevron-down" style="font-size: 0.7rem; margin-left: 4px;"></i></a>
+                    <a href="#">Galeri <i class="fas fa-chevron-down" style="font-size: 0.7rem; margin-left: 4px;"></i></a>
                     <ul class="dropdown-menu">
-                        <li><a href="pages/galeri.php"><i class="fas fa-camera"></i> Galeri Kegiatan</a></li>
-                        <li><a href="pages/fasilitas.php"><i class="fas fa-building"></i> Fasilitas</a></li>
+                        <li><a href="pages/galeri.php">Galeri Kegiatan</a></li>
+                        <li><a href="pages/fasilitas.php">Fasilitas</a></li>
                     </ul>
                 </li>
                 <li class="dropdown">
-                    <a href="#"><i class="fas fa-sitemap"></i> Struktur <i class="fas fa-chevron-down" style="font-size: 0.7rem; margin-left: 4px;"></i></a>
+                    <a href="#">Struktur <i class="fas fa-chevron-down" style="font-size: 0.7rem; margin-left: 4px;"></i></a>
                     <ul class="dropdown-menu">
-                        <li><a href="pages/kesiswaan.php"><i class="fas fa-user-tie"></i> Kesiswaan</a></li>
-                        <li><a href="pages/struktur.php"><i class="fas fa-user-tie"></i> Kepsek & TU</a></li>
-                        <li><a href="pages/osis.php"><i class="fas fa-users"></i> OSIS</a></li>
-                        <li><a href="pages/mpk.php"><i class="fas fa-user-friends"></i> MPK</a></li>
-                        <li><a href="pages/guru.php"><i class="fas fa-chalkboard-teacher"></i> Guru & Staff</a></li>
+                        <li><a href="pages/kesiswaan.php">Kesiswaan</a></li>
+                        <li><a href="pages/struktur.php">Kepsek & TU</a></li>
+                        <li><a href="pages/osis.php">OSIS</a></li>
+                        <li><a href="pages/mpk.php">MPK</a></li>
+                        <li><a href="pages/guru.php">Guru & Staff</a></li>
                     </ul>
                 </li>
-                <li><a href="pages/kontak.php"><i class="fas fa-envelope"></i> Kontak</a></li>
+                <li><a href="pages/kontak.php">Kontak</a></li>
             </ul>
         </nav>
     </header>
 
     <a href="admin/login.php" class="admin-fixed" title="Admin Panel">
-        <i class="fas fa-cog"></i>
+        <i class="bx bx-cog"></i>
     </a>
 
     <script src="js/main.js?v=<?= time(); ?>"></script>

@@ -8,13 +8,14 @@
     </div>
     <h1>Agenda Sekolah</h1>
     <p>Jadwal kegiatan SMP PGRI 3 BOGOR</p>
+    <?php include 'wave.php'; ?>
 </section>
 
 <section class="news-content">
     <?php
     include '../database/conn.php';
     $data = mysqli_query($conn, "SELECT * FROM agenda ORDER BY tanggal DESC");
-    
+
     if (mysqli_num_rows($data) > 0) {
         echo '<div class="news-grid">';
         foreach ($data as $a) {

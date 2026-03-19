@@ -1,16 +1,16 @@
 <?php
-    $id = isset($_GET['id']) ? $_GET['id'] : 1;
-    include '../database/conn.php';
-    $sql = "SELECT * FROM berita WHERE id = $id";
-    $result = mysqli_query($conn, $sql);
-    $berita = mysqli_fetch_assoc($result);
+$id = isset($_GET['id']) ? $_GET['id'] : 1;
+include '../database/conn.php';
+$sql = "SELECT * FROM berita WHERE id = $id";
+$result = mysqli_query($conn, $sql);
+$berita = mysqli_fetch_assoc($result);
 
-    if(!$berita["id"]){
-        header("Location: berita.php");
-        exit();
-    }
+if (!$berita["id"]) {
+    header("Location: berita.php");
+    exit();
+}
 
-    
+
 ?>
 <?php include 'header.php'; ?>
 
@@ -22,6 +22,7 @@
     </div>
     <h1>Detail Berita</h1>
     <p>Informasi lengkap seputar sekolah</p>
+    <?php include 'wave.php'; ?>
 </section>
 
 <section class="news-detail">

@@ -48,6 +48,7 @@ function getSectionCount($data, $positions)
     </div>
     <h1>Struktur Organisasi</h1>
     <p>Kepsek & Tata Usaha SMP PGRI 3 BOGOR</p>
+    <?php include 'wave.php'; ?>
 </section>
 
 <section class="guru-content">

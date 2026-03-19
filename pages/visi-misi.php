@@ -8,6 +8,7 @@
     </div>
     <h1>Visi & Misi</h1>
     <p>SMP PGRI 3 BOGOR</p>
+    <?php include 'wave.php'; ?>
 </section>
 
 <section class="timeline-section-wrapper">

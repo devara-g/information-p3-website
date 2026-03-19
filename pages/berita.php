@@ -8,6 +8,7 @@
     </div>
     <h1>Berita Terbaru</h1>
     <p>Informasi terkini dari SMP PGRI 3 BOGOR</p>
+    <?php include 'wave.php'; ?>
 </section>
 
 <style>
@@ -28,6 +29,7 @@
             opacity: 0;
             transform: translateY(30px);
         }
+
         to {
             opacity: 1;
             transform: translateY(0);
@@ -51,9 +53,11 @@
         0% {
             box-shadow: 0 0 0 0 rgba(9, 146, 194, 0.2);
         }
+
         70% {
             box-shadow: 0 0 0 15px rgba(9, 146, 194, 0);
         }
+
         100% {
             box-shadow: 0 0 0 0 rgba(9, 146, 194, 0);
         }
@@ -113,20 +117,20 @@
         .news-grid {
             grid-template-columns: 1fr;
         }
-        
+
         .empty-state {
             padding: 40px 20px;
         }
-        
+
         .empty-state h2 {
             font-size: 1.5rem;
         }
-        
+
         .empty-state-icon {
             width: 100px;
             height: 100px;
         }
-        
+
         .empty-state-icon i {
             font-size: 40px;
         }
@@ -140,7 +144,7 @@
 
         $sql = "SELECT * FROM berita ORDER BY id DESC LIMIT 6";
         $result = mysqli_query($conn, $sql);
-        
+
         // Cek apakah ada berita
         if (mysqli_num_rows($result) > 0) {
             // Looping berita
@@ -153,7 +157,7 @@
                     $foto_path = 'assets/img/no-image.jpg';
                     $alt_text = 'Tidak ada gambar';
                 }
-                
+
                 echo '
                 <div class="news-card">
                     <img src="' . $foto_path . '" alt="' . $alt_text . '" class="news-image">

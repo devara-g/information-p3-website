@@ -23,16 +23,16 @@ if (isset($_POST['submit'])) {
         $_SESSION['message'] = 'Format email tidak valid.';
     } else {
         // Gunakan prepared statement untuk mencegah SQL injection
-            $stmt = $conn->prepare("INSERT INTO pesan (nama, email, subjek, pesan) VALUES (?, ?, ?, ?)");
-            if ($stmt) {
-                $stmt->bind_param("ssss", $nama, $email, $subjek, $pesan);
-                if ($stmt->execute()) {
-                    $_SESSION['message_type'] = 'success';
-                    $_SESSION['message'] = 'Pesan berhasil dikirim.';
-                } else {
-                    $_SESSION['message_type'] = 'error';
-                    $_SESSION['message'] = 'Pesan gagal dikirim. Error: ' . $stmt->error;
-                }
+        $stmt = $conn->prepare("INSERT INTO pesan (nama, email, subjek, pesan) VALUES (?, ?, ?, ?)");
+        if ($stmt) {
+            $stmt->bind_param("ssss", $nama, $email, $subjek, $pesan);
+            if ($stmt->execute()) {
+                $_SESSION['message_type'] = 'success';
+                $_SESSION['message'] = 'Pesan berhasil dikirim.';
+            } else {
+                $_SESSION['message_type'] = 'error';
+                $_SESSION['message'] = 'Pesan gagal dikirim. Error: ' . $stmt->error;
+            }
             $stmt->close();
         } else {
             $_SESSION['message_type'] = 'error';
@@ -51,6 +51,7 @@ include 'header.php'; ?>
     </div>
     <h1>Kontak Kami</h1>
     <p>Hubungi SMP PGRI 3 BOGOR</p>
+    <?php include 'wave.php'; ?>
 </section>
 
 <?php if (isset($_SESSION['message'])): ?>

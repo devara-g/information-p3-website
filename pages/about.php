@@ -8,6 +8,7 @@
     </div>
     <h1>Profil Sekolah</h1>
     <p>Profil SMP PGRI 3 BOGOR</p>
+    <?php include 'wave.php'; ?>
 </section>
 
 <section class="about-content">
@@ -29,7 +30,7 @@
         </div>
         <div class="about-stats" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
             <div class="stat-card" style="background: var(--light); padding: 2rem; border-radius: 15px; text-align: center;">
-                <h3 style="font-size: 2rem; color: var(--primary);"><span class="counter" data-target="350">0</span>+</h3>
+                <h3 style="font-size: 2rem; color: var(--primary);"><span class="counter" data-target="900">0</span>+</h3>
                 <p>Siswa Aktif</p>
             </div>
             <div class="stat-card" style="background: var(--light); padding: 2rem; border-radius: 15px; text-align: center;">
