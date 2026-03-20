@@ -19,7 +19,11 @@ if (isset($_POST['edit'])) {
         $file_type = $_FILES['foto']['type'];
         $file_size = $_FILES['foto']['size'];
 
-        if (in_array($file_type, $allowed_types) && $file_size <= 5 * 1024 * 1024) {
+        if (!in_array($file_type, $allowed_types)) {
+            $error = "File tidak valid (format: JPG, JPEG, PNG, GIF)";
+        } elseif ($file_size > 3 * 1024 * 1024) {
+            $error = "Ukuran file maksimal 3MB. <br><br><a href='https://www.iloveimg.com/compress-image' target='_blank' style='color: #3b82f6; text-decoration: underline; font-weight: bold;'>Klik di sini untuk kompress foto online</a>";
+        } else {
             // Hapus foto lama
             $query_foto_lama = mysqli_query($conn, "SELECT foto FROM berita WHERE id = $id");
             $data_foto_lama = mysqli_fetch_assoc($query_foto_lama);
@@ -54,8 +58,6 @@ if (isset($_POST['edit'])) {
             } else {
                 $error = "Gagal mengupload file";
             }
-        } else {
-            $error = "File tidak valid (max 5MB, format: JPG, PNG, GIF)";
         }
     } else {
         // Update tanpa foto
@@ -127,9 +129,11 @@ if (isset($_POST['submit'])) {
         $file_size = $_FILES['foto']['size'];
 
         // Validasi tipe file
-        if (in_array($file_type, $allowed_types)) {
-            // Validasi ukuran file (max 5MB)
-            if ($file_size <= 5 * 1024 * 1024) {
+        if (!in_array($file_type, $allowed_types)) {
+            $error = "File tidak valid (format: JPG, JPEG, PNG, GIF)";
+        } elseif ($file_size > 3 * 1024 * 1024) {
+            $error = "Ukuran file maksimal 3MB. <br><br><a href='https://www.iloveimg.com/compress-image' target='_blank' style='color: #3b82f6; text-decoration: underline; font-weight: bold;'>Klik di sini untuk kompress foto online</a>";
+        } else {
                 // Buat folder jika belum ada
                 $target_dir = '../upload/img/';
                 if (!file_exists($target_dir)) {
@@ -147,11 +151,6 @@ if (isset($_POST['submit'])) {
                 } else {
                     $error = "Gagal mengupload file";
                 }
-            } else {
-                $error = "Ukuran file maksimal 5MB";
-            }
-        } else {
-            $error = "Tipe file harus JPG, PNG, atau GIF";
         }
     }
 
@@ -377,7 +376,7 @@ include 'layout/header.php';
                         <div class="file-upload-label">
                             <i class="fas fa-cloud-upload-alt"></i>
                             <span>Pilih foto atau tarik ke sini</span>
-                            <p style="font-size: 0.8rem; margin-top: 5px;">Foto landscape disarankan (Maks. 5MB)</p>
+                            <p style="font-size: 0.8rem; margin-top: 5px;">Foto landscape disarankan (Maks. 3MB)</p>
                         </div>
                     </div>
                     <div id="fileNameDisplay" class="file-name"></div>

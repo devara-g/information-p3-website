@@ -237,16 +237,12 @@ header.floating-header {
     /* Efek shine menyapu */
     linear-gradient(
       105deg,
-      transparent 20%,
-      rgba(255, 255, 255, 0.4) 25%,
+
+      rgb(255, 255, 255) 25%,
       transparent 30%
     ) -150% 0% / 200% 100% no-repeat,
     /* Warna liquid glass base */
-    linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.4) 0%,
-      rgba(255, 255, 255, 0.1) 100%
-    );
+  ;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   box-shadow: 

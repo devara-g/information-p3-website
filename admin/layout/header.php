@@ -164,7 +164,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
         <aside class="sidebar">
             <div class="sidebar-header">
                 <div class="admin-logo-container">
-                    <img src="../img/pgri3-photoroom.png" alt="Logo" class="sidebar-logo">
+                    <img src="../img/p3hd.jpg" alt="Logo" class="sidebar-logo">
                 </div>
                 <div class="sidebar-brand">
                     <h2>SMP PGRI 3 BGR</h2>

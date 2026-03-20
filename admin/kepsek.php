@@ -33,12 +33,26 @@ if (isset($_POST['action']) && $_POST['action'] == 'add') {
 
     // Handle upload foto
     $photo_filename = '';
+    $upload_ok = true;
     if (isset($_FILES['foto']) && $_FILES['foto']['error'] == 0) {
-        $ext = pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION);
-        $photo_filename = uniqid() . '.' . $ext;
-        $upload_path = '../upload/img/' . $photo_filename;
-        move_uploaded_file($_FILES['foto']['tmp_name'], $upload_path);
+        $allowed_types = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
+        if (!in_array($_FILES['foto']['type'], $allowed_types)) {
+            $message = "File foto tidak valid (format: JPG, JPEG, PNG, GIF)";
+            $messageType = "error";
+            $upload_ok = false;
+        } elseif ($_FILES['foto']['size'] > 3 * 1024 * 1024) {
+            $message = "Ukuran file maksimal 3MB. <br><br><a href='https://www.iloveimg.com/compress-image' target='_blank' style='color: #2563eb; text-decoration: underline; font-weight: bold;'>Klik di sini untuk kompress foto online</a>";
+            $messageType = "error";
+            $upload_ok = false;
+        } else {
+            $ext = pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION);
+            $photo_filename = uniqid() . '.' . $ext;
+            $upload_path = '../upload/img/' . $photo_filename;
+            move_uploaded_file($_FILES['foto']['tmp_name'], $upload_path);
+        }
     }
+
+    if ($upload_ok) {
 
     $sql = "INSERT INTO kepsek (name, nip, position, photo_filename) 
             VALUES ('$nama', '$nip', '$position', '$photo_filename')";
@@ -55,6 +69,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'add') {
             $messageType = "error";
         }
     }
+    }
 }
 
 // HANDLE EDIT DATA
@@ -66,20 +81,34 @@ if (isset($_POST['action']) && $_POST['action'] == 'edit') {
 
     // Cek apakah ada upload foto baru
     $foto_sql = "";
+    $upload_ok = true;
     if (isset($_FILES['foto']) && $_FILES['foto']['error'] == 0) {
-        // Hapus foto lama
-        $result = $conn->query("SELECT photo_filename FROM kepsek WHERE id = $id");
-        $old = $result->fetch_assoc();
-        if ($old['photo_filename'] && file_exists('../upload/img/' . $old['photo_filename'])) {
-            unlink('../upload/img/' . $old['photo_filename']);
-        }
+        $allowed_types = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
+        if (!in_array($_FILES['foto']['type'], $allowed_types)) {
+            $message = "File foto tidak valid (format: JPG, JPEG, PNG, GIF)";
+            $messageType = "error";
+            $upload_ok = false;
+        } elseif ($_FILES['foto']['size'] > 3 * 1024 * 1024) {
+            $message = "Ukuran file maksimal 3MB. <br><br><a href='https://www.iloveimg.com/compress-image' target='_blank' style='color: #2563eb; text-decoration: underline; font-weight: bold;'>Klik di sini untuk kompress foto online</a>";
+            $messageType = "error";
+            $upload_ok = false;
+        } else {
+            // Hapus foto lama
+            $result = $conn->query("SELECT photo_filename FROM kepsek WHERE id = $id");
+            $old = $result->fetch_assoc();
+            if ($old['photo_filename'] && file_exists('../upload/img/' . $old['photo_filename'])) {
+                unlink('../upload/img/' . $old['photo_filename']);
+            }
 
-        // Upload foto baru
-        $ext = pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION);
-        $photo_filename = uniqid() . '.' . $ext;
-        move_uploaded_file($_FILES['foto']['tmp_name'], '../upload/img/' . $photo_filename);
-        $foto_sql = ", photo_filename = '$photo_filename'";
+            // Upload foto baru
+            $ext = pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION);
+            $photo_filename = uniqid() . '.' . $ext;
+            move_uploaded_file($_FILES['foto']['tmp_name'], '../upload/img/' . $photo_filename);
+            $foto_sql = ", photo_filename = '$photo_filename'";
+        }
     }
+
+    if ($upload_ok) {
 
     $sql = "UPDATE kepsek SET 
             name     = '$nama',
@@ -99,6 +128,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'edit') {
             $message = "Error: " . $conn->error;
             $messageType = "error";
         }
+    }
     }
 }
 
@@ -149,10 +179,10 @@ include 'layout/header.php';
         <div class="alert-container" id="alertContainer">
             <div class="alert alert-<?php echo $messageType; ?>">
                 <i class="fas <?php
-                    if ($messageType == 'success') echo 'fa-check-circle';
-                    elseif ($messageType == 'warning') echo 'fa-exclamation-triangle';
-                    else echo 'fa-exclamation-circle';
-                ?>"></i>
+                                if ($messageType == 'success') echo 'fa-check-circle';
+                                elseif ($messageType == 'warning') echo 'fa-exclamation-triangle';
+                                else echo 'fa-exclamation-circle';
+                                ?>"></i>
                 <div class="alert-content">
                     <div class="alert-title">
                         <?php
@@ -284,13 +314,13 @@ include 'layout/header.php';
                 <div class="form-group">
                     <label>Nama Lengkap</label>
                     <input type="text" name="nama" id="nama" required placeholder="Masukkan nama lengkap"
-                           value="<?php echo $editData ? htmlspecialchars($editData['name']) : ''; ?>">
+                        value="<?php echo $editData ? htmlspecialchars($editData['name']) : ''; ?>">
                 </div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                     <div class="form-group">
                         <label>NIP</label>
                         <input type="text" name="nip" id="nip" placeholder="Contoh: 196708151992031002"
-                               value="<?php echo $editData ? htmlspecialchars($editData['nip']) : ''; ?>">
+                            value="<?php echo $editData ? htmlspecialchars($editData['nip']) : ''; ?>">
                     </div>
                     <div class="form-group">
                         <label>Jabatan</label>
@@ -310,7 +340,7 @@ include 'layout/header.php';
                     <?php if ($editData && $editData['photo_filename'] && file_exists('../upload/img/' . $editData['photo_filename'])): ?>
                         <div id="existingPhotoWrapper" style="margin-bottom: 10px; text-align: center;">
                             <img src="../upload/img/<?php echo htmlspecialchars($editData['photo_filename']); ?>"
-                                 style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary-light);">
+                                style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary-light);">
                             <p style="font-size: 0.75rem; color: var(--gray); margin-top: 3px;">Foto saat ini</p>
                         </div>
                     <?php else: ?>
@@ -320,7 +350,7 @@ include 'layout/header.php';
                         <input type="file" name="foto" class="file-upload-input" id="fotoInput" onchange="previewFile(this)" accept="image/*">
                         <div class="file-upload-label">
                             <i class="fas fa-cloud-upload-alt"></i>
-                            <span>Klik atau seret foto ke sini</span>
+                            <span>Klik atau seret foto ke sini (Maks. 3MB)</span>
                             <span class="file-name" id="fileName"></span>
                         </div>
                     </div>
@@ -402,7 +432,7 @@ include 'layout/header.php';
         modalCard.style.animation = 'none';
         modalCard.offsetHeight; // Trigger reflow
         modalCard.style.animation = 'editModalIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
-        
+
         overlay.style.display = 'flex';
         document.body.style.overflow = 'hidden';
     }
@@ -491,8 +521,19 @@ include 'layout/header.php';
     });
 
     document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') closeDeleteModal();
+        if (e.key === 'Escape') {
+            closeDeleteModal();
+            closeForm();
+        }
     });
+
+    <?php if (isset($message) && isset($messageType) && $messageType == 'error'): ?>
+        document.addEventListener('DOMContentLoaded', function() {
+            <?php if (isset($_POST['action']) && ($_POST['action'] == 'add' || $_POST['action'] == 'edit')): ?>
+                openAddForm(); 
+            <?php endif; ?>
+        });
+    <?php endif; ?>
 </script>
 
 <?php include 'layout/footer.php'; ?>

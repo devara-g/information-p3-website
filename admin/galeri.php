@@ -49,44 +49,56 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['aksi'])) {
     $aksi = $_POST['aksi'];
 
     $foto = "";
+    $upload_ok = true;
     if (isset($_FILES['foto']) && $_FILES['foto']['error'] == 0) {
-        $ext = pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION);
-        $newName = "galeri_" . time() . "_" . uniqid() . "." . $ext;
-        $target = "../upload/img/" . $newName;
+        $allowed_types = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
+        if (!in_array($_FILES['foto']['type'], $allowed_types)) {
+            $galeri_error = "File foto tidak valid (format: JPG, JPEG, PNG, GIF)";
+            $upload_ok = false;
+        } elseif ($_FILES['foto']['size'] > 3 * 1024 * 1024) {
+            $galeri_error = "Ukuran file maksimal 3MB. <br><br><a href='https://www.iloveimg.com/compress-image' target='_blank' style='color: #2563eb; text-decoration: underline; font-weight: bold;'>Klik di sini untuk kompress foto online</a>";
+            $upload_ok = false;
+        } else {
+            $ext = pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION);
+            $newName = "galeri_" . time() . "_" . uniqid() . "." . $ext;
+            $target = "../upload/img/" . $newName;
 
-        if (!file_exists("../upload/img/")) mkdir("../upload/img/", 0777, true);
+            if (!file_exists("../upload/img/")) mkdir("../upload/img/", 0777, true);
 
-        if (move_uploaded_file($_FILES['foto']['tmp_name'], $target)) {
-            $foto = "upload/img/" . $newName;
+            if (move_uploaded_file($_FILES['foto']['tmp_name'], $target)) {
+                $foto = "upload/img/" . $newName;
 
-            // Hapus foto lama jika edit
-            if ($aksi == 'edit' && $id > 0) {
-                $q = mysqli_query($conn, "SELECT foto FROM galeri WHERE id = $id");
-                $old = mysqli_fetch_assoc($q);
-                if ($old && !empty($old['foto'])) {
-                    $oldPath = "../" . $old['foto'];
-                    if (file_exists($oldPath)) unlink($oldPath);
+                // Hapus foto lama jika edit
+                if ($aksi == 'edit' && $id > 0) {
+                    $q = mysqli_query($conn, "SELECT foto FROM galeri WHERE id = $id");
+                    $old = mysqli_fetch_assoc($q);
+                    if ($old && !empty($old['foto'])) {
+                        $oldPath = "../" . $old['foto'];
+                        if (file_exists($oldPath)) unlink($oldPath);
+                    }
                 }
             }
         }
     }
 
-    if ($aksi == 'tambah') {
-        $sql = "INSERT INTO galeri (judul, kategori, deskripsi, foto) VALUES ('$judul', '$kategori', '$deskripsi', '$foto')";
-    } else {
-        if ($foto != "") {
-            $sql = "UPDATE galeri SET judul='$judul', kategori='$kategori', deskripsi='$deskripsi', foto='$foto' WHERE id=$id";
+    if ($upload_ok) {
+        if ($aksi == 'tambah') {
+            $sql = "INSERT INTO galeri (judul, kategori, deskripsi, foto) VALUES ('$judul', '$kategori', '$deskripsi', '$foto')";
         } else {
-            $sql = "UPDATE galeri SET judul='$judul', kategori='$kategori', deskripsi='$deskripsi' WHERE id=$id";
+            if ($foto != "") {
+                $sql = "UPDATE galeri SET judul='$judul', kategori='$kategori', deskripsi='$deskripsi', foto='$foto' WHERE id=$id";
+            } else {
+                $sql = "UPDATE galeri SET judul='$judul', kategori='$kategori', deskripsi='$deskripsi' WHERE id=$id";
+            }
+        }
+
+        if (mysqli_query($conn, $sql)) {
+            header("Location: galeri.php?status=success&message=Data berhasil disimpan");
+            exit;
+        } else {
+            $galeri_error = "Gagal menyimpan data";
         }
     }
-
-    if (mysqli_query($conn, $sql)) {
-        header("Location: galeri.php?status=success&message=Data berhasil disimpan");
-    } else {
-        header("Location: galeri.php?status=error&message=Gagal menyimpan data");
-    }
-    exit;
 }
 
 $title = "Manajemen Galeri";
@@ -95,14 +107,18 @@ include 'layout/header.php';
 
 
 <div class="admin-page-container">
-    <?php if (isset($_GET['status'])) : ?>
+    <?php if (isset($_GET['status']) || isset($galeri_error)) : ?>
+        <?php
+            $is_success = isset($_GET['status']) && $_GET['status'] == 'success';
+            $alert_class = $is_success ? 'success' : 'error';
+        ?>
         <div class="alert-container">
-            <div class="alert alert-<?= $_GET['status'] == 'success' ? 'success' : 'error' ?>">
-                <i class="fas <?= $_GET['status'] == 'success' ? 'fa-check-circle' : 'fa-exclamation-circle' ?>"></i>
+            <div class="alert alert-<?= $alert_class ?>">
+                <i class="fas <?= $is_success ? 'fa-check-circle' : 'fa-exclamation-circle' ?>"></i>
                 <div class="alert-content">
-                    <div class="alert-title"><?= $_GET['status'] == 'success' ? 'Berhasil!' : 'Gagal!' ?></div>
+                    <div class="alert-title"><?= $is_success ? 'Berhasil!' : 'Gagal!' ?></div>
                     <div class="alert-message">
-                        <?= htmlspecialchars($_GET['message']) ?>
+                        <?= isset($galeri_error) ? $galeri_error : htmlspecialchars($_GET['message'] ?? '') ?>
                     </div>
                 </div>
                 <div class="alert-close" onclick="this.closest('.alert-container').remove()">
@@ -248,7 +264,7 @@ include 'layout/header.php';
                         <div class="file-upload-label" id="uploadLabelArea">
                             <i class="fas fa-cloud-upload-alt"></i>
                             <span>Klik atau seret foto ke sini</span>
-                            <p style="font-size: 0.8rem; margin-top: 5px;">Format: JPG, PNG, GIF (Maks. 10MB)</p>
+                            <p style="font-size: 0.8rem; margin-top: 5px;">Format: JPG, PNG, GIF (Maks. 3MB)</p>
                         </div>
                     </div>
                 </div>
@@ -335,13 +351,13 @@ include 'layout/header.php';
         document.getElementById('imagePreview').style.display = 'none';
         document.getElementById('previewImg').src = ''; // Clear previous image
         document.getElementById('uploadLabelArea').querySelector('span').innerText = 'Klik atau seret foto ke sini'; // Reset upload text
-        
+
         // Bounce animation for modal
         const modalCard = overlay.querySelector('.modal-card');
         modalCard.style.animation = 'none';
         modalCard.offsetHeight;
         modalCard.style.animation = 'editModalIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
-        
+
         overlay.style.display = 'flex';
         document.body.style.overflow = 'hidden';
     }
@@ -375,7 +391,7 @@ include 'layout/header.php';
         modalCard.style.animation = 'none';
         modalCard.offsetHeight;
         modalCard.style.animation = 'editModalIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
-        
+
         overlay.style.display = 'flex';
         document.body.style.overflow = 'hidden';
     }
@@ -428,6 +444,16 @@ include 'layout/header.php';
     window.onclick = function(e) {
         if (e.target == document.getElementById('formOverlay')) closeForm();
     }
+
+    <?php if (isset($galeri_error)): ?>
+        document.addEventListener('DOMContentLoaded', function() {
+            <?php if (isset($_POST['aksi']) && $_POST['aksi'] == 'tambah'): ?>
+                openAddModal('tambah');
+            <?php elseif (isset($_POST['aksi']) && $_POST['aksi'] == 'edit'): ?>
+                openAddModal('edit'); // fallback
+            <?php endif; ?>
+        });
+    <?php endif; ?>
 </script>
 
 <?php include 'layout/footer.php'; ?>

@@ -42,12 +42,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['aksi']) && $_POST['aks
 
     // Handle file upload
     $foto = null;
+    $upload_ok = true;
     if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
         $allowed_types = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
         $file_type = $_FILES['foto']['type'];
         $file_size = $_FILES['foto']['size'];
 
-        if (in_array($file_type, $allowed_types) && $file_size <= 5 * 1024 * 1024) {
+        if (!in_array($file_type, $allowed_types)) {
+            $error_message = "File foto tidak valid (format: JPG, JPEG, PNG, GIF)";
+            $upload_ok = false;
+        } elseif ($file_size > 3 * 1024 * 1024) {
+            $error_message = "Ukuran file maksimal 3MB. <br><br><a href='https://www.iloveimg.com/compress-image' target='_blank' style='color: #2563eb; text-decoration: underline; font-weight: bold;'>Klik di sini untuk kompress foto online</a>";
+            $upload_ok = false;
+        } else {
             $target_dir = '../upload/img/';
             if (!file_exists($target_dir)) {
                 mkdir($target_dir, 0777, true);
@@ -63,17 +70,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['aksi']) && $_POST['aks
         }
     }
 
+    if ($upload_ok) {
+
     // Prepared statement untuk INSERT
     $stmt = mysqli_prepare($conn, "INSERT INTO agenda (judul, tanggal, waktu, lokasi, deskripsi, status, foto) VALUES (?, ?, ?, ?, ?, ?, ?)");
     mysqli_stmt_bind_param($stmt, "sssssss", $judul, $tanggal, $waktu, $lokasi, $keterangan, $status, $foto);
 
-    if (mysqli_stmt_execute($stmt)) {
-        header("Location: agenda.php?status=success&message=Agenda berhasil ditambahkan");
-        exit();
-    } else {
-        $error_message = "Gagal menambahkan agenda: " . mysqli_error($conn);
+        if (mysqli_stmt_execute($stmt)) {
+            header("Location: agenda.php?status=success&message=Agenda berhasil ditambahkan");
+            exit();
+        } else {
+            $error_message = "Gagal menambahkan agenda: " . mysqli_error($conn);
+        }
+        mysqli_stmt_close($stmt);
     }
-    mysqli_stmt_close($stmt);
 }
 
 // Menambahkan handler untuk form edit agenda
@@ -91,12 +101,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['aksi']) && $_POST['aks
     $bind_types = "ssssssi";
     $bind_params = [$judul, $tanggal, $waktu, $lokasi, $keterangan, $status, $id];
 
+    $upload_ok = true;
     if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
         $allowed_types = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
         $file_type = $_FILES['foto']['type'];
         $file_size = $_FILES['foto']['size'];
 
-        if (in_array($file_type, $allowed_types) && $file_size <= 5 * 1024 * 1024) {
+        if (!in_array($file_type, $allowed_types)) {
+            $error_message = "File foto tidak valid (format: JPG, JPEG, PNG, GIF)";
+            $upload_ok = false;
+        } elseif ($file_size > 3 * 1024 * 1024) {
+            $error_message = "Ukuran file maksimal 3MB. <br><br><a href='https://www.iloveimg.com/compress-image' target='_blank' style='color: #2563eb; text-decoration: underline; font-weight: bold;'>Klik di sini untuk kompress foto online</a>";
+            $upload_ok = false;
+        } else {
             // Hapus foto lama
             $query_foto_lama = mysqli_query($conn, "SELECT foto FROM agenda WHERE id = $id");
             $data_foto_lama = mysqli_fetch_assoc($query_foto_lama);
@@ -125,17 +142,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['aksi']) && $_POST['aks
         }
     }
 
-    // Prepared statement untuk UPDATE
-    $stmt = mysqli_prepare($conn, $sql_update);
-    mysqli_stmt_bind_param($stmt, $bind_types, ...$bind_params);
+    if ($upload_ok) {
 
-    if (mysqli_stmt_execute($stmt)) {
-        header("Location: agenda.php?status=success&message=Agenda berhasil diperbarui");
-        exit();
-    } else {
-        $error_message = "Gagal memperbarui agenda: " . mysqli_error($conn);
+        // Prepared statement untuk UPDATE
+        $stmt = mysqli_prepare($conn, $sql_update);
+        mysqli_stmt_bind_param($stmt, $bind_types, ...$bind_params);
+
+        if (mysqli_stmt_execute($stmt)) {
+            header("Location: agenda.php?status=success&message=Agenda berhasil diperbarui");
+            exit();
+        } else {
+            $error_message = "Gagal memperbarui agenda: " . mysqli_error($conn);
+        }
+        mysqli_stmt_close($stmt);
     }
-    mysqli_stmt_close($stmt);
 }
 
 // Menambahkan fungsi untuk mengambil data agenda berdasarkan ID (untuk edit)
@@ -158,32 +178,18 @@ include 'layout/header.php';
 
 <div class="admin-page-container">
     <!-- Tampilkan Notifikasi -->
-    <!-- Tampilkan Notifikasi -->
-    <?php if (isset($_GET['status'])): ?>
+    <?php if (isset($_GET['status']) || isset($error_message)): ?>
+        <?php 
+            $is_success = isset($_GET['status']) && $_GET['status'] == 'success';
+            $alert_class = $is_success ? 'success' : 'error';
+        ?>
         <div class="alert-container">
-            <div class="alert alert-<?php echo $_GET['status'] == 'success' ? 'success' : 'error'; ?>">
-                <i class="fas fa-<?php echo $_GET['status'] == 'success' ? 'check-circle' : 'exclamation-circle'; ?>"></i>
+            <div class="alert alert-<?= $alert_class ?>">
+                <i class="fas fa-<?= $is_success ? 'check-circle' : 'exclamation-circle' ?>"></i>
                 <div class="alert-content">
-                    <div class="alert-title"><?php echo $_GET['status'] == 'success' ? 'Berhasil!' : 'Gagal!'; ?></div>
+                    <div class="alert-title"><?= $is_success ? 'Berhasil!' : 'Gagal!' ?></div>
                     <div class="alert-message">
-                        <?php echo htmlspecialchars($_GET['message'] ?? ($_GET['status'] == 'success' ? 'Operasi berhasil!' : 'Terjadi kesalahan!')); ?>
-                    </div>
-                </div>
-                <div class="alert-close" onclick="this.closest('.alert-container').remove()">
-                    <i class="fas fa-times"></i>
-                </div>
-            </div>
-        </div>
-    <?php endif; ?>
-
-    <?php if (isset($error_message)): ?>
-        <div class="alert-container">
-            <div class="alert alert-error">
-                <i class="fas fa-exclamation-circle"></i>
-                <div class="alert-content">
-                    <div class="alert-title">Gagal!</div>
-                    <div class="alert-message">
-                        <?php echo htmlspecialchars($error_message); ?>
+                        <?= isset($error_message) ? $error_message : ($_GET['message'] ?? ($is_success ? 'Operasi berhasil!' : 'Terjadi kesalahan!')) ?>
                     </div>
                 </div>
                 <div class="alert-close" onclick="this.closest('.alert-container').remove()">
@@ -445,7 +451,7 @@ include 'layout/header.php';
                             <div class="file-upload-label" id="uploadLabelArea">
                                 <i class="fas fa-cloud-upload-alt"></i>
                                 <span>Pilih foto atau tarik ke sini</span>
-                                <p style="font-size: 0.8rem; margin-top: 5px;">Format: JPG, PNG, GIF (Maks. 5MB)</p>
+                                <p style="font-size: 0.8rem; margin-top: 5px;">Format: JPG, PNG, GIF (Maks. 3MB)</p>
                             </div>
                         </div>
                         <div id="imagePreview" class="image-preview">
@@ -679,6 +685,13 @@ include 'layout/header.php';
         const formOverlay = document.getElementById('formOverlay');
         if (deleteModalOverlay) document.body.appendChild(deleteModalOverlay);
         if (formOverlay) document.body.appendChild(formOverlay);
+
+        // Reopen form if error
+        <?php if (isset($error_message)): ?>
+            document.addEventListener('DOMContentLoaded', function() {
+                openAddForm();
+            });
+        <?php endif; ?>
     </script>
 
     <?php include 'layout/footer.php'; ?>

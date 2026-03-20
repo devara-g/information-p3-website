@@ -23,15 +23,27 @@ if (isset($_POST['action']) && $_POST['action'] == 'add') {
 
     // Handle upload foto
     $photo_filename = '';
+    $upload_ok = true;
     if (isset($_FILES['foto']) && $_FILES['foto']['error'] == 0) {
-        $ext = pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION);
-        $photo_filename = uniqid() . '.' . $ext;
-        $upload_path = '../upload/img/' . $photo_filename;
+        $allowed_types = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
+        if (!in_array($_FILES['foto']['type'], $allowed_types)) {
+            $message = "File foto tidak valid (format: JPG, JPEG, PNG, GIF)";
+            $messageType = "error";
+            $upload_ok = false;
+        } elseif ($_FILES['foto']['size'] > 3 * 1024 * 1024) {
+            $message = "Ukuran file maksimal 3MB. <br><br><a href='https://www.iloveimg.com/compress-image' target='_blank' style='color: #2563eb; text-decoration: underline; font-weight: bold;'>Klik di sini untuk kompress foto online</a>";
+            $messageType = "error";
+            $upload_ok = false;
+        } else {
+            $ext = pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION);
+            $photo_filename = uniqid() . '.' . $ext;
+            $upload_path = '../upload/img/' . $photo_filename;
 
-        if (move_uploaded_file($_FILES['foto']['tmp_name'], $upload_path)) {
-            // Foto berhasil diupload
+            move_uploaded_file($_FILES['foto']['tmp_name'], $upload_path);
         }
     }
+
+    if ($upload_ok) {
 
     // Dapatkan sort_order terakhir untuk category ini
     $result = $conn->query("SELECT MAX(sort_order) as max_sort FROM mpk WHERE category = '$category'");
@@ -48,6 +60,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'add') {
         $message = "Error: " . $conn->error;
         $messageType = "error";
     }
+    }
 }
 
 // HANDLE EDIT DATA
@@ -60,20 +73,34 @@ if (isset($_POST['action']) && $_POST['action'] == 'edit') {
 
     // Cek apakah ada upload foto baru
     $foto_sql = "";
+    $upload_ok = true;
     if (isset($_FILES['foto']) && $_FILES['foto']['error'] == 0) {
-        // Hapus foto lama
-        $result = $conn->query("SELECT photo_filename FROM mpk WHERE id = $id");
-        $old = $result->fetch_assoc();
-        if ($old['photo_filename'] && file_exists('../upload/img/' . $old['photo_filename'])) {
-            unlink('../upload/img/' . $old['photo_filename']);
-        }
+        $allowed_types = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
+        if (!in_array($_FILES['foto']['type'], $allowed_types)) {
+            $message = "File foto tidak valid (format: JPG, JPEG, PNG, GIF)";
+            $messageType = "error";
+            $upload_ok = false;
+        } elseif ($_FILES['foto']['size'] > 3 * 1024 * 1024) {
+            $message = "Ukuran file maksimal 3MB. <br><br><a href='https://www.iloveimg.com/compress-image' target='_blank' style='color: #2563eb; text-decoration: underline; font-weight: bold;'>Klik di sini untuk kompress foto online</a>";
+            $messageType = "error";
+            $upload_ok = false;
+        } else {
+            // Hapus foto lama
+            $result = $conn->query("SELECT photo_filename FROM mpk WHERE id = $id");
+            $old = $result->fetch_assoc();
+            if ($old['photo_filename'] && file_exists('../upload/img/' . $old['photo_filename'])) {
+                unlink('../upload/img/' . $old['photo_filename']);
+            }
 
-        // Upload foto baru
-        $ext = pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION);
-        $photo_filename = uniqid() . '.' . $ext;
-        move_uploaded_file($_FILES['foto']['tmp_name'], '../upload/img/' . $photo_filename);
-        $foto_sql = ", photo_filename = '$photo_filename'";
+            // Upload foto baru
+            $ext = pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION);
+            $photo_filename = uniqid() . '.' . $ext;
+            move_uploaded_file($_FILES['foto']['tmp_name'], '../upload/img/' . $photo_filename);
+            $foto_sql = ", photo_filename = '$photo_filename'";
+        }
     }
+
+    if ($upload_ok) {
 
     $sql = "UPDATE mpk SET 
             category = '$category',
@@ -89,6 +116,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'edit') {
     } else {
         $message = "Error: " . $conn->error;
         $messageType = "error";
+    }
     }
 }
 
@@ -323,7 +351,7 @@ include 'layout/header.php';
                         <input type="file" name="foto" class="file-upload-input" id="fotoInput" onchange="previewFile(this)" accept="image/*">
                         <div class="file-upload-label">
                             <i class="fas fa-cloud-upload-alt"></i>
-                            <span>Klik atau seret foto ke sini</span>
+                            <span>Klik atau seret foto ke sini (Maks. 3MB)</span>
                             <span class="file-name" id="fileName"></span>
                         </div>
                     </div>
@@ -529,8 +557,19 @@ include 'layout/header.php';
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             closeDeleteModal();
+            closeAddModal();
         }
     });
+
+    <?php if (isset($message) && isset($messageType) && $messageType == 'error'): ?>
+        document.addEventListener('DOMContentLoaded', function() {
+            <?php if (isset($_POST['action']) && $_POST['action'] == 'add'): ?>
+                openAddModal('<?= htmlspecialchars($_POST['category'] ?? '') ?>');
+            <?php elseif (isset($_POST['action']) && $_POST['action'] == 'edit'): ?>
+                openAddModal('<?= htmlspecialchars($_POST['category'] ?? '') ?>'); // fallback for modal reopen
+            <?php endif; ?>
+        });
+    <?php endif; ?>
 </script>
 
 <?php include 'layout/footer.php'; ?>

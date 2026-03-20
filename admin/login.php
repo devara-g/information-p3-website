@@ -726,7 +726,7 @@ if (isset($_SESSION['status']) && $_SESSION['status'] == "login") {
 
                 <div class="visual-content">
                     <div class="visual-logo">
-                        <img src="../img/pgri3-photoroom.png" alt="SMP PGRI 3 BOGOR">
+                        <img src="../img/p3hd.jpg" alt="SMP PGRI 3 BOGOR">
                     </div>
                     <h2>Control Your Digital web.</h2>
                     <p>Pusat kendali administrasi SMP PGRI 3 BOGOR. Kelola agenda, berita, dan data guru dengan satu platform cerdas.</p>
