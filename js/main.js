@@ -118,6 +118,31 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  // --- Dynamic Hero Bubbles (Applied to all pages with .floating-shapes) ---
+  const floatingShapesContainers = document.querySelectorAll('.floating-shapes');
+  floatingShapesContainers.forEach(container => {
+      // Clear existing static shapes mostly added in HTML
+      container.innerHTML = '';
+      
+      // Add 20 random bubbles for rich particle effect
+      for (let i = 0; i < 20; i++) {
+          const p = document.createElement('div');
+          p.className = 'shape'; // Base class from CSS
+          
+          // Random size between 10px and 80px
+          const size = Math.random() * 70 + 10; 
+          
+          p.style.cssText = `
+              width:${size}px; height:${size}px;
+              left:${Math.random() * 100}%;
+              animation-duration:${Math.random() * 20 + 10}s;
+              animation-delay:${Math.random() * -20}s;
+              opacity:${Math.random() * 0.2 + 0.05};
+          `;
+          container.appendChild(p);
+      }
+  });
+
   // Smooth scroll for anchor links
   document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
     anchor.addEventListener("click", function (e) {

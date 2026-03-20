@@ -5,6 +5,9 @@
         <div class="shape shape-1"></div>
         <div class="shape shape-2"></div>
         <div class="shape shape-3"></div>
+        <div class="shape shape-4"></div>
+        <div class="shape shape-5"></div>
+        <div class="shape shape-6"></div>
     </div>
     <h1>Agenda Sekolah</h1>
     <p>Jadwal kegiatan SMP PGRI 3 BOGOR</p>
@@ -48,3 +51,4 @@
 </section>
 
 <?php include 'footer.php'; ?>
+
