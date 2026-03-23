@@ -2161,7 +2161,518 @@ footer::before {
   }
 }
 
-/* Hide old cosmic elements */
+/* ==========================================================================
+   Modernized Card Core System
+   ========================================================================== */
+
+/* 1. News & Agenda Cards (Berita.php & Agenda.php) */
+.news-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 35px;
+    padding: 20px 0;
+}
+
+.news-card {
+    background: var(--white);
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(11, 45, 114, 0.05);
+    transition: var(--transition);
+    border: 1px solid rgba(11, 45, 114, 0.03);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.news-card:hover {
+    transform: translateY(-12px);
+    box-shadow: 0 25px 60px rgba(11, 45, 114, 0.12);
+    border-color: rgba(11, 45, 114, 0.08);
+}
+
+.news-image {
+    width: 100%;
+    height: 240px;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.news-card:hover .news-image {
+    transform: scale(1.08);
+}
+
+.news-info {
+    padding: 30px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.news-date {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--primary-light);
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.news-date i {
+    font-size: 1rem;
+}
+
+.news-title {
+    font-size: 1.45rem;
+    font-weight: 800;
+    color: var(--primary);
+    line-height: 1.4;
+    margin-bottom: 15px;
+    transition: var(--transition);
+}
+
+.news-card:hover .news-title {
+    color: var(--secondary);
+}
+
+.news-excerpt {
+    color: var(--gray);
+    font-size: 1rem;
+    line-height: 1.8;
+    margin-bottom: 25px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.read-more {
+    margin-top: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    color: var(--primary);
+    padding: 12px 25px;
+    background: var(--light);
+    border-radius: 50px;
+    width: fit-content;
+    transition: var(--transition);
+}
+
+.read-more:hover {
+    background: var(--primary);
+    color: var(--white);
+    padding-right: 30px;
+    box-shadow: 0 10px 20px rgba(11, 45, 114, 0.2);
+}
+
+.read-more i {
+    transition: transform 0.3s ease;
+}
+
+.read-more:hover i {
+    transform: translateX(5px);
+}
+
+/* 2. Guru & Staff Cards (Guru.php, Struktur.php, Osis.php, Mpk.php) */
+.guru-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 30px;
+    padding: 20px 0;
+}
+
+.guru-card {
+    background: var(--white);
+    border-radius: 30px;
+    overflow: hidden;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+    transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+    border: 1px solid rgba(0, 0, 0, 0.02);
+    position: relative;
+    z-index: 1;
+}
+
+.guru-card:hover {
+    transform: translateY(-15px);
+    box-shadow: 0 30px 60px rgba(11, 45, 114, 0.15);
+}
+
+.card-image {
+    position: relative;
+    height: 320px;
+    overflow: hidden;
+    background: #f1f5f9;
+}
+
+.card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.7s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.guru-card:hover .card-image img {
+    transform: scale(1.1) translateY(-10px);
+}
+
+.card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(11, 45, 114, 0.9) 0%, transparent 60%);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 30px;
+    opacity: 0;
+    transition: all 0.4s ease;
+}
+
+.guru-card:hover .card-overlay {
+    opacity: 1;
+}
+
+.contact-btn {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    background: var(--white);
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    transform: translateY(20px);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.guru-card:hover .contact-btn {
+    transform: translateY(0);
+}
+
+.contact-btn:hover {
+    background: var(--secondary);
+    color: var(--white);
+    transform: scale(1.1);
+}
+
+.card-info {
+    padding: 25px 20px;
+    text-align: center;
+    background: var(--white);
+    position: relative;
+    z-index: 2;
+}
+
+.guru-name {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--primary);
+    margin-bottom: 10px;
+    line-height: 1.3;
+}
+
+.guru-nip {
+    font-size: 0.9rem;
+    color: var(--gray);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    padding: 4px 12px;
+    background: var(--light);
+    border-radius: 10px;
+}
+
+.guru-mapel {
+    font-size: 0.95rem;
+    color: var(--primary-light);
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+/* 3. Visi-Misi Timeline Cards */
+.timeline-card {
+    background: var(--white) !important;
+    padding: 35px !important;
+    border-radius: 24px !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05) !important;
+    transition: var(--transition) !important;
+    border: 1px solid rgba(0, 0, 0, 0.03) !important;
+    position: relative !important;
+    margin-bottom: 20px;
+}
+
+.timeline-card:hover {
+    transform: scale(1.02) translateY(-5px) !important;
+    box-shadow: 0 20px 50px rgba(11, 45, 114, 0.1) !important;
+}
+
+.timeline-card h3 {
+    font-size: 2rem !important;
+    font-weight: 800 !important;
+    color: var(--primary) !important;
+    margin-bottom: 20px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 15px !important;
+}
+
+.timeline-card h3::after {
+    content: "" !important;
+    flex-grow: 1 !important;
+    height: 2px !important;
+    background: var(--gradient-primary) !important;
+    opacity: 0.2 !important;
+}
+
+.timeline-card p {
+    font-size: 1.15rem !important;
+    line-height: 1.8 !important;
+    color: var(--dark) !important;
+    font-weight: 500 !important;
+}
+
+.timeline-card ul li {
+    padding: 12px 20px !important;
+    background: var(--light) !important;
+    border-radius: 15px !important;
+    margin-bottom: 12px !important;
+    font-weight: 600 !important;
+    color: var(--dark) !important;
+    border-left: 4px solid var(--primary-light) !important;
+    transition: var(--transition) !important;
+}
+
+.timeline-card ul li:hover {
+    background: var(--white) !important;
+    transform: translateX(10px) !important;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* 4. About & Stats Cards (Profil Sekolah) */
+.about-card {
+    padding: 40px !important;
+    border-radius: 30px !important;
+    border: 1px solid rgba(0, 0, 0, 0.03) !important;
+}
+
+.about-card-icon {
+    width: 80px !important;
+    height: 80px !important;
+    font-size: 2rem !important;
+    margin-bottom: 25px !important;
+    border-radius: 20px !important;
+}
+
+.stat-card {
+    background: var(--white) !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05) !important;
+    border: 1px solid rgba(0, 0, 0, 0.02) !important;
+    transition: var(--transition) !important;
+    padding: 30px !important;
+    border-radius: 20px !important;
+}
+
+.stat-card:hover {
+    transform: translateY(-8px) !important;
+    box-shadow: 0 20px 40px rgba(11, 45, 114, 0.1) !important;
+}
+
+.stat-card h3 {
+    font-weight: 800 !important;
+    margin-bottom: 10px;
+}
+
+/* 5. Facility & Gallery Items */
+.gallery-section {
+    margin-bottom: 80px;
+}
+
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 30px;
+}
+
+.gallery-item {
+    border-radius: 24px !important;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.gallery-overlay {
+    backdrop-filter: blur(4px) !important;
+    border-radius: 24px !important;
+}
+
+/* 6. General Section Header Support */
+.section-header {
+    padding-bottom: 10px;
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.header-icon {
+    width: 60px !important;
+    height: 60px !important;
+    border-radius: 18px !important;
+    font-size: 1.5rem !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.section-header h2 {
+    font-size: 2.2rem !important;
+    font-weight: 800 !important;
+    color: var(--primary);
+}
+
+.teacher-count {
+    background: var(--light) !important;
+    color: var(--primary) !important;
+    padding: 8px 20px !important;
+    font-size: 1rem !important;
+    font-weight: 700 !important;
+    border-radius: 50px;
+}
+
+/* Visi Misi Specific Layout */
+.timeline-section-wrapper {
+    padding: 100px 20px;
+    background: var(--light);
+}
+
+.timeline-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* ==========================================================================
+   Modern Empty State Design (Global)
+   ========================================================================== */
+.empty-state {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 80px 40px;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    border-radius: 40px;
+    border: 1px solid rgba(11, 45, 114, 0.05);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.04);
+    margin: 40px auto;
+    max-width: 800px;
+    width: 100%;
+    animation: fadeInUp 0.8s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.empty-state-icon {
+    width: 120px;
+    height: 120px;
+    background: var(--light);
+    border-radius: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 30px;
+    position: relative;
+    transition: var(--transition);
+}
+
+.empty-state-icon i {
+    font-size: 3.5rem;
+    color: var(--primary-light);
+    position: relative;
+    z-index: 2;
+}
+
+.empty-state-icon::after {
+    content: "";
+    position: absolute;
+    inset: -10px;
+    border-radius: 50px;
+    background: var(--primary-light);
+    opacity: 0.1;
+    animation: iconPulse 3s infinite;
+}
+
+@keyframes iconPulse {
+    0% { transform: scale(1); opacity: 0.1; }
+    50% { transform: scale(1.15); opacity: 0.05; }
+    100% { transform: scale(1); opacity: 0.1; }
+}
+
+.empty-state h2, .empty-state h3 {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--primary);
+    margin-bottom: 15px;
+    letter-spacing: -0.5px;
+}
+
+.empty-state p {
+    font-size: 1.1rem;
+    color: var(--gray);
+    max-width: 500px;
+    line-height: 1.7;
+    margin-bottom: 35px;
+}
+
+.empty-state-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 35px;
+    background: var(--gradient-primary);
+    color: var(--white);
+    border-radius: 50px;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 10px 25px rgba(11, 45, 114, 0.2);
+    transition: var(--transition);
+}
+
+.empty-state-btn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(11, 45, 114, 0.3);
+    color: var(--white);
+}
+
+@media (max-width: 768px) {
+    .empty-state {
+        padding: 50px 25px;
+        margin: 20px;
+        border-radius: 30px;
+    }
+    .empty-state-icon {
+        width: 90px;
+        height: 90px;
+    }
+    .empty-state-icon i {
+        font-size: 2.5rem;
+    }
+    .empty-state h2, .empty-state h3 {
+        font-size: 1.5rem;
+    }
+}
+
+
 .nebula-bg,
 .stars,
 .login-planet,

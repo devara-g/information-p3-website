@@ -40,10 +40,15 @@
         echo '</div>';
     } else {
         echo '
-        <div class="empty-state" style="text-align: center; padding: 80px 20px; background: #fff; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.08);">
-            <i class="fas fa-calendar-times" style="font-size: 4rem; color: #bdc3c7; margin-bottom: 20px;"></i>
-            <h3 style="color: #2c3e50; font-size: 1.5rem; margin-bottom: 10px;">Agenda Kosong</h3>
-            <p style="color: #7f8c8d;">Belum ada agenda sekolah yang tersedia.</p>
+        <div class="empty-state">
+            <div class="empty-state-icon">
+                <i class="fas fa-calendar-times"></i>
+            </div>
+            <h3>Agenda Kosong</h3>
+            <p>Belum ada agenda sekolah yang dijadwalkan untuk saat ini. Silakan periksa kembali beberapa saat lagi.</p>
+            <a href="../index.php" class="empty-state-btn">
+                <i class="fas fa-home"></i> Kembali ke Beranda
+            </a>
         </div>
         ';
     }

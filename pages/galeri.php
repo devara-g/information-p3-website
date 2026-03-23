@@ -46,7 +46,10 @@
                             </div>
                         <?php endwhile; ?>
                     <?php else : ?>
-                        <p style="grid-column: 1/-1; text-align: center; color: var(--gray); padding: 50px 0;">Belum ada foto untuk kategori ini.</p>
+                        <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px; background: rgba(0,0,0,0.02); border-radius: 20px; margin: 20px 0;">
+                            <i class="fas fa-images" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 15px; display: block;"></i>
+                            <p style="color: var(--gray); font-weight: 500;">Belum ada foto untuk kategori ini.</p>
+                        </div>
                     <?php endif; ?>
                 </div>
             </div>

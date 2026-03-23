@@ -447,7 +447,7 @@ include 'layout/header.php';
                     <div class="form-group">
                         <label>Foto Agenda</label>
                         <div class="file-upload-wrapper">
-                            <input type="file" name="foto" id="foto" class="file-upload-input" onchange="previewImage(this)">
+                            <input type="file" name="foto" id="fotoInput" class="file-upload-input" onchange="previewFile(this)">
                             <div class="file-upload-label" id="uploadLabelArea">
                                 <i class="fas fa-cloud-upload-alt"></i>
                                 <span>Pilih foto atau tarik ke sini</span>
