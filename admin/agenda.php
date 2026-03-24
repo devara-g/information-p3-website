@@ -20,14 +20,15 @@ if (isset($_GET['aksi']) && $_GET['aksi'] == 'hapus' && isset($_GET['id'])) {
         mysqli_stmt_bind_param($stmt, "i", $id);
 
         if (mysqli_stmt_execute($stmt)) {
+            mysqli_stmt_close($stmt);
             // Redirect dengan parameter success
             header("Location: agenda.php?status=success&message=Agenda berhasil dihapus");
             exit();
         } else {
+            mysqli_stmt_close($stmt);
             header("Location: agenda.php?status=error&message=Gagal menghapus agenda");
             exit();
         }
-        mysqli_stmt_close($stmt);
     }
 }
 
@@ -41,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['aksi']) && $_POST['aks
     $status = 'akan datang'; // Default status
 
     // Handle file upload
-    $foto = null;
+    $foto = '';
     $upload_ok = true;
     if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
         $allowed_types = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
@@ -72,9 +73,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['aksi']) && $_POST['aks
 
     if ($upload_ok) {
 
-    // Prepared statement untuk INSERT
-    $stmt = mysqli_prepare($conn, "INSERT INTO agenda (judul, tanggal, waktu, lokasi, deskripsi, status, foto) VALUES (?, ?, ?, ?, ?, ?, ?)");
-    mysqli_stmt_bind_param($stmt, "sssssss", $judul, $tanggal, $waktu, $lokasi, $keterangan, $status, $foto);
+        // Prepared statement untuk INSERT
+        $stmt = mysqli_prepare($conn, "INSERT INTO agenda (judul, tanggal, waktu, lokasi, deskripsi, status, foto) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        mysqli_stmt_bind_param($stmt, "sssssss", $judul, $tanggal, $waktu, $lokasi, $keterangan, $status, $foto);
 
         if (mysqli_stmt_execute($stmt)) {
             header("Location: agenda.php?status=success&message=Agenda berhasil ditambahkan");
@@ -179,9 +180,9 @@ include 'layout/header.php';
 <div class="admin-page-container">
     <!-- Tampilkan Notifikasi -->
     <?php if (isset($_GET['status']) || isset($error_message)): ?>
-        <?php 
-            $is_success = isset($_GET['status']) && $_GET['status'] == 'success';
-            $alert_class = $is_success ? 'success' : 'error';
+        <?php
+        $is_success = isset($_GET['status']) && $_GET['status'] == 'success';
+        $alert_class = $is_success ? 'success' : 'error';
         ?>
         <div class="alert-container">
             <div class="alert alert-<?= $alert_class ?>">
@@ -500,15 +501,15 @@ include 'layout/header.php';
     </div>
 
     <script>
-            // Pindahkan modal ke body agar fixed relative ke viewport (bukan main-content yg punya transform)
-    document.addEventListener('DOMContentLoaded', function() {
-        const editModal = document.getElementById('editModal');
-        const msgModal = document.getElementById('msgModal');
-        const deleteModal = document.getElementById('deleteModal');
-        if (editModal) document.body.appendChild(editModal);
-        if (msgModal) document.body.appendChild(msgModal);
-        if (deleteModal) document.body.appendChild(deleteModal);
-    });
+        // Pindahkan modal ke body agar fixed relative ke viewport (bukan main-content yg punya transform)
+        document.addEventListener('DOMContentLoaded', function() {
+            const editModal = document.getElementById('editModal');
+            const msgModal = document.getElementById('msgModal');
+            const deleteModal = document.getElementById('deleteModal');
+            if (editModal) document.body.appendChild(editModal);
+            if (msgModal) document.body.appendChild(msgModal);
+            if (deleteModal) document.body.appendChild(deleteModal);
+        });
 
         // State untuk menyimpan ID yang akan dihapus
         let deleteId = null;
@@ -524,13 +525,13 @@ include 'layout/header.php';
             form.reset();
             document.getElementById('agendaId').value = '';
             document.getElementById('imagePreview').style.display = 'none';
-            
+
             // Bounce animation for modal
             const modalCard = overlay.querySelector('.modal-card');
             modalCard.style.animation = 'none';
             modalCard.offsetHeight;
             modalCard.style.animation = 'editModalIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
-            
+
             overlay.style.display = 'flex';
             document.body.style.overflow = 'hidden';
         }
@@ -566,7 +567,7 @@ include 'layout/header.php';
             modalCard.style.animation = 'none';
             modalCard.offsetHeight;
             modalCard.style.animation = 'editModalIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
-            
+
             overlay.style.display = 'flex';
             document.body.style.overflow = 'hidden';
         }

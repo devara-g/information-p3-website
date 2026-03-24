@@ -405,7 +405,7 @@ nav {
 }
 
 .dropdown-menu li a:hover {
-  background: linear-gradient(90deg, var(--primary-light) 0%, transparent 100%);
+  background: linear-gradient(90deg, var(--primary-light) 50%, transparent 100%);
   color: var(--primary);
   padding-left: 2rem;
 }
@@ -1835,12 +1835,7 @@ footer::before {
     left: 0;
     width: 100%;
     /* Liquid Glass styling for mobile menu */
-    background: 
-      linear-gradient(
-        135deg,
-        rgba(255, 255, 255, 0.7) 0%,
-        rgba(255, 255, 255, 0.4) 100%
-      );
+    background-color: white;
     backdrop-filter: blur(25px);
     -webkit-backdrop-filter: blur(25px);
     box-shadow: 
