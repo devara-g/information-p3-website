@@ -37,17 +37,50 @@
                     $alt_text = 'Tidak ada gambar';
                 }
 
-                echo '
-                <div class="news-card">
-                    <img src="' . $foto_path . '" alt="' . $alt_text . '" class="news-image">
-                    <div class="news-info">
-                        <span class="news-date"><i class="fas fa-calendar-alt"></i> ' . date('d M Y', strtotime($row['tanggal'])) . ' • <i class="fas fa-tag"></i> ' . ucfirst($row['kategori']) . '</span>
-                        <h3 class="news-title">' . $row['judul'] . '</h3>
-                        <p class="news-excerpt">' . substr($row['deskripsi'], 0, 150) . '...</p>
-                        <a href="detail-berita.php?id=' . $row['id'] . '" class="read-more">Baca Selengkapnya <i class="fas fa-arrow-right"></i></a>
+                $is_featured = (strtolower($row['kategori']) == 'sorotan khusus');
+                
+                // Set custom badge styling based on category
+                $cat_lower = strtolower($row['kategori']);
+                $badge_class = 'badge-default';
+                if ($cat_lower == 'prestasi') $badge_class = 'badge-prestasi';
+                else if ($cat_lower == 'kegiatan') $badge_class = 'badge-kegiatan';
+                else if ($cat_lower == 'pengumuman') $badge_class = 'badge-pengumuman';
+                else if ($cat_lower == 'ekstrakurikuler') $badge_class = 'badge-ekstra';
+                else if ($is_featured) $badge_class = 'badge-sorotan';
+
+                // Featured Card Layout (Sorotan Khusus)
+                if ($is_featured) {
+                    echo '
+                    <div class="news-card featured-news-card">
+                        <div class="news-info featured-info">
+                            <div class="news-badge ' . $badge_class . '">' . strtoupper($row['kategori']) . '</div>
+                            <h3 class="news-title text-white">' . $row['judul'] . '</h3>
+                            <p class="news-excerpt text-light">' . substr(strip_tags($row['deskripsi']), 0, 200) . '...</p>
+                            <a href="detail-berita.php?id=' . $row['id'] . '" class="btn-read-featured">Baca Selengkapnya <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                        <div class="featured-image-wrapper">
+                            <img src="' . $foto_path . '" alt="' . $alt_text . '" class="featured-image">
+                        </div>
                     </div>
-                </div>
-                ';
+                    ';
+                } 
+                // Normal Card Layout
+                else {
+                    echo '
+                    <div class="news-card">
+                        <div class="news-image-wrapper">
+                            <div class="news-badge ' . $badge_class . '">' . ucfirst($row['kategori']) . '</div>
+                            <img src="' . $foto_path . '" alt="' . $alt_text . '" class="news-image">
+                        </div>
+                        <div class="news-info">
+                            <span class="news-date"><i class="fas fa-clock"></i> ' . date('d M Y', strtotime($row['tanggal'])) . '</span>
+                            <h3 class="news-title">' . $row['judul'] . '</h3>
+                            <p class="news-excerpt">' . substr(strip_tags($row['deskripsi']), 0, 110) . '...</p>
+                            <a href="detail-berita.php?id=' . $row['id'] . '" class="read-more" style="margin-top: auto;">Baca Selengkapnya <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                    ';
+                }
             }
         } else {
             // Tampilkan pesan jika tidak ada berita

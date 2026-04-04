@@ -351,6 +351,8 @@ include 'layout/header.php';
                             <option value="Pengumuman">Pengumuman</option>
                             <option value="Prestasi">Prestasi</option>
                             <option value="Kegiatan">Kegiatan</option>
+                            <option value="Ekstrakurikuler">Ekstrakurikuler</option>
+                            <option value="Sorotan Khusus">Sorotan Khusus</option>
                         </select>
                     </div>
                     <div class="form-group">

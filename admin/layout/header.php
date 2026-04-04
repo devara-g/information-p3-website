@@ -39,7 +39,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
         .sidebar-menu .dropdown>a .arrow {
             margin-left: auto;
             font-size: 11px;
-            color: #64748b;
+            color: #94a3b8;
             transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
                 color 0.3s ease;
             flex-shrink: 0;
@@ -47,14 +47,15 @@ $current_page = basename($_SERVER['PHP_SELF']);
 
         .sidebar-menu .dropdown.show>a .arrow {
             transform: rotate(90deg);
-            color: #38bdf8;
+            color: #0ea5e9;
         }
 
         /* Active parent link highlight */
         .sidebar-menu .dropdown.show>a {
-            color: #f8fafc;
-            background: rgba(56, 189, 248, 0.08);
+            color: #0ea5e9;
+            background: #f0f9ff;
             border-radius: 14px;
+            font-weight: 600;
         }
 
         /* ===== Accordion submenu - works on ALL screen sizes ===== */
@@ -75,8 +76,8 @@ $current_page = basename($_SERVER['PHP_SELF']);
             visibility: hidden;
 
             /* Sidebar-matching colors */
-            background: rgba(255, 255, 255, 0.03);
-            border-left: 2px solid rgba(56, 189, 248, 0.2);
+            background: transparent;
+            border-left: 2px solid #bae6fd;
             border-radius: 0 0 10px 10px;
             margin: 0 8px 0 16px;
             padding: 0;
@@ -112,8 +113,8 @@ $current_page = basename($_SERVER['PHP_SELF']);
             display: flex;
             align-items: center;
             gap: 10px;
-            color: #94a3b8;
-            /* Slate 400 - matches sidebar inactive */
+            color: #6b7280;
+            /* matches sidebar inactive */
             font-size: 0.85rem;
             font-weight: 500;
             text-decoration: none;
@@ -127,32 +128,30 @@ $current_page = basename($_SERVER['PHP_SELF']);
             font-size: 14px;
             width: 18px;
             text-align: center;
-            color: #64748b;
-            /* Slate 500 - matches sidebar icon color */
-            transition: color 0.3s ease, transform 0.3s ease;
+            color: #9ca3af;
+            /* matches sidebar icon color */
+            transition: color 0.3s ease;
         }
 
         .sidebar-menu .dropdown .dropdown-menu li a:hover {
-            background: rgba(56, 189, 248, 0.06);
-            color: #f8fafc;
-            border-left-color: #38bdf8;
+            background: #f0f9ff;
+            color: #0ea5e9;
+            border-left-color: #0ea5e9;
         }
 
         .sidebar-menu .dropdown .dropdown-menu li a:hover i {
-            color: #38bdf8;
-            transform: scale(1.1);
+            color: #0ea5e9;
         }
 
         .sidebar-menu .dropdown .dropdown-menu li a.active {
-            background: rgba(56, 189, 248, 0.12);
-            color: #38bdf8;
-            border-left-color: #38bdf8;
-            font-weight: 700;
+            background: #f0f9ff;
+            color: #0ea5e9;
+            border-left-color: #0ea5e9;
+            font-weight: 600;
         }
 
         .sidebar-menu .dropdown .dropdown-menu li a.active i {
-            color: #38bdf8;
-            filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.4));
+            color: #0ea5e9;
         }
     </style>
 </head>
