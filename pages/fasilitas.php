@@ -10,61 +10,149 @@
         <div class="shape shape-6"></div>
     </div>
     <h1>Fasilitas Sekolah</h1>
-    <p>Fasilitas modern untuk mendukung kegiatan belajar mengajar</p>
+    <p>Sarana modern untuk mendukung kegiatan belajar mengajar</p>
     <?php include 'wave.php'; ?>
 </section>
 
-<section class="gallery-content">
-    <div class="gallery-section">
-        <h2>Ruang Kelas</h2>
-        <div class="gallery-grid">
-            <div class="gallery-item"><img src="../img/fasilitas/kelas1.jpg" alt="Ruang Kelas"></div>
-            <div class="gallery-item"><img src="../img/fasilitas/kelas2.jpg" alt="Ruang Kelas"></div>
-            <div class="gallery-item"><img src="../img/fasilitas/kelas3.jpg" alt="Ruang Kelas"></div>
-            <div class="gallery-item"><img src="../img/fasilitas/kelas4.jpg" alt="Ruang Kelas"></div>
+<?php
+// Facility data: each category has an icon, color accent, and static images
+$fasilitas = [
+    [
+        'nama'  => 'Ruang Kelas',
+        'icon'  => 'fa-chalkboard-teacher',
+        'color' => '#3b82f6',
+        'desc'  => 'Ruang belajar yang nyaman, bersih, dan dilengkapi dengan papan tulis, proyektor, dan kursi ergonomis untuk mendukung proses belajar mengajar yang optimal.',
+        'images' => ['kelas1.jpg','kelas2.jpg','kelas3.jpg','kelas4.jpg'],
+        'tag'   => 'Akademik',
+    ],
+    [
+        'nama'  => 'Laboratorium',
+        'icon'  => 'fa-flask',
+        'color' => '#8b5cf6',
+        'desc'  => 'Laboratorium IPA, Komputer, dan Bahasa yang lengkap untuk mendukung kegiatan praktikum dan riset ilmiah siswa secara langsung.',
+        'images' => ['lab1.jpg','lab2.jpg','lab3.jpg','lab4.jpg'],
+        'tag'   => 'Sains & IT',
+    ],
+    [
+        'nama'  => 'Perpustakaan',
+        'icon'  => 'fa-book-open',
+        'color' => '#f59e0b',
+        'desc'  => 'Perpustakaan modern dengan koleksi ribuan buku pelajaran, referensi, dan bacaan pengembangan diri dalam suasana tenang dan nyaman.',
+        'images' => ['perpus.jpg','perpus.jpg'],
+        'tag'   => 'Literasi',
+    ],
+    [
+        'nama'  => 'Lapangan Olahraga',
+        'icon'  => 'fa-running',
+        'color' => '#10b981',
+        'desc'  => 'Lapangan serbaguna untuk basket, voli, futsal, dan atletik. Tersedia pula area senam dan fasilitas olahraga indoor.',
+        'images' => ['lapangan.jpg','futsal.jpg','gym.jpg'],
+        'tag'   => 'Olahraga',
+    ],
+    [
+        'nama'  => 'Masjid Sekolah',
+        'icon'  => 'fa-mosque',
+        'color' => '#06b6d4',
+        'desc'  => 'Masjid sekolah yang representatif untuk mendukung kegiatan ibadah dan pembinaan karakter religius siswa sehari-hari.',
+        'images' => ['masjid.jpg'],
+        'tag'   => 'Ibadah',
+    ],
+    [
+        'nama'  => 'Kantin & UKS',
+        'icon'  => 'fa-utensils',
+        'color' => '#f97316',
+        'desc'  => 'Kantin bersih dengan berbagai pilihan makanan bergizi. Dilengkapi UKS dengan tenaga medis untuk menjaga kesehatan seluruh warga sekolah.',
+        'images' => ['kantin.jpg','uk.jpg'],
+        'tag'   => 'Penunjang',
+    ],
+];
+?>
+
+<!-- ======= STATS BANNER ======= -->
+<section class="fs-stats-bar">
+    <div class="fs-wrap">
+        <div class="fs-stats-grid">
+            <div class="fs-stat-item">
+                <i class="fas fa-building"></i>
+                <span class="fs-stat-num">6</span>
+                <span class="fs-stat-label">Jenis Fasilitas</span>
+            </div>
+            <div class="fs-stat-item">
+                <i class="fas fa-door-open"></i>
+                <span class="fs-stat-num">24</span>
+                <span class="fs-stat-label">Ruang Kelas</span>
+            </div>
+            <div class="fs-stat-item">
+                <i class="fas fa-flask"></i>
+                <span class="fs-stat-num">3</span>
+                <span class="fs-stat-label">Laboratorium</span>
+            </div>
+            <div class="fs-stat-item">
+                <i class="fas fa-wifi"></i>
+                <span class="fs-stat-num">100%</span>
+                <span class="fs-stat-label">Area Wi-Fi</span>
+            </div>
         </div>
     </div>
+</section>
 
-    <div class="gallery-section">
-        <h2>Laboratorium</h2>
-        <div class="gallery-grid">
-            <div class="gallery-item"><img src="../img/fasilitas/lab1.jpg" alt="Laboratorium Komputer"></div>
-            <div class="gallery-item"><img src="../img/fasilitas/lab2.jpg" alt="Laboratorium Bahasa"></div>
-            <div class="gallery-item"><img src="../img/fasilitas/lab3.jpg" alt="Laboratorium IPA"></div>
-            <div class="gallery-item"><img src="../img/fasilitas/lab4.jpg" alt="Laboratorium"></div>
+<!-- ======= FACILITIES SHOWCASE ======= -->
+<section class="fs-main">
+    <div class="fs-wrap">
+        <div class="fs-header">
+            <h2>Fasilitas Unggulan</h2>
+            <p>Setiap ruang dirancang untuk memaksimalkan potensi belajar siswa</p>
         </div>
-    </div>
 
-    <div class="gallery-section">
-        <h2>Workshop & Bengkel</h2>
-        <div class="gallery-grid">
-            <div class="gallery-item"><img src="../img/fasilitas/bengkel1.jpg" alt="Bengkel TKR"></div>
-            <div class="gallery-item"><img src="../img/fasilitas/bengkel2.jpg" alt="Bengkel TSM"></div>
-            <div class="gallery-item"><img src="../img/fasilitas/bengkel3.jpg" alt="Workshop Listrik"></div>
-            <div class="gallery-item"><img src="../img/fasilitas/bengkel4.jpg" alt="Workshop Mesin"></div>
-        </div>
-    </div>
+        <div class="fs-showcase">
+            <?php foreach ($fasilitas as $i => $f):
+                $isEven = ($i % 2 === 0);
+                $hasMultiImg = count($f['images']) > 1;
+                $imgBase = '../img/fasilitas/';
+            ?>
+            <div class="fs-facility-block <?= $isEven ? 'fs-block-normal' : 'fs-block-alt' ?>">
+                <!-- Image Side -->
+                <div class="fs-img-side">
+                    <div class="fs-img-main">
+                        <img src="<?= $imgBase . $f['images'][0] ?>"
+                             alt="<?= htmlspecialchars($f['nama']) ?>"
+                             onerror="this.parentElement.innerHTML='<div class=\'fs-img-ph\'><i class=\'fas <?= $f['icon'] ?>\'></i></div>'">
+                        <div class="fs-img-overlay">
+                            <span class="fs-img-tag" style="background:<?= $f['color'] ?>20;color:<?= $f['color'] ?>;border:1px solid <?= $f['color'] ?>40">
+                                <?= htmlspecialchars($f['tag']) ?>
+                            </span>
+                        </div>
+                    </div>
+                    <?php if ($hasMultiImg): ?>
+                    <div class="fs-img-thumbs">
+                        <?php foreach (array_slice($f['images'], 1) as $tImg): ?>
+                        <div class="fs-img-thumb" onclick="this.closest('.fs-img-side').querySelector('.fs-img-main img').src='<?= $imgBase . $tImg ?>'">
+                            <img src="<?= $imgBase . $tImg ?>" alt="<?= htmlspecialchars($f['nama']) ?>"
+                                 onerror="this.style.display='none'">
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                    <?php endif; ?>
+                </div>
 
-    <div class="gallery-section">
-        <h2>Fasilitas Olah Raga</h2>
-        <div class="gallery-grid">
-            <div class="gallery-item"><img src="../img/fasilitas/lapangan.jpg" alt="Lapangan Basket"></div>
-            <div class="gallery-item"><img src="../img/fasilitas/futsal.jpg" alt="Lapangan Futsal"></div>
-            <div class="gallery-item"><img src="../img/fasilitas/gym.jpg" alt="Gymnasium"></div>
-            <div class="gallery-item"><img src="../img/fasilitas/tennis.jpg" alt="Lapangan Tennis"></div>
-        </div>
-    </div>
-
-    <div class="gallery-section">
-        <h2>Fasilitas Pendukung</h2>
-        <div class="gallery-grid">
-            <div class="gallery-item"><img src="../img/fasilitas/perpus.jpg" alt="Perpustakaan"></div>
-            <div class="gallery-item"><img src="../img/fasilitas/kantin.jpg" alt="Kantin"></div>
-            <div class="gallery-item"><img src="../img/fasilitas/masjid.jpg" alt="Masjid"></div>
-            <div class="gallery-item"><img src="../img/fasilitas/uk.jpg" alt="UKS"></div>
+                <!-- Info Side -->
+                <div class="fs-info-side">
+                    <div class="fs-icon-badge" style="background: <?= $f['color'] ?>15; color: <?= $f['color'] ?>;">
+                        <i class="fas <?= $f['icon'] ?>"></i>
+                    </div>
+                    <h3 class="fs-name"><?= htmlspecialchars($f['nama']) ?></h3>
+                    <p class="fs-desc"><?= htmlspecialchars($f['desc']) ?></p>
+                    <div class="fs-divider" style="background: linear-gradient(to right, <?= $f['color'] ?>, transparent)"></div>
+                    <div class="fs-feature-list">
+                        <span><i class="fas fa-check-circle" style="color:<?= $f['color'] ?>"></i> Fasilitas Lengkap</span>
+                        <span><i class="fas fa-check-circle" style="color:<?= $f['color'] ?>"></i> Terawat & Bersih</span>
+                        <span><i class="fas fa-check-circle" style="color:<?= $f['color'] ?>"></i> Akses 24/7</span>
+                    </div>
+                </div>
+            </div>
+            <?php endforeach; ?>
         </div>
     </div>
 </section>
 
 <?php include 'footer.php'; ?>
-
