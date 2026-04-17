@@ -85,8 +85,8 @@ foreach ($cat_meta as $cat => $m) {
             foreach ($all_photos as $photo):
                 $img_src = (!empty($photo['foto']) && file_exists('../' . $photo['foto']))
                     ? '../' . $photo['foto']
-                    : null;
-                if (!$img_src) continue;
+                    : 'https://placehold.co/600x400/e2e8f0/475569?text=Tidak+Ada+Foto';
+                
 
                 $cat     = htmlspecialchars($photo['kategori']);
                 $m       = $photo['_cat_meta'];

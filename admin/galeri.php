@@ -50,7 +50,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['aksi'])) {
 
     $foto = "";
     $upload_ok = true;
-    if (isset($_FILES['foto']) && $_FILES['foto']['error'] == 0) {
+    
+    // Validasi wajin foto saat tambah
+    if ($aksi == 'tambah' && (!isset($_FILES['foto']) || $_FILES['foto']['error'] != 0)) {
+        $galeri_error = "File foto wajib diisi untuk entri baru";
+        $upload_ok = false;
+    } elseif (isset($_FILES['foto']) && $_FILES['foto']['error'] == 0) {
         $allowed_types = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
         if (!in_array($_FILES['foto']['type'], $allowed_types)) {
             $galeri_error = "File foto tidak valid (format: JPG, JPEG, PNG, GIF)";
@@ -347,6 +352,7 @@ include 'layout/header.php';
         document.getElementById('btnText').innerText = 'Simpan Foto';
         document.getElementById('formAksi').value = 'tambah';
         form.reset();
+        document.getElementById('foto').required = true;
         document.getElementById('galeriId').value = '';
         document.getElementById('imagePreview').style.display = 'none';
         document.getElementById('previewImg').src = ''; // Clear previous image
@@ -368,6 +374,7 @@ include 'layout/header.php';
         document.getElementById('formTitle').innerHTML = '<i class="fas fa-edit"></i> Edit Foto';
         document.getElementById('btnText').innerText = 'Update Foto';
         document.getElementById('formAksi').value = 'edit';
+        document.getElementById('foto').required = false;
 
         document.getElementById('galeriId').value = data.id || '';
         document.getElementById('judul').value = data.judul || '';

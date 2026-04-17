@@ -2,12 +2,12 @@
 
 <section class="hero">
 
-        <div class="shape shape-1"></div>
-        <div class="shape shape-2"></div>
-        <div class="shape shape-3"></div>
-        <div class="shape shape-4"></div>
-        <div class="shape shape-5"></div>
-        <div class="shape shape-6"></div>
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+    <div class="shape shape-3"></div>
+    <div class="shape shape-4"></div>
+    <div class="shape shape-5"></div>
+    <div class="shape shape-6"></div>
     </div>
     <div class="hero-content">
         <div class="hero-text">
@@ -112,7 +112,7 @@
                 <div class="sm-signature">
                     <div class="sm-sig-wave">
                         <svg viewBox="0 0 200 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M10 30 C40 5, 60 35, 90 20 S140 5, 170 25 S190 35, 200 20" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+                            <path d="M10 30 C40 5, 60 35, 90 20 S140 5, 170 25 S190 35, 200 20" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none" />
                         </svg>
                     </div>
                     <div class="sm-sig-info">
@@ -127,42 +127,47 @@
 </section>
 
 <script>
-// ── Sambutan: scroll reveal + counter animation ──
-(function() {
-    const header  = document.getElementById('smHeader');
-    const profile = document.getElementById('smProfile');
-    const message = document.getElementById('smMessage');
+    // ── Sambutan: scroll reveal + counter animation ──
+    (function() {
+        const header = document.getElementById('smHeader');
+        const profile = document.getElementById('smProfile');
+        const message = document.getElementById('smMessage');
 
-    function countUp(el) {
-        const target = parseInt(el.dataset.target);
-        const duration = 1800;
-        const step = target / (duration / 16);
-        let current = 0;
-        const timer = setInterval(() => {
-            current += step;
-            if (current >= target) { el.textContent = target; clearInterval(timer); }
-            else el.textContent = Math.floor(current);
-        }, 16);
-    }
+        function countUp(el) {
+            const target = parseInt(el.dataset.target);
+            const duration = 1800;
+            const step = target / (duration / 16);
+            let current = 0;
+            const timer = setInterval(() => {
+                current += step;
+                if (current >= target) {
+                    el.textContent = target;
+                    clearInterval(timer);
+                } else el.textContent = Math.floor(current);
+            }, 16);
+        }
 
-    const io = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (!entry.isIntersecting) return;
-            const t = entry.target;
-            t.classList.add('sm-in');
-            // Trigger counters when profile card enters
-            if (t === profile) {
-                setTimeout(() => {
-                    document.querySelectorAll('.sm-stat-num').forEach(el => countUp(el));
-                }, 400);
-            }
-            io.unobserve(t);
+        const io = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
+                const t = entry.target;
+                t.classList.add('sm-in');
+                // Trigger counters when profile card enters
+                if (t === profile) {
+                    setTimeout(() => {
+                        document.querySelectorAll('.sm-stat-num').forEach(el => countUp(el));
+                    }, 400);
+                }
+                io.unobserve(t);
+            });
+        }, {
+            threshold: 0.15
         });
-    }, { threshold: 0.15 });
 
-    [header, profile, message].forEach(el => { if(el) io.observe(el); });
-})();
+        [header, profile, message].forEach(el => {
+            if (el) io.observe(el);
+        });
+    })();
 </script>
 
 <?php include 'components/footer.php'; ?>
-
