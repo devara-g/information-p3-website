@@ -24,14 +24,14 @@ while ($row = mysqli_fetch_assoc($result_all)) {
     $all_berita[] = $row;
 }
 
-function getImgPath($row) {
+function getImgPath(array $row): ?string {
     if (!empty($row['foto']) && file_exists('../' . $row['foto'])) {
         return '../' . $row['foto'];
     }
     return null;
 }
 
-function getBadgeClass($cat) {
+function getBadgeClass(string $cat): string {
     switch (strtolower(trim($cat))) {
         case 'prestasi':      return 'nb-bdg-prestasi';
         case 'kegiatan':      return 'nb-bdg-kegiatan';

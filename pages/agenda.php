@@ -37,7 +37,7 @@ foreach ($agenda_list as $a) {
 }
 $all_sorted = array_merge($upcoming, array_reverse($past));
 
-function agImg($row) {
+function agImg(array $row): ?string {
     if (!empty($row['foto']) && file_exists('../' . $row['foto'])) return '../' . $row['foto'];
     return null;
 }

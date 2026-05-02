@@ -27,7 +27,7 @@ $sections = [
 ];
 
 // Get total count for each section
-function getSectionCount($data, $positions)
+function getSectionCount(array $data, array $positions): int
 {
     $count = 0;
     foreach ($positions as $pos) {
