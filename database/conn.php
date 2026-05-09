@@ -1,10 +1,9 @@
 <?php
-$conn = mysqli_connect("localhost",
- "root",
-  "",
-"p3p2");
+if (!isset($conn)) {
+    $conn = new mysqli("localhost", "root", "", "p3p2");
 
-if (mysqli_connect_errno()) {
-    echo "database gagal" . mysqli_connect_error();
-    exit();
+    if ($conn->connect_error) {
+        die("Koneksi gagal: " . $conn->connect_error);
+    }
 }
+?>
