@@ -191,6 +191,8 @@ $current_page = basename($_SERVER['PHP_SELF']);
 
                 <div class="menu-label">External</div>
                 <ul>
+                    <li><a href="sambutan.php" class="<?= $current_page == 'sambutan.php' ? 'active' : ''; ?>"><i class="fas fa-chalkboard-teacher"></i> Sambutan Kepsek</a></li>
+                    <li><a href="visi-misi.php" class="<?= $current_page == 'visi-misi.php' ? 'active' : ''; ?>"><i class="fas fa-eye"></i> Visi & Misi</a></li>
                     <li><a href="pesan.php" class="<?= $current_page == 'pesan.php' ? 'active' : ''; ?>"><i class="fas fa-envelope"></i> Pesan Masuk</a></li>
                     <li><a href="../index.php" target="_blank"><i class="fas fa-external-link-alt"></i> Lihat Website</a></li>
                 </ul>

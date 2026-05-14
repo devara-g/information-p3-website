@@ -1,4 +1,36 @@
-<?php include 'components/header.php'; ?>
+<?php
+include 'components/header.php';
+include 'database/conn.php';
+
+// Ambil data sambutan dari database
+$sambutan = null;
+$stmt = $conn->query("SELECT * FROM sambutan ORDER BY id DESC LIMIT 1");
+if ($stmt && $stmt->num_rows > 0) {
+    $sambutan = $stmt->fetch_assoc();
+}
+
+// Fallback values jika belum ada data di database
+$kepsek_nama    = $sambutan ? htmlspecialchars($sambutan['nama_kepsek']) : 'Drs. Indra Robriandri, M.Si';
+$kepsek_pesan   = $sambutan ? $sambutan['pesan_sambutan'] : '';
+$jumlah_siswa   = $sambutan ? (int)$sambutan['jumlah_siswa'] : 800;
+$jumlah_pengajar = $sambutan ? (int)$sambutan['jumlah_pengajar'] : 45;
+$tanggal_sambutan = $sambutan ? $sambutan['tanggal_sambutan'] : '2026-02-01';
+
+// Tentukan path foto
+$foto_path = 'img/kepsek.jpg'; // default
+if ($sambutan && $sambutan['foto_kepsek'] && file_exists('upload/img/' . $sambutan['foto_kepsek'])) {
+    $foto_path = 'upload/img/' . htmlspecialchars($sambutan['foto_kepsek']);
+}
+
+// Format tanggal Indonesia
+$bulan_indo = [
+    '01' => 'Januari', '02' => 'Februari', '03' => 'Maret',
+    '04' => 'April', '05' => 'Mei', '06' => 'Juni',
+    '07' => 'Juli', '08' => 'Agustus', '09' => 'September',
+    '10' => 'Oktober', '11' => 'November', '12' => 'Desember'
+];
+$tgl_formatted = 'Bogor, ' . ($bulan_indo[date('m', strtotime($tanggal_sambutan))] ?? '') . ' ' . date('Y', strtotime($tanggal_sambutan));
+?>
 
 <section class="hero">
 
@@ -20,7 +52,7 @@
             <div class="principal-bubble">
                 <i class="fas fa-quote-left quote-icon"></i>
                 <h3>"Pendidikan adalah passport masa depan"</h3>
-                <p>- Indra Robriandri, S.Pd -</p>
+                <p>- <?= $kepsek_nama ?> -</p>
             </div>
         </div>
 
@@ -33,7 +65,7 @@
     <?php include 'pages/wave.php'; ?>
 </section>
 
-<!-- ══ SAMBUTAN KEPALA SEKOLAH — PREMIUM REDESIGN ══ -->
+<!-- ══ SAMBUTAN KEPALA SEKOLAH — PREMIUM REDESIGN (DYNAMIC) ══ -->
 <section class="sm-section">
     <!-- Decorative background blobs -->
     <div class="sm-blob sm-blob-1"></div>
@@ -55,33 +87,33 @@
 
                 <div class="sm-photo-wrap">
                     <div class="sm-photo-ring"></div>
-                    <img src="img/kepsek.jpg" alt="Kepala Sekolah" class="sm-photo">
+                    <img src="<?= $foto_path ?>" alt="Kepala Sekolah" class="sm-photo">
                     <div class="sm-photo-verified">
                         <i class="fas fa-check"></i>
                     </div>
                 </div>
 
                 <div class="sm-profile-name">
-                    <h3>Drs. Indra Robriandri, M.Si</h3>
+                    <h3><?= $kepsek_nama ?></h3>
                     <p><i class="fas fa-graduation-cap"></i> Kepala Sekolah</p>
                 </div>
 
                 <!-- School Stats -->
                 <div class="sm-stats">
                     <div class="sm-stat">
-                        <span class="sm-stat-num" data-target="42">0</span>
+                        <span class="sm-stat-num" data-target=" 1972">0</span>
                         <span class="sm-stat-plus">+</span>
                         <span class="sm-stat-label">Tahun<br>Berdiri</span>
                     </div>
                     <div class="sm-stat-divider"></div>
                     <div class="sm-stat">
-                        <span class="sm-stat-num" data-target="800">0</span>
+                        <span class="sm-stat-num" data-target="<?= $jumlah_siswa ?>">0</span>
                         <span class="sm-stat-plus">+</span>
                         <span class="sm-stat-label">Siswa<br>Aktif</span>
                     </div>
                     <div class="sm-stat-divider"></div>
                     <div class="sm-stat">
-                        <span class="sm-stat-num" data-target="45">0</span>
+                        <span class="sm-stat-num" data-target="<?= $jumlah_pengajar ?>">0</span>
                         <span class="sm-stat-plus">+</span>
                         <span class="sm-stat-label">Tenaga<br>Pengajar</span>
                     </div>
@@ -101,23 +133,33 @@
                 <p class="sm-greeting">Assalamu'alaikum Wr. Wb.</p>
 
                 <div class="sm-body">
-                    <p>Segala puji bagi Allah SWT yang telah memberikan rahmat dan hidayah-Nya. Dengan penuh kebanggaan, saya menyambut Anda di website resmi <strong>SMP PGRI 3 BOGOR</strong>.</p>
-                    <p>Kami berkomitmen untuk memberikan pendidikan terbaik bagi putra-putri Anda — mencetak generasi yang tidak hanya cerdas secara intelektual, tetapi juga memiliki <strong>karakter yang kuat dan berakhlak mulia</strong>.</p>
-                    <p>Didukung oleh tenaga pengajar profesional dan fasilitas modern, kami yakin mampu menghasilkan lulusan yang kompeten, kreatif, dan siap menghadapi tantangan global.</p>
-                    <p>Mari bersama kita wujudkan generasi yang cerdas, inovatif, dan berdaya saing tinggi untuk Indonesia yang lebih maju.</p>
+                    <?php if ($kepsek_pesan): ?>
+                        <?php
+                        // Pecah pesan per paragraf (baris baru)
+                        $paragraphs = preg_split('/\n{1,}/', trim($kepsek_pesan));
+                        foreach ($paragraphs as $p):
+                            $p = trim($p);
+                            if (!empty($p)):
+                        ?>
+                            <p><?= htmlspecialchars($p) ?></p>
+                        <?php
+                            endif;
+                        endforeach;
+                        ?>
+                    <?php else: ?>
+                        <p>Segala puji bagi Allah SWT yang telah memberikan rahmat dan hidayah-Nya. Dengan penuh kebanggaan, saya menyambut Anda di website resmi <strong>SMP PGRI 3 BOGOR</strong>.</p>
+                        <p>Kami berkomitmen untuk memberikan pendidikan terbaik bagi putra-putri Anda — mencetak generasi yang tidak hanya cerdas secara intelektual, tetapi juga memiliki <strong>karakter yang kuat dan berakhlak mulia</strong>.</p>
+                        <p>Didukung oleh tenaga pengajar profesional dan fasilitas modern, kami yakin mampu menghasilkan lulusan yang kompeten, kreatif, dan siap menghadapi tantangan global.</p>
+                        <p>Mari bersama kita wujudkan generasi yang cerdas, inovatif, dan berdaya saing tinggi untuk Indonesia yang lebih maju.</p>
+                    <?php endif; ?>
                 </div>
 
                 <p class="sm-closing">Wassalamu'alaikum Wr. Wb.</p>
 
                 <div class="sm-signature">
-                    <div class="sm-sig-wave">
-                        <svg viewBox="0 0 200 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M10 30 C40 5, 60 35, 90 20 S140 5, 170 25 S190 35, 200 20" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none" />
-                        </svg>
-                    </div>
                     <div class="sm-sig-info">
-                        <span class="sm-sig-date"><i class="fas fa-calendar-check"></i> Bogor, Februari 2026</span>
-                        <strong class="sm-sig-name">Drs. Indra Robriandri, M.Si</strong>
+                        <span class="sm-sig-date"><i class="fas fa-calendar-check"></i> <?= $tgl_formatted ?></span>
+                        <strong class="sm-sig-name"><?= $kepsek_nama ?></strong>
                         <span class="sm-sig-pos">Kepala Sekolah SMP PGRI 3 BOGOR</span>
                     </div>
                 </div>
