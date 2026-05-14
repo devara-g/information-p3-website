@@ -467,6 +467,78 @@ ALTER TABLE `misi`
 ALTER TABLE `program_7k`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `fasilitas`
+--
+
+CREATE TABLE `fasilitas` (
+  `id` int NOT NULL,
+  `nama` varchar(200) NOT NULL,
+  `deskripsi` text NOT NULL,
+  `icon` varchar(50) NOT NULL DEFAULT 'fa-building',
+  `color` varchar(20) NOT NULL DEFAULT '#3b82f6',
+  `tag` varchar(100) NOT NULL DEFAULT '',
+  `sort_order` int NOT NULL DEFAULT 0,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `fasilitas`
+--
+
+INSERT INTO `fasilitas` (`id`, `nama`, `deskripsi`, `icon`, `color`, `tag`, `sort_order`, `is_active`) VALUES
+(1, 'Ruang Kelas', 'Ruang belajar yang nyaman, bersih, dan dilengkapi dengan papan tulis, proyektor, dan kursi ergonomis untuk mendukung proses belajar mengajar yang optimal.', 'fa-chalkboard-teacher', '#3b82f6', 'Akademik', 1, 1),
+(2, 'Laboratorium', 'Laboratorium IPA, Komputer, dan Bahasa yang lengkap untuk mendukung kegiatan praktikum dan riset ilmiah siswa secara langsung.', 'fa-flask', '#8b5cf6', 'Sains & IT', 2, 1),
+(3, 'Perpustakaan', 'Perpustakaan modern dengan koleksi ribuan buku pelajaran, referensi, dan bacaan pengembangan diri dalam suasana tenang dan nyaman.', 'fa-book-open', '#f59e0b', 'Literasi', 3, 1),
+(4, 'Lapangan Olahraga', 'Lapangan serbaguna untuk basket, voli, futsal, dan atletik. Tersedia pula area senam dan fasilitas olahraga indoor.', 'fa-running', '#10b981', 'Olahraga', 4, 1),
+(5, 'Masjid Sekolah', 'Masjid sekolah yang representatif untuk mendukung kegiatan ibadah dan pembinaan karakter religius siswa sehari-hari.', 'fa-mosque', '#06b6d4', 'Ibadah', 5, 1),
+(6, 'Kantin & UKS', 'Kantin bersih dengan berbagai pilihan makanan bergizi. Dilengkapi UKS dengan tenaga medis untuk menjaga kesehatan seluruh warga sekolah.', 'fa-utensils', '#f97316', 'Penunjang', 6, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `fasilitas_images`
+--
+
+CREATE TABLE `fasilitas_images` (
+  `id` int NOT NULL,
+  `fasilitas_id` int NOT NULL,
+  `filename` varchar(255) NOT NULL,
+  `sort_order` int NOT NULL DEFAULT 0,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Indexes for table `fasilitas`
+--
+ALTER TABLE `fasilitas`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `fasilitas_images`
+--
+ALTER TABLE `fasilitas_images`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_fasilitas_id` (`fasilitas_id`);
+
+--
+-- AUTO_INCREMENT for table `fasilitas`
+--
+ALTER TABLE `fasilitas`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT for table `fasilitas_images`
+--
+ALTER TABLE `fasilitas_images`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
