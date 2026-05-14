@@ -1041,7 +1041,7 @@ include 'layout/header.php';
             <h3 style="font-weight: 700; color: var(--primary);">Kotak Masuk</h3>
             <div style="position: relative;">
                 <i class="fas fa-search" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 0.9rem;"></i>
-                <input type="text" placeholder="Cari pesan..." style="padding: 10px 15px 10px 40px; border: 1.5px solid #e2e8f0; border-radius: 12px; font-size: 0.9rem; outline: none; width: 250px; transition: 0.3s;">
+                <input type="text" id="searchInput" placeholder="Cari pesan..." style="padding: 10px 15px 10px 40px; border: 1.5px solid #e2e8f0; border-radius: 12px; font-size: 0.9rem; outline: none; width: 250px; transition: 0.3s;">
             </div>
         </div>
         <div style="overflow-x: auto;">
@@ -1262,7 +1262,7 @@ include 'layout/header.php';
     });
 
     // Search Interaction
-    const searchInput = document.querySelector('input[type="text"]');
+    const searchInput = document.getElementById('searchInput');
     if (searchInput) {
         searchInput.addEventListener('focus', function() {
             this.style.borderColor = '#3b82f6';
@@ -1271,6 +1271,13 @@ include 'layout/header.php';
         searchInput.addEventListener('blur', function() {
             this.style.borderColor = '#e2e8f0';
             this.style.boxShadow = 'none';
+        });
+        searchInput.addEventListener('keyup', function() {
+            const val = this.value.toLowerCase();
+            document.querySelectorAll('tbody tr').forEach(row => {
+                const text = row.innerText.toLowerCase();
+                row.style.display = text.includes(val) ? '' : 'none';
+            });
         });
     }
 </script>

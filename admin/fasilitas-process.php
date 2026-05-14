@@ -42,8 +42,8 @@ if ($action == 'save') {
         $id = $conn->insert_id;
     }
 
-    // Handle multiple image uploads
-    if (isset($_FILES['images']) && $id > 0) {
+    // Handle multiple image uploads safely
+    if (isset($_FILES['images']) && $id > 0 && is_array($_FILES['images']['name'])) {
         $allowed_types = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/webp'];
         $max_size = 3 * 1024 * 1024; // 3MB
         $upload_dir = '../upload/img/fasilitas/';
@@ -54,10 +54,18 @@ if ($action == 'save') {
 
         $file_count = count($_FILES['images']['name']);
         for ($i = 0; $i < $file_count; $i++) {
-            if ($_FILES['images']['error'][$i] == 0) {
-                $finfo = finfo_open(FILEINFO_MIME_TYPE);
-                $mime_type = finfo_file($finfo, $_FILES['images']['tmp_name'][$i]);
-                finfo_close($finfo);
+            if ($_FILES['images']['error'][$i] == UPLOAD_ERR_OK && !empty($_FILES['images']['tmp_name'][$i])) {
+                
+                $mime_type = '';
+                if (function_exists('finfo_open')) {
+                    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+                    $mime_type = finfo_file($finfo, $_FILES['images']['tmp_name'][$i]);
+                    finfo_close($finfo);
+                } else if (function_exists('mime_content_type')) {
+                    $mime_type = mime_content_type($_FILES['images']['tmp_name'][$i]);
+                } else {
+                    $mime_type = $_FILES['images']['type'][$i];
+                }
 
                 if (!in_array($mime_type, $allowed_types)) continue;
                 if ($_FILES['images']['size'][$i] > $max_size) continue;
@@ -68,7 +76,11 @@ if ($action == 'save') {
 
                 if (move_uploaded_file($_FILES['images']['tmp_name'][$i], $target)) {
                     // Get max sort order for this facility
-                    $maxSort = $conn->query("SELECT COALESCE(MAX(sort_order), 0) as max_sort FROM fasilitas_images WHERE fasilitas_id = $id")->fetch_assoc()['max_sort'];
+                    $sortQuery = $conn->query("SELECT COALESCE(MAX(sort_order), 0) as max_sort FROM fasilitas_images WHERE fasilitas_id = $id");
+                    $maxSort = 0;
+                    if ($sortQuery && $sortQuery->num_rows > 0) {
+                        $maxSort = $sortQuery->fetch_assoc()['max_sort'];
+                    }
                     $newSort = $maxSort + 1;
                     $conn->query("INSERT INTO fasilitas_images (fasilitas_id, filename, sort_order) VALUES ($id, '$filename', $newSort)");
                 }
@@ -88,9 +100,11 @@ if ($action == 'delete') {
     if ($id > 0) {
         // Delete all associated images from disk
         $images = $conn->query("SELECT filename FROM fasilitas_images WHERE fasilitas_id = $id");
-        while ($img = $images->fetch_assoc()) {
-            $path = '../upload/img/fasilitas/' . $img['filename'];
-            if (file_exists($path)) unlink($path);
+        if ($images) {
+            while ($img = $images->fetch_assoc()) {
+                $path = '../upload/img/fasilitas/' . $img['filename'];
+                if (file_exists($path)) unlink($path);
+            }
         }
         // Delete images from DB
         $conn->query("DELETE FROM fasilitas_images WHERE fasilitas_id = $id");
@@ -108,8 +122,9 @@ if ($action == 'delete_image') {
     $img_id = (int)($_GET['img_id'] ?? 0);
     $fas_id = (int)($_GET['fas_id'] ?? 0);
     if ($img_id > 0) {
-        $imgData = $conn->query("SELECT filename FROM fasilitas_images WHERE id = $img_id")->fetch_assoc();
-        if ($imgData) {
+        $imgQuery = $conn->query("SELECT filename FROM fasilitas_images WHERE id = $img_id");
+        if ($imgQuery && $imgQuery->num_rows > 0) {
+            $imgData = $imgQuery->fetch_assoc();
             $path = '../upload/img/fasilitas/' . $imgData['filename'];
             if (file_exists($path)) unlink($path);
             $conn->query("DELETE FROM fasilitas_images WHERE id = $img_id");

@@ -217,7 +217,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
 
                 <div class="search-box">
                     <i class="fas fa-search" style="color: var(--gray);"></i>
-                    <input type="text" placeholder="Cari data...">
+                    <input type="text" id="globalSearchInput" placeholder="Cari data...">
                 </div>
 
                 <div class="user-profile">
@@ -248,6 +248,38 @@ $current_page = basename($_SERVER['PHP_SELF']);
                             sidebar.classList.remove('active');
                             sidebarOverlay.classList.remove('active');
                             document.body.style.overflow = '';
+                        });
+                    }
+
+                    // Global Search Logic
+                    const globalSearch = document.getElementById('globalSearchInput');
+                    if (globalSearch) {
+                        globalSearch.addEventListener('keyup', function() {
+                            const val = this.value.toLowerCase();
+                            
+                            // Check if there is a main page search input
+                            const localSearch = document.getElementById('searchInput');
+                            if (localSearch) {
+                                localSearch.value = this.value;
+                                localSearch.dispatchEvent(new Event('keyup'));
+                            } else {
+                                // Fallback: filter the first table found in the main content
+                                const tables = document.querySelectorAll('.main-content table');
+                                if (tables.length > 0) {
+                                    const rows = tables[0].querySelectorAll('tbody tr');
+                                    rows.forEach(row => {
+                                        const text = row.innerText.toLowerCase();
+                                        row.style.display = text.includes(val) ? '' : 'none';
+                                    });
+                                } else {
+                                    // If no table, filter activity cards (e.g., on dashboard)
+                                    const activities = document.querySelectorAll('.activity-item');
+                                    activities.forEach(item => {
+                                        const text = item.innerText.toLowerCase();
+                                        item.style.display = text.includes(val) ? '' : 'none';
+                                    });
+                                }
+                            }
                         });
                     }
 

@@ -77,10 +77,14 @@ if ($result) {
                 $hasMultiImg = count($f['images']) > 1;
                 $imgBase = '../upload/img/fasilitas/';
                 $delay = $i * 0.1;
+                // Prepare JSON string of images for the slider
+                $imagesJson = htmlspecialchars(json_encode(array_map(function($img) use ($imgBase) {
+                    return $imgBase . $img;
+                }, $f['images'])));
             ?>
             <div class="fs-facility-block <?= $isEven ? 'fs-block-normal' : 'fs-block-alt' ?>">
                 <!-- Image Side -->
-                <div class="fs-img-side">
+                <div class="fs-img-side" data-images="<?= $imagesJson ?>" data-current-index="0">
                     <div class="fs-img-main">
                         <?php if (count($f['images']) > 0): ?>
                         <i class="fas <?= htmlspecialchars($f['icon']) ?> fallback-icon" style="color: <?= htmlspecialchars($f['color']) ?>"></i>
@@ -101,9 +105,11 @@ if ($result) {
                     </div>
                     <?php if ($hasMultiImg): ?>
                     <div class="fs-img-thumbs">
-                        <?php foreach (array_slice($f['images'], 1) as $tImg): ?>
+                        <?php foreach ($f['images'] as $idx => $tImg): ?>
                         <div class="fs-img-thumb" onclick="
-                            const mainImg = this.closest('.fs-img-side').querySelector('.fs-img-main img');
+                            const container = this.closest('.fs-img-side');
+                            const mainImg = container.querySelector('.fs-img-main img');
+                            container.dataset.currentIndex = <?= $idx ?>;
                             mainImg.style.opacity = '0';
                             setTimeout(() => { mainImg.src='<?= $imgBase . htmlspecialchars($tImg) ?>'; }, 150);
                         ">
@@ -164,6 +170,34 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.querySelectorAll('.fs-facility-block').forEach((block) => {
         observer.observe(block);
+    });
+
+    // Auto Slider Functionality
+    const sliders = document.querySelectorAll('.fs-img-side');
+    sliders.forEach(slider => {
+        const imagesRaw = slider.getAttribute('data-images');
+        if (!imagesRaw) return;
+        
+        try {
+            const images = JSON.parse(imagesRaw);
+            if (images.length > 1) {
+                setInterval(() => {
+                    let currentIndex = parseInt(slider.getAttribute('data-currentIndex')) || 0;
+                    currentIndex = (currentIndex + 1) % images.length; // Move to next image
+                    slider.setAttribute('data-currentIndex', currentIndex);
+                    
+                    const mainImg = slider.querySelector('.fs-img-main img');
+                    if (mainImg) {
+                        mainImg.style.opacity = '0';
+                        setTimeout(() => { 
+                            mainImg.src = images[currentIndex]; 
+                        }, 150);
+                    }
+                }, 3500); // Change image every 3.5 seconds
+            }
+        } catch(e) {
+            console.error('Error parsing images for slider:', e);
+        }
     });
 });
 </script>
